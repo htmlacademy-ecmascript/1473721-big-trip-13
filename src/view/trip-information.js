@@ -1,5 +1,5 @@
-export const createTripInformationElement = () => {
-  return `<section class="statistics">
+export const createTripInformationElement = () =>
+  `<section class="statistics">
   <h2 class="visually-hidden">Trip statistics</h2>
 
   <div class="statistics__item statistics__item--money">
@@ -14,4 +14,3 @@ export const createTripInformationElement = () => {
     <canvas class="statistics__chart  statistics__chart--time" width="900"></canvas>
   </div>
 </section>`;
-};

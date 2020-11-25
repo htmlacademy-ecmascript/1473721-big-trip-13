@@ -1,3 +1,3 @@
-export const createTripEventListElement = () => {
-  return `<ul class="trip-events__list"></ul>`;
-};
+export const createTripEventListElement = () =>
+  `<ul class="trip-events__list"></ul>`;
+
