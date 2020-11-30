@@ -1,13 +1,25 @@
+const COUNT_TRIP_CITY = 3;
+
+const ItemItem = {
+  FISRT: 0,
+  THIRD: 2
+};
+
 export const createTripInfoElement = (points) => {
 
   const getTripInfo = () => {
     let info = ``;
-    for (let i = 0; i < points.length; i++) {
-      info += `${points[i].city} `;
 
-      if (i !== points.length - 1) {
-        info += `&mdash; `;
+    if (points.length <= 3) {
+      for (let i = 0; i < COUNT_TRIP_CITY; i++) {
+        info += `${points[i].city} `;
+
+        if (i !== points.length - 1) {
+          info += `&mdash; `;
+        }
       }
+    } else {
+      info = `${points[ItemItem.FISRT].city} &mdash; ... &mdash; ${points[ItemItem.THIRD].city}`;
     }
 
     return info;

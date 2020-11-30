@@ -1,30 +1,42 @@
-export const getRandomInteger = (a = 0, b = 1) => {
+import dayjs from "dayjs";
+
+const ValueForRandom = {
+  ZERO: 0,
+  HUNDRED: 100
+};
+
+const getRandomInteger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
   const upper = Math.floor(Math.max(a, b));
 
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
 
-export const getPhoto = (photos) => {
+
+const getPhoto = (photos) => {
+  const reducer = (element, photo) => element + `<img class="event__photo" src="${photo}" alt="Event photo">`;
+
   let imgElement = ``;
-  for (let i = 0; i < photos.length; i++) {
-    imgElement += `<img class="event__photo" src="${photos[i]}" alt="Event photo">`;
-  }
-  return imgElement;
+
+  return photos.reduce(reducer, imgElement);
 };
 
-export const getOffers = (options) => {
+const getOffers = (options) => {
+  const reducer = (element, option) => element + `<div class="event__offer-selector">
+         <input class="event__offer-checkbox  visually-hidden" id="event-offer-${option}-1" type="checkbox"
+           name="event-offer-${option}" checked>
+         <label class="event__offer-label" for="event-offer-${option}-1">
+           <span class="event__offer-title">${option}</span>
+           &plus;&euro;&nbsp;
+           <span class="event__offer-price">${getRandomInteger(ValueForRandom.ZERO, ValueForRandom.HUNDRED)}</span>
+         </label>
+       </div>`;
+
   let offersElement = ``;
-  for (let i = 0; i < options.length; i++) {
-    offersElement += `<div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${options[i]}-1" type="checkbox"
-      name="event-offer-${options[i]}" checked>
-    <label class="event__offer-label" for="event-offer-${options[i]}-1">
-      <span class="event__offer-title">${options[i]}</span>
-      &plus;&euro;&nbsp;
-      <span class="event__offer-price">${getRandomInteger(0, 100)}</span>
-    </label>
-  </div>`;
-  }
-  return offersElement;
+
+  return options.reduce(reducer, offersElement);
 };
+
+const formDate = (value, format) => dayjs(value).format(format);
+
+export { getRandomInteger, getPhoto, getOffers, formDate };

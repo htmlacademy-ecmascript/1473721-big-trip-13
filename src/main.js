@@ -20,19 +20,19 @@ const siteMainElement = document.querySelector(`.page-body__page-main`);
 const siteContentElement = siteMainElement.querySelector(`.trip-events`);
 
 
-const render = (container, template, place) => {
+const render = (container, template, place = `beforeend`) => {
   container.insertAdjacentHTML(place, template);
 };
 
 render(menuElement, createTripInfoElement(points), `afterbegin`);
 render(menuHeaderElement, createMenuTemplate(), `afterend`);
-render(filterElement, createTripFilterElement(), `beforeend`);
-render(siteContentElement, createTripSortElement(), `beforeend`);
+render(filterElement, createTripFilterElement());
+render(siteContentElement, createTripSortElement());
 
-render(siteContentElement, createTripEventListElement(), `beforeend`);
+render(siteContentElement, createTripEventListElement());
 const siteListElement = siteMainElement.querySelector(`.trip-events__list`);
-render(siteListElement, createPointElement(points[0]), `beforeend`);
-render(siteListElement, createEditingPointElement(points[0]), `beforeend`);
+render(siteListElement, createPointElement(points[0]));
+render(siteListElement, createEditingPointElement(points[0]));
 
 
 
@@ -42,5 +42,4 @@ for (let i = 0; i < POINT_COUNT; i++) {
 
 
 render(siteContentElement, createTripInformationElement(), `afterbegin`);
-
 
