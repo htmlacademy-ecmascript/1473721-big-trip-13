@@ -1,11 +1,19 @@
-export const createPoint = () =>
-  `<li class="trip-events__item">
+export const createPoint = (point) => {
+  const {
+    type = `Taxi`,
+    city = ` `,
+    price = `0`,
+    day,
+    uberPrice
+  } = point;
+
+  return `<li class="trip-events__item">
   <div class="event">
-    <time class="event__date" datetime="2019-03-18">MAR 18</time>
+    <time class="event__date" datetime="2019-03-18">${day}</time>
     <div class="event__type">
-      <img class="event__type-icon" width="42" height="42" src="img/icons/taxi.png" alt="Event type icon">
+      <img class="event__type-icon" width="42" height="42" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
     </div>
-    <h3 class="event__title">Taxi Amsterdam</h3>
+    <h3 class="event__title">${type} ${city}</h3>
     <div class="event__schedule">
       <p class="event__time">
         <time class="event__start-time" datetime="2019-03-18T10:30">10:30</time>
@@ -15,14 +23,14 @@ export const createPoint = () =>
       <p class="event__duration">30M</p>
     </div>
     <p class="event__price">
-      &euro;&nbsp;<span class="event__price-value">20</span>
+      &euro;&nbsp;<span class="event__price-value">${price}</span>
     </p>
     <h4 class="visually-hidden">Offers:</h4>
     <ul class="event__selected-offers">
       <li class="event__offer">
         <span class="event__offer-title">Order Uber</span>
         &plus;&euro;&nbsp;
-        <span class="event__offer-price">20</span>
+        <span class="event__offer-price">${uberPrice}</span>
       </li>
     </ul>
     <button class="event__favorite-btn event__favorite-btn--active" type="button">
@@ -36,3 +44,5 @@ export const createPoint = () =>
     </button>
   </div>
 </li>`;
+};
+
