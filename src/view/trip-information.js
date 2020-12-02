@@ -1,6 +1,4 @@
-import {
-  createElement
-} from "../util.js";
+import {createElement} from "../util.js";
 
 const createTripInformationElement = () =>
   `<section class="statistics visually-hidden">
@@ -41,6 +39,4 @@ class TripInformationView {
   }
 }
 
-export {
-  TripInformationView
-};
+export default TripInformationView;

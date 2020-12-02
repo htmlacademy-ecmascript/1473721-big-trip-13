@@ -1,6 +1,4 @@
-import {
-  createElement
-} from "../util.js";
+import {createElement} from "../util.js";
 
 const createHeaderMenu = () => `<h2 class="visually-hidden">Switch trip view</h2>`;
 
@@ -26,6 +24,4 @@ class HeaderMenuView {
   }
 }
 
-export {
-  HeaderMenuView
-};
+export default HeaderMenuView;

@@ -1,10 +1,5 @@
-import {
-  PointField
-} from "../mock/task.js";
-
-import {
-  createElement
-} from "../util.js";
+import {PointField} from "../mock/task.js";
+import {createElement} from "../util.js";
 
 const createPoint = (point) => {
   const {
@@ -77,7 +72,5 @@ class PointView {
   }
 }
 
-export {
-  PointView
-};
+export default PointView;
 

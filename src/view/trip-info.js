@@ -1,12 +1,10 @@
-import {
-  createElement
-} from "../util.js";
+import {createElement} from "../util.js";
 
 const COUNT_TRIP_CITY = 3;
 
-const ItemItem = {
+const ItemValue = {
   FISRT: 0,
-  THIRD: 2
+  LENGTH_ZERO: 0
 };
 
 const createTripInfoElement = (points) => {
@@ -14,20 +12,13 @@ const createTripInfoElement = (points) => {
   const getTripInfo = () => {
     let info = ``;
 
-    if (points.length !== 0) {
-      if (points.length <= 3) {
-        for (let i = 0; i < COUNT_TRIP_CITY; i++) {
-          info += `${points[i].city} `;
-
-          if (i !== points.length - 1) {
-            info += `&mdash; `;
-          }
-        }
+    if (points.length !== ItemValue.LENGTH_ZERO) {
+      if (points.length <= COUNT_TRIP_CITY) {
+        info = points.map((point) => point.city).join(` &mdash; `);
       } else {
-        info = `${points[ItemItem.FISRT].city} &mdash; ... &mdash; ${points[ItemItem.THIRD].city}`;
+        info = `${points[ItemValue.FISRT].city} &mdash; ... &mdash; ${points[points.length - 1].city}`;
       }
     }
-
 
     return info;
   };
@@ -67,8 +58,4 @@ class TripInfoView {
   }
 }
 
-export {
-  TripInfoView
-};
-
-
+export default TripInfoView;

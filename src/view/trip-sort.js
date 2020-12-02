@@ -1,6 +1,4 @@
-import {
-  createElement
-} from "../util.js";
+import {createElement} from "../util.js";
 
 const createTripSortElement = () =>
   `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
@@ -52,6 +50,4 @@ class TripSortView {
   }
 }
 
-export {
-  TripSortView
-};
+export default TripSortView;
