@@ -14,17 +14,20 @@ const createTripInfoElement = (points) => {
   const getTripInfo = () => {
     let info = ``;
 
-    if (points.length <= 3) {
-      for (let i = 0; i < COUNT_TRIP_CITY; i++) {
-        info += `${points[i].city} `;
+    if (points.length !== 0) {
+      if (points.length <= 3) {
+        for (let i = 0; i < COUNT_TRIP_CITY; i++) {
+          info += `${points[i].city} `;
 
-        if (i !== points.length - 1) {
-          info += `&mdash; `;
+          if (i !== points.length - 1) {
+            info += `&mdash; `;
+          }
         }
+      } else {
+        info = `${points[ItemItem.FISRT].city} &mdash; ... &mdash; ${points[ItemItem.THIRD].city}`;
       }
-    } else {
-      info = `${points[ItemItem.FISRT].city} &mdash; ... &mdash; ${points[ItemItem.THIRD].city}`;
     }
+
 
     return info;
   };

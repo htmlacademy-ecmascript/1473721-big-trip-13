@@ -9,7 +9,13 @@ import { TripEventListView } from "./view/trip-event-list.js";
 import { EditPointView } from "./view/editing-points.js";
 import { PointView } from "./view/point.js";
 import { generatePoint } from "./mock/task.js";
-import { render, RenderPosition} from "./util.js";
+import { render, RenderPosition } from "./util.js";
+import { NoPointView } from "./view/no-point.js";
+
+const KEY_VALUE = {
+  ESCAPE: `Escape`,
+  ESC: `Esc`
+};
 
 const POINT_COUNT = 20;
 const points = new Array(POINT_COUNT).fill().map(generatePoint);
@@ -30,11 +36,11 @@ render(siteContentElement, new TripSortView().getElement());
 
 render(siteContentElement, new TripEventListView().getElement());
 const siteListElement = siteMainElement.querySelector(`.trip-events__list`);
-render(siteListElement, new CreatePointView(points[0]).getElement());
+// render(siteListElement, new CreatePointView(points[0]).getElement());
 
 const renderPoint = (pointList, point) => {
   const pointComponent = new PointView(point);
-  const editComponent = new EditPointView(point)
+  const editComponent = new EditPointView(point);
 
   const replacePointToForm = () => {
     pointList.replaceChild(editComponent.getElement(), pointComponent.getElement());
@@ -44,23 +50,60 @@ const renderPoint = (pointList, point) => {
     pointList.replaceChild(pointComponent.getElement(), editComponent.getElement());
   };
 
-  pointComponent.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
-    replacePointToForm();
-  });
+  const formComponent = editComponent.getElement().querySelector(`form`);
+  const formButtonCancel = formComponent.querySelector(`.event__reset-btn`);
 
-  editComponent.getElement().querySelector(`form`).addEventListener(`submit`, (evt) => {
+  const onEscKeyDown = (evt) => {
+    if (evt.key === KEY_VALUE.ESCAPE || evt.key === KEY_VALUE.ESC) {
+      evt.preventDefault();
+      replaceFormToPoint();
+      document.removeEventListener(`keydown`, onEscKeyDown);
+      formButtonCancel.removeEventListener(`click`, onCancelClick)
+    }
+  };
+
+  const onCancelClick = (evt) => {
     evt.preventDefault();
     replaceFormToPoint();
+    document.removeEventListener(`keydown`, onEscKeyDown);
+    formButtonCancel.removeEventListener(`click`, onCancelClick);
+  };
+
+  pointComponent.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
+    replacePointToForm();
+    document.addEventListener(`keydown`, onEscKeyDown);
+    formButtonCancel.addEventListener(`click`, onCancelClick);
+  });
+
+  formComponent.addEventListener(`submit`, (evt) => {
+    evt.preventDefault();
+    replaceFormToPoint();
+    document.removeEventListener(`keydown`, onEscKeyDown);
+    formButtonCancel.removeEventListener(`click`, onCancelClick);
+  });
+
+  formButtonCancel.addEventListener(`click`, (evt) => {
+    evt.preventDefault();
+    replaceFormToPoint();
+    document.removeEventListener(`keydown`, onEscKeyDown);
+    formButtonCancel.removeEventListener(`click`, onCancelClick);
   });
 
   render(pointList, pointComponent.getElement());
 
 };
 
+const renderPoints = () => {
+  if (points.length === 0) {
+    render(siteListElement, new NoPointView().getElement());
+  }
+  for (let i = 0; i < POINT_COUNT; i++) {
+    renderPoint(siteListElement, points[i]);
+  }
+};
+
+renderPoints();
 
 
-for (let i = 0; i < POINT_COUNT; i++) {
-  renderPoint(siteListElement, points[i]);
-}
 
 render(siteContentElement, new TripInformationView().getElement(), RenderPosition.AFTERBEGIN);
