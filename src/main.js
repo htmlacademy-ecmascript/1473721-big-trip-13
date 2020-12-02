@@ -4,12 +4,12 @@ import TripInfoView from "./view/trip-info.js";
 import TripInformationView from "./view/trip-information.js";
 import TripFilterView from "./view/trip-filter.js";
 import TripSortView from "./view/trip-sort.js";
-import CreatePointView from "./view/creature-point.js";
+// import CreatePointView from "./view/creature-point.js";
 import TripEventListView from "./view/trip-event-list.js";
 import EditPointView from "./view/editing-points.js";
 import PointView from "./view/point.js";
-import { generatePoint } from "./mock/task.js";
-import { render, RenderPosition } from "./util.js";
+import {generatePoint} from "./mock/task.js";
+import {render, RenderPosition} from "./util.js";
 import NoPointView from "./view/no-point.js";
 
 const KEY_VALUE = {
@@ -43,13 +43,14 @@ const renderPoint = (pointList, point) => {
   const editComponent = new EditPointView(point);
 
   const editComponentElement = editComponent.getElement();
+  const pointComponentElement = pointComponent.getElement();
 
   const replacePointToForm = () => {
-    pointList.replaceChild(editComponentElement, pointComponent.getElement());
+    pointList.replaceChild(editComponentElement, pointComponentElement);
   };
 
   const replaceFormToPoint = () => {
-    pointList.replaceChild(pointComponent.getElement(), editComponentElement);
+    pointList.replaceChild(pointComponentElement, editComponentElement);
   };
 
   const formComponent = editComponentElement.querySelector(`form`);
@@ -60,7 +61,7 @@ const renderPoint = (pointList, point) => {
       evt.preventDefault();
       replaceFormToPoint();
       document.removeEventListener(`keydown`, onEscKeyDown);
-      formButtonCancel.removeEventListener(`click`, onCancelClick)
+      formButtonCancel.removeEventListener(`click`, onCancelClick);
     }
   };
 
@@ -71,7 +72,7 @@ const renderPoint = (pointList, point) => {
     formButtonCancel.removeEventListener(`click`, onCancelClick);
   };
 
-  pointComponent.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
+  pointComponentElement.querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
     replacePointToForm();
     document.addEventListener(`keydown`, onEscKeyDown);
     formButtonCancel.addEventListener(`click`, onCancelClick);
@@ -91,7 +92,7 @@ const renderPoint = (pointList, point) => {
     formButtonCancel.removeEventListener(`click`, onCancelClick);
   });
 
-  render(pointList, pointComponent.getElement());
+  render(pointList, pointComponentElement);
 
 };
 

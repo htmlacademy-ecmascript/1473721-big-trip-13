@@ -1,4 +1,4 @@
-import { createElement } from "../util.js";
+import {createElement} from "../util.js";
 
 const COUNT_TRIP_CITY = 3;
 
@@ -14,7 +14,7 @@ const createTripInfoElement = (points) => {
 
     if (points.length !== ItemValue.LENGTH_ZERO) {
       if (points.length <= COUNT_TRIP_CITY) {
-        info = points.map(point => point.city).join(` &mdash; `);
+        info = points.map((point) => point.city).join(` &mdash; `);
       } else {
         info = `${points[ItemValue.FISRT].city} &mdash; ... &mdash; ${points[points.length - 1].city}`;
       }

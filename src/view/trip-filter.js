@@ -1,4 +1,4 @@
-import { createElement } from "../util.js";
+import {createElement} from "../util.js";
 
 const createTripFilterElement = () =>
   `<form class="trip-filters" action="#" method="get">
