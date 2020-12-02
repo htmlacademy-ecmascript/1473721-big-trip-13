@@ -1,3 +1,7 @@
+import {
+  createElement
+} from "../util.js";
+
 const COUNT_TRIP_CITY = 3;
 
 const ItemItem = {
@@ -5,7 +9,7 @@ const ItemItem = {
   THIRD: 2
 };
 
-export const createTripInfoElement = (points) => {
+const createTripInfoElement = (points) => {
 
   const getTripInfo = () => {
     let info = ``;
@@ -35,6 +39,33 @@ export const createTripInfoElement = (points) => {
     Total: &euro;&nbsp;<span class="trip-info__cost-value">1230</span>
   </p>
 </section>`;
+};
+
+class TripInfoView {
+  constructor(points) {
+    this._element = null;
+    this._points = points;
+  }
+
+  getTemplate() {
+    return createTripInfoElement(this._points);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
+export {
+  TripInfoView
 };
 
 

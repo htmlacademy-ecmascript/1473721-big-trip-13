@@ -2,9 +2,17 @@ import {
   getOffers
 } from "../util.js";
 
-export const createEditingPointElement = (point) => {
+import {
+  PointField
+} from "../mock/task.js";
+
+import {
+  createElement
+} from "../util.js";
+
+const createEditingPointElement = (point) => {
   const {
-    type = `Taxi`,
+    type = PointField.TYPE_POINT.TAXI,
     city = ` `,
     dateIn = `18/03/2020 14:22`,
     dateOut = `19/03/2020 11:05`,
@@ -149,4 +157,31 @@ export const createEditingPointElement = (point) => {
   </section>
 </form>
 </li>`;
+};
+
+class EditPointView {
+  constructor(point) {
+    this._element = null;
+    this._point = point;
+  }
+
+  getTemplate() {
+    return createEditingPointElement(this._point);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
+export {
+  EditPointView
 };

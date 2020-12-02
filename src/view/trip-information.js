@@ -1,4 +1,8 @@
-export const createTripInformationElement = () =>
+import {
+  createElement
+} from "../util.js";
+
+const createTripInformationElement = () =>
   `<section class="statistics visually-hidden">
   <h2 class="visually-hidden">Trip statistics</h2>
 
@@ -14,3 +18,29 @@ export const createTripInformationElement = () =>
     <canvas class="statistics__chart  statistics__chart--time" width="900"></canvas>
   </div>
 </section>`;
+
+class TripInformationView {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripInformationElement();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
+export {
+  TripInformationView
+};

@@ -5,6 +5,11 @@ const ValueForRandom = {
   HUNDRED: 100
 };
 
+const RenderPosition = {
+  AFTERBEGIN: `afterbegin`,
+  BEFOREEND: `beforeend`,
+};
+
 const getRandomInteger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
   const upper = Math.floor(Math.max(a, b));
@@ -39,4 +44,26 @@ const getOffers = (options) => {
 
 const formDate = (value, format) => dayjs(value).format(format);
 
-export { getRandomInteger, getPhoto, getOffers, formDate };
+const renderTemplate = (container, template, place = RenderPosition.BEFOREEND) => {
+  container.insertAdjacentHTML(place, template);
+};
+
+const render = (container, template, place = RenderPosition.BEFOREEND) => {
+  switch (place) {
+    case RenderPosition.BEFOREEND:
+      container.append(template);
+      break;
+    case RenderPosition.AFTERBEGIN:
+      container.prepend(template);
+      break;
+  }
+};
+
+const createElement = (template) => {
+  const newElement = document.createElement(`div`);
+  newElement.innerHTML = template;
+
+  return newElement.firstChild;
+};
+
+export { getRandomInteger, getPhoto, getOffers, formDate, render, renderTemplate, createElement, RenderPosition };

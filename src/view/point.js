@@ -1,6 +1,14 @@
-export const createPoint = (point) => {
+import {
+  PointField
+} from "../mock/task.js";
+
+import {
+  createElement
+} from "../util.js";
+
+const createPoint = (point) => {
   const {
-    type = `Taxi`,
+    type = PointField.TYPE_POINT.TAXI,
     city = ` `,
     price = `0`,
     day,
@@ -44,5 +52,32 @@ export const createPoint = (point) => {
     </button>
   </div>
 </li>`;
+};
+
+class PointView {
+  constructor(point) {
+    this._element = null;
+    this._point = point;
+  }
+
+  getTemplate() {
+    return createPoint(this._point);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
+export {
+  PointView
 };
 
