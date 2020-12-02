@@ -1,14 +1,6 @@
-import {
-  getOffers
-} from "../util.js";
-
-import {
-  PointField
-} from "../mock/task.js";
-
-import {
-  createElement
-} from "../util.js";
+import { getOffers } from "../util.js";
+import { PointField } from "../mock/task.js";
+import { createElement } from "../util.js";
 
 const createEditingPointElement = (point) => {
   const {
@@ -182,6 +174,4 @@ class EditPointView {
   }
 }
 
-export {
-  EditPointView
-};
+export default EditPointView;

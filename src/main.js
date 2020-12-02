@@ -1,16 +1,16 @@
-import { HeaderMenuView } from "./view/create-header-for-menu.js";
-import { SiteMenuView } from "./view/menu.js";
-import { TripInfoView } from "./view/trip-info.js";
-import { TripInformationView } from "./view/trip-information.js";
-import { TripFilterView } from "./view/trip-filter.js";
-import { TripSortView } from "./view/trip-sort.js";
-import { CreatePointView } from "./view/creature-point.js";
-import { TripEventListView } from "./view/trip-event-list.js";
-import { EditPointView } from "./view/editing-points.js";
-import { PointView } from "./view/point.js";
+import HeaderMenuView from "./view/create-header-for-menu.js";
+import SiteMenuView from "./view/menu.js";
+import TripInfoView from "./view/trip-info.js";
+import TripInformationView from "./view/trip-information.js";
+import TripFilterView from "./view/trip-filter.js";
+import TripSortView from "./view/trip-sort.js";
+import CreatePointView from "./view/creature-point.js";
+import TripEventListView from "./view/trip-event-list.js";
+import EditPointView from "./view/editing-points.js";
+import PointView from "./view/point.js";
 import { generatePoint } from "./mock/task.js";
 import { render, RenderPosition } from "./util.js";
-import { NoPointView } from "./view/no-point.js";
+import NoPointView from "./view/no-point.js";
 
 const KEY_VALUE = {
   ESCAPE: `Escape`,
@@ -42,15 +42,17 @@ const renderPoint = (pointList, point) => {
   const pointComponent = new PointView(point);
   const editComponent = new EditPointView(point);
 
+  const editComponentElement = editComponent.getElement();
+
   const replacePointToForm = () => {
-    pointList.replaceChild(editComponent.getElement(), pointComponent.getElement());
+    pointList.replaceChild(editComponentElement, pointComponent.getElement());
   };
 
   const replaceFormToPoint = () => {
-    pointList.replaceChild(pointComponent.getElement(), editComponent.getElement());
+    pointList.replaceChild(pointComponent.getElement(), editComponentElement);
   };
 
-  const formComponent = editComponent.getElement().querySelector(`form`);
+  const formComponent = editComponentElement.querySelector(`form`);
   const formButtonCancel = formComponent.querySelector(`.event__reset-btn`);
 
   const onEscKeyDown = (evt) => {
@@ -103,7 +105,5 @@ const renderPoints = () => {
 };
 
 renderPoints();
-
-
 
 render(siteContentElement, new TripInformationView().getElement(), RenderPosition.AFTERBEGIN);
