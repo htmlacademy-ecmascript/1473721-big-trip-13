@@ -157,6 +157,7 @@ class EditPointView extends AbstractView {
     this._point = point;
     this._element = null;
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._formCancelClickHandler = this._formCancelClickHandler.bind(this);
   }
 
   getTemplate() {
@@ -168,9 +169,19 @@ class EditPointView extends AbstractView {
     this._callback.formSubmit();
   }
 
+  _formCancelClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.cancelClick();
+  }
+
   setFormSubmitHandler(callback) {
     this._callback.formSubmit = callback;
     this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
+  }
+
+  setCancelClickEdit(callback) {
+    this._callback.cancelClick = callback;
+    this.getElement().querySelector(`form`).querySelector(`.event__reset-btn`).addEventListener(`click`, this._formCancelClickHandler);
   }
 }
 

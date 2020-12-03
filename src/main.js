@@ -67,26 +67,21 @@ const renderPoint = (pointList, point) => {
     evt.preventDefault();
     replaceFormToPoint();
     document.removeEventListener(`keydown`, onEscKeyDown);
-    // formButtonCancel.removeEventListener(`click`, onCancelClick);
   };
 
   pointComponent.setEditClickHandler(() => {
     replacePointToForm();
     document.addEventListener(`keydown`, onEscKeyDown);
-    // formButtonCancel.addEventListener(`click`, onCancelClick);
   });
 
   editComponent.setFormSubmitHandler(() => {
     replaceFormToPoint();
     document.removeEventListener(`keydown`, onEscKeyDown);
-    // formButtonCancel.removeEventListener(`click`, onCancelClick);
   });
 
-  formButtonCancel.addEventListener(`click`, (evt) => {
-    evt.preventDefault();
+  editComponent.setCancelClickEdit(() => {
     replaceFormToPoint();
     document.removeEventListener(`keydown`, onEscKeyDown);
-    // formButtonCancel.removeEventListener(`click`, onCancelClick);
   });
 
   render(pointList, pointComponent);
