@@ -1,6 +1,6 @@
-import {getOffers} from "../util.js";
+import {getOffers} from "../utils/task.js";
 import {PointField} from "../mock/task.js";
-import {createElement} from "../util.js";
+import AbstractView from "./abstract.js";
 
 const createEditingPointElement = (point) => {
   const {
@@ -151,26 +151,26 @@ const createEditingPointElement = (point) => {
 </li>`;
 };
 
-class EditPointView {
+class EditPointView extends AbstractView {
   constructor(point) {
-    this._element = null;
+    super();
     this._point = point;
+    this._element = null;
+    this._formSubmitHandler = this._formSubmitHandler.bind(this);
   }
 
   getTemplate() {
     return createEditingPointElement(this._point);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _formSubmitHandler(evt) {
+    evt.preventDefault();
+    this._callback.formSubmit();
   }
 
-  removeElement() {
-    this._element = null;
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
   }
 }
 

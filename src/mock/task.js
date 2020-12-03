@@ -1,7 +1,5 @@
-import {
-  getRandomInteger,
-  formDate
-} from "../util.js";
+import {getRandomInteger} from "../utils/common.js";
+import {formDate} from "../utils/task.js";
 
 const PointField = {
   TYPE_POINT: {
