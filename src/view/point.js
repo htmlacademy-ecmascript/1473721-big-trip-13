@@ -1,5 +1,5 @@
 import {PointField} from "../mock/task.js";
-import {createElement} from "../util.js";
+import AbstractView from "./abstract.js";
 
 const createPoint = (point) => {
   const {
@@ -49,28 +49,27 @@ const createPoint = (point) => {
 </li>`;
 };
 
-class PointView {
+class PointView extends AbstractView {
   constructor(point) {
-    this._element = null;
+    super();
     this._point = point;
+    this._element = null;
+    this._editClickHandler = this._editClickHandler.bind(this);
   }
 
   getTemplate() {
     return createPoint(this._point);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _editClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.editClick();
   }
 
-  removeElement() {
-    this._element = null;
+  setEditClickHandler(callback) {
+    this._callback.editClick = callback;
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._editClickHandler);
   }
 }
 
 export default PointView;
-

@@ -1,7 +1,6 @@
-import {getPhoto} from "../util.js";
-import {getOffers} from "../util.js";
+import {getPhoto, getOffers} from "../utils/task.js";
 import {PointField} from "../mock/task.js";
-import {createElement} from "../util.js";
+import AbstractView from "./abstract.js";
 
 const createPointElement = (point) => {
   const {
@@ -159,26 +158,15 @@ const createPointElement = (point) => {
 </li>`;
 };
 
-class CreatePointView {
+class CreatePointView extends AbstractView {
   constructor(point) {
-    this._element = null;
+    super();
     this._point = point;
+    this._element = null;
   }
 
   getTemplate() {
     return createPointElement(this._point);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 
