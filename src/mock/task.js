@@ -38,7 +38,8 @@ const DefaultValue = {
   MIN_HOUR_VALUE: 1,
   MAX_HOUR_VALUE: 23,
   MIN_MINUTE_VALUE: 1,
-  MAX_MINUTE_VALUE: 59
+  MAX_MINUTE_VALUE: 59,
+  FOR_BOOLEAN_VALUE: 0.5
 };
 
 const getString = (arr, minValue) => {
@@ -70,6 +71,8 @@ const getRandomPrice = () => getRandomInteger(DefaultValue.MIN_PRICE_VALUE, Defa
 
 const getRandomUberPrice = () => getRandomInteger(DefaultValue.MIN_PRICE_VALUE, DefaultValue.MAX_PRICE_VALUE);
 
+const getFavoriteState = () => Math.random() >= DefaultValue.FOR_BOOLEAN_VALUE;
+
 const generatePoint = () => {
   return {
     type: getString(PointField.TYPE_POINT, DefaultValue.MIN_RANDOM_VALUE),
@@ -81,7 +84,8 @@ const generatePoint = () => {
     dateOut: getRandomDate(),
     price: getRandomPrice(),
     day: getRandomDay(),
-    uberPrice: getRandomUberPrice()
+    uberPrice: getRandomUberPrice(),
+    favorite: getFavoriteState()
   };
 };
 
