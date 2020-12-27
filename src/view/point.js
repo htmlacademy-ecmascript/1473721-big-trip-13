@@ -1,15 +1,12 @@
 import {PointField} from "../mock/task.js";
 import AbstractView from "./abstract.js";
 
-const createPoint = (point) => {
-  const {
-    type = PointField.TYPE_POINT.TAXI,
-    city = ` `,
-    price = `0`,
-    day,
-    uberPrice,
-    favorite
-  } = point;
+const createPoint = ({type = PointField.TYPE_POINT.TAXI,
+  city = ` `,
+  price = `0`,
+  day,
+  uberPrice,
+  favorite}) => {
 
   const getFavorite = (state) => {
     let result = ``;
@@ -57,13 +54,14 @@ const createPoint = (point) => {
 </li>`;
 };
 
-class PointView extends AbstractView {
+export default class PointView extends AbstractView {
   constructor(point) {
     super();
     this._point = point;
     this._element = null;
     this._editClickHandler = this._editClickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
+    this.toggleFavorite = this.toggleFavorite.bind(this);
   }
 
   getTemplate() {
@@ -97,5 +95,3 @@ class PointView extends AbstractView {
     this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, this._favoriteClickHandler);
   }
 }
-
-export default PointView;

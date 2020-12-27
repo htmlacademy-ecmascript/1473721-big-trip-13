@@ -7,19 +7,30 @@ const KEY_VALUE = {
   ESC: `Esc`
 };
 
+const Mode = {
+  DEFAULT: `DEFAULT`,
+  EDITING: `EDITING`
+};
+
 export default class Point {
-  constructor(pointsContainer) {
+  constructor(pointsContainer, changeMode) {
     this._pointsContainer = pointsContainer;
+    this._changeMode = changeMode;
+
+    this._mode = Mode.DEFAULT;
+
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
     this._onCancelClick = this._onCancelClick.bind(this);
+    this._replaceFormToPoint = this._replaceFormToPoint.bind(this);
+    this._replacePointToForm = this._replacePointToForm.bind(this);
   }
 
   init(point) {
     this._pointComponent = new PointView(point);
     this._editComponent = new EditPointView(point);
 
-    this._pointComponent.setEditClickHandler(this._replacePointToForm());
-    this._pointComponent.setFavoritesClickHandler(this._pointComponent.toggleFavorite());
+    this._pointComponent.setEditClickHandler(this._replacePointToForm);
+    this._pointComponent.setFavoritesClickHandler(this._pointComponent.toggleFavorite);
 
     this._editComponent.setFormSubmitHandler(() => {
       this._replaceFormToPoint();
@@ -52,11 +63,20 @@ export default class Point {
   }
 
   _replacePointToForm() {
-    // this._pointsContainer.replaceChild(this._editComponent.getElement(), this._pointComponent.getElement());
+    this._pointsContainer.replaceChild(this._editComponent.getElement(), this._pointComponent.getElement());
     document.addEventListener(`keydown`, this._onEscKeyDown);
+    this._changeMode();
+    this._mode = Mode.EDITING;
   }
 
   _replaceFormToPoint() {
     this._pointsContainer.replaceChild(this._pointComponent.getElement(), this._editComponent.getElement());
+    this._mode = Mode.DEFAULT;
+  }
+
+  resetView() {
+    if (this._mode !== Mode.DEFAULT) {
+      this._replaceFormToPoint();
+    }
   }
 }

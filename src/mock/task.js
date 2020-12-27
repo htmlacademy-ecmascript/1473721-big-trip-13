@@ -42,6 +42,12 @@ const DefaultValue = {
   FOR_BOOLEAN_VALUE: 0.5
 };
 
+const SortType = {
+  DAY: `day`,
+  TIME: `time`,
+  PRICE: `price`,
+};
+
 const getString = (arr, minValue) => {
   return arr[getRandomInteger(minValue, arr.length - DefaultValue.FOR_THE_RIGHT_LENGTH)];
 };
@@ -91,5 +97,6 @@ const generatePoint = () => {
 
 export {
   generatePoint,
-  PointField
+  PointField,
+  SortType
 };
