@@ -1,13 +1,15 @@
-import {generatePoint} from "../mock/task.js";
-import TripPresenter from "./trip.js";
+import {generatePoint, SortType} from "../mock/task.js";
+import {sortByDay, sortByPrice, sortByTime} from "../utils/task.js";
 import PointsPresenter from "./points.js";
-import MenuPresenter from "./menu.js";
-import HeaderMenuPresenter from "./headerMenu.js";
-import FilterPresenter from "./filter.js";
-import SortPresenter from "./sort.js";
-import EventListPresenter from "./eventList.js";
 import CreaturePointPresenter from "./creaturePoint.js";
-import StatPresenter from "./stat.js";
+import {render, RenderPosition} from "../utils/render.js";
+import TripInfoView from "../view/trip-info.js";
+import SiteMenuView from "../view/menu.js";
+import HeaderMenuView from "../view/create-header-for-menu.js";
+import TripFilterView from "../view/trip-filter.js";
+import TripSortView from "../view/trip-sort.js";
+import TripEventListView from "../view/trip-event-list.js";
+import TripInformationView from "../view/trip-information.js";
 
 const POINT_COUNT = 20;
 const points = new Array(POINT_COUNT).fill().map(generatePoint);
@@ -18,10 +20,20 @@ export default class Route {
     this._tripControlsElement = this._mainElement.querySelector(`.trip-main__trip-controls`);
     this._siteMainElement = document.querySelector(`.page-body__page-main`);
     this._siteContentElement = this._siteMainElement.querySelector(`.trip-events`);
-    // this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
-  }
-  init() {
+    this._points = points.slice();
+    this._defaultPoint = points.slice();
+    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
+    this._currentSortType = SortType.DAY;
 
+    this._sortComponent = new TripSortView();
+    this._siteMenu = new SiteMenuView();
+    this._headerMenu = new HeaderMenuView();
+    this._filter = new TripFilterView();
+    this._tripEventList = new TripEventListView();
+    this._tripStat = new TripInformationView();
+  }
+
+  init() {
     this._renderTrip();
     this._renderMenu();
     this._renderHeaderMenu();
@@ -34,37 +46,58 @@ export default class Route {
   }
 
   _renderTrip() {
-    this._tripPresenter = new TripPresenter(this._mainElement);
-    this._tripPresenter.init(points);
+    render(this._mainElement, new TripInfoView(this._points), RenderPosition.AFTERBEGIN);
   }
 
   _renderMenu() {
-    this._menuPresenter = new MenuPresenter();
-    this._menuPresenter.init(this._tripControlsElement);
+    render(this._tripControlsElement, this._siteMenu, RenderPosition.AFTERBEGIN);
   }
 
   _renderHeaderMenu() {
-    this._headerMenu = new HeaderMenuPresenter();
-    this._headerMenu.init(this._tripControlsElement);
+    render(this._tripControlsElement, this._headerMenu, RenderPosition.AFTERBEGIN);
   }
 
   _renderFilter() {
-    this._filterPresenter = new FilterPresenter();
-    this._filterPresenter.init(this._tripControlsElement);
+    render(this._tripControlsElement, this._filter);
   }
 
-  // _handleSortTypeChange(sortType) {
-  // }
+  _sortPoint(sortType) {
+    switch (sortType) {
+      case SortType.DAY:
+
+        // this._points.day.sort(sortByDay);
+        break;
+      case SortType.PRICE:
+        // console.log(this._points);
+        // console.log(this._points);
+        // this._points.sort(sortByPrice);
+        this._points.sort(sortByDay);
+        // console.log(this._points);
+        break;
+      case SortType.TIME:
+        // console.log(this._points);
+        this._points.sort(sortByTime);
+        break;
+    }
+  }
+
+  _handleSortTypeChange(sortType) {
+    if (this._currentSortType === sortType) {
+      return;
+    }
+
+    this._sortPoint(sortType);
+    this._clearPoints();
+    // this._renderPoints();
+  }
 
   _renderSort() {
-    this._sortPresenter = new SortPresenter();
-    this._sortPresenter.init(this._siteContentElement);
-    // this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
+    render(this._siteContentElement, this._sortComponent);
+    this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
   }
 
   _renderEventList() {
-    this._eventListPresenter = new EventListPresenter();
-    this._eventListPresenter.init(this._siteContentElement);
+    render(this._siteContentElement, this._tripEventList);
   }
 
   _renderCreaturePoint() {
@@ -80,7 +113,10 @@ export default class Route {
   }
 
   _renderStat() {
-    this._statPresenter = new StatPresenter();
-    this._statPresenter.init(this._siteContentElement);
+    render(this._siteContentElement, this._tripStat, RenderPosition.AFTERBEGIN);
+  }
+
+  _clearPoints() {
+    Object.values(this._pointPresenter).forEach((presenter) => presenter.resetView());
   }
 }

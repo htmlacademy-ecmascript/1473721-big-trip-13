@@ -1,7 +1,8 @@
 import {PointField} from "../mock/task.js";
 import AbstractView from "./abstract.js";
 
-const createPoint = ({type = PointField.TYPE_POINT.TAXI,
+const createPoint = ({
+  type = PointField.TYPE_POINT.TAXI,
   city = ` `,
   price = `0`,
   day,
