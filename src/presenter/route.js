@@ -20,7 +20,7 @@ export default class Route {
   }
 
   init(points) {
-    this._points = points.slice();
+    this._points = points.slice().sort(sortByDay);
     this._renderFilter();
     this._renderSort();
     this._renderPointsList(this._points);
@@ -54,13 +54,16 @@ export default class Route {
   _sortPoint(sortType) {
     switch (sortType) {
       case SortType.DAY:
-        this._points.day.sort(sortByDay);
+        this._points.sort(sortByDay);
+        break;
+      case SortType.TIME:
+        this._points.sort(sortByTime);
         break;
       case SortType.PRICE:
         this._points.sort(sortByPrice);
         break;
-      case SortType.TIME:
-        this._points.sort(sortByTime);
+      default:
+        this._points.sort(sortByDay);
         break;
     }
   }
@@ -70,16 +73,28 @@ export default class Route {
       return;
     }
 
+    this._currentSortType = sortType;
     this._sortPoint(sortType);
     this._clearPoints();
-    this._renderPointsList();
+    this._clearPointsList();
+    this._renderPointsList(this._points);
   }
 
   _handleModeChange() {
-    Object.values(this._pointPresenter).forEach((presenter) => presenter.resetView());
+    this._clear();
   }
 
   _clearPoints() {
+    this._clear();
+    this._pointPresenter = [];
+  }
+
+  _clearPointsList() {
+    const pointList = document.querySelectorAll(`.trip-events__item`);
+    pointList.forEach((point) => point.remove());
+  }
+
+  _clear() {
     Object.values(this._pointPresenter).forEach((presenter) => presenter.resetView());
   }
 }

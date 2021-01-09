@@ -39,13 +39,19 @@ const DefaultValue = {
   MAX_HOUR_VALUE: 23,
   MIN_MINUTE_VALUE: 1,
   MAX_MINUTE_VALUE: 59,
-  FOR_BOOLEAN_VALUE: 0.5
+  FOR_BOOLEAN_VALUE: 0.5,
+  MIN_TIME_VALUE_HOUR: 0,
+  MAX_TIME_VALUE_HOUR: 24,
+  MIN_TIME_VALUE_MINUTE: 0,
+  MAX_TIME_VALUE_MINUTE: 60,
+  MIN_MINUTE: 0,
+  MAX_MINUTE: 60
 };
 
 const SortType = {
-  DAY: `day`,
-  TIME: `time`,
-  PRICE: `price`,
+  DAY: `sort-day`,
+  TIME: `sort-time`,
+  PRICE: `sort-price`,
 };
 
 const getString = (arr, minValue) => {
@@ -79,6 +85,16 @@ const getRandomUberPrice = () => getRandomInteger(DefaultValue.MIN_PRICE_VALUE, 
 
 const getFavoriteState = () => Math.random() >= DefaultValue.FOR_BOOLEAN_VALUE;
 
+const getRandomTimeInHour = () => getRandomInteger(DefaultValue.MIN_TIME_VALUE_HOUR, DefaultValue.MAX_TIME_VALUE_HOUR);
+
+const getRandomTimeOutHour = () => getRandomInteger(DefaultValue.MIN_TIME_VALUE_HOUR, DefaultValue.MAX_TIME_VALUE_HOUR);
+
+const getRandomTimeInMinute = () => getRandomInteger(DefaultValue.MIN_TIME_VALUE_MINUTE, DefaultValue.MAX_TIME_VALUE_MINUTE);
+
+const getRandomTimeOutMinute = () => getRandomInteger(DefaultValue.MIN_TIME_VALUE_MINUTE, DefaultValue.MAX_TIME_VALUE_MINUTE);
+
+const getRandomDuration = () => getRandomInteger(DefaultValue.MIN_MINUTE, DefaultValue.MAX_MINUTE);
+
 const generatePoint = () => {
   return {
     type: getString(PointField.TYPE_POINT, DefaultValue.MIN_RANDOM_VALUE),
@@ -91,7 +107,12 @@ const generatePoint = () => {
     price: getRandomPrice(),
     day: getRandomDay(),
     uberPrice: getRandomUberPrice(),
-    favorite: getFavoriteState()
+    favorite: getFavoriteState(),
+    timeInHour: getRandomTimeInHour(),
+    timeOutHour: getRandomTimeOutHour(),
+    timeInMinute: getRandomTimeInMinute(),
+    timeOutMinute: getRandomTimeOutMinute(),
+    duration: getRandomDuration()
   };
 };
 
