@@ -2,17 +2,15 @@ import {getPhoto, getOffers} from "../utils/task.js";
 import {PointField} from "../mock/task.js";
 import AbstractView from "./abstract.js";
 
-const createPointElement = (point) => {
-  const {
-    type = PointField.TYPE_POINT.TAXI,
-    city = ` `,
-    dateIn = `18/03/2020 14:22`,
-    dateOut = `19/03/2020 11:05`,
-    price = `0`,
-    options,
-    description = ``,
-    photos
-  } = point;
+const createPointElement = ({
+  type = PointField.TYPE_POINT.TAXI,
+  city = ` `,
+  dateIn = `18/03/2020 14:22`,
+  dateOut = `19/03/2020 11:05`,
+  price = `0`,
+  options,
+  description = ``,
+  photos}) => {
 
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">

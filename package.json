@@ -6,17 +6,19 @@
   "scripts": {
     "eslint": "eslint src/**/*.js",
     "test": "npm run eslint",
-    "buld": "webpack --mode development",
+    "build": "webpack --mode development",
     "start": "webpack-dev-server --open"
   },
   "devDependencies": {
-    "dayjs": "1.9.5",
     "eslint": "7.13.0",
     "eslint-config-htmlacademy": "0.6.0",
-    "flatpickr": "4.6.6",
     "webpack": "4.44.2",
     "webpack-cli": "3.3.12",
     "webpack-dev-server": "3.11.0"
+  },
+  "dependencies": {
+    "dayjs": "1.9.5",
+    "flatpickr": "4.6.6"
   },
   "engines": {
     "node": "10"
