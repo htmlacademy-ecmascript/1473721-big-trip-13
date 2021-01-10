@@ -1,4 +1,4 @@
-import {render} from "../utils/render.js";
+import {render, remove} from "../utils/render.js";
 import EditPointView from "../view/editing-points.js";
 import PointView from "../view/point.js";
 
@@ -78,5 +78,10 @@ export default class Point {
     if (this._mode !== Mode.DEFAULT) {
       this._replaceFormToPoint();
     }
+  }
+
+  destroy() {
+    remove(this._pointComponent);
+    remove(this._editComponent);
   }
 }

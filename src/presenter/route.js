@@ -10,7 +10,7 @@ export default class Route {
   constructor(container) {
     this._siteListElement = container;
     this._currentSortType = SortType.DAY;
-    this._pointPresenter = [];
+    this._pointsPresenter = [];
 
     this._sortComponent = new TripSortView();
     this._filter = new TripFilterView();
@@ -20,7 +20,8 @@ export default class Route {
   }
 
   init(points) {
-    this._points = points.slice().sort(sortByDay);
+    this._points = points.slice();
+    this._sortPoint(SortType.DAY);
     this._renderFilter();
     this._renderSort();
     this._renderPointsList(this._points);
@@ -47,7 +48,7 @@ export default class Route {
     points.forEach((point) => {
       const pointPresenter = new PointPresenter(this._siteListElement, this._handleModeChange);
       pointPresenter.init(point);
-      this._pointPresenter.push(pointPresenter);
+      this._pointsPresenter.push(pointPresenter);
     });
   }
 
@@ -75,26 +76,16 @@ export default class Route {
 
     this._currentSortType = sortType;
     this._sortPoint(sortType);
-    this._clearPoints();
     this._clearPointsList();
     this._renderPointsList(this._points);
   }
 
   _handleModeChange() {
-    this._clear();
-  }
-
-  _clearPoints() {
-    this._clear();
-    this._pointPresenter = [];
+    Object.values(this._pointsPresenter).forEach((presenter) => presenter.resetView());
   }
 
   _clearPointsList() {
-    const pointList = document.querySelectorAll(`.trip-events__item`);
-    pointList.forEach((point) => point.remove());
-  }
-
-  _clear() {
-    Object.values(this._pointPresenter).forEach((presenter) => presenter.resetView());
+    Object.values(this._pointsPresenter).forEach((presenter) => presenter.destroy());
+    this._pointsPresenter = [];
   }
 }
