@@ -10,7 +10,7 @@ export default class Route {
   constructor(container) {
     this._siteListElement = container;
     this._currentSortType = SortType.DAY;
-    this._pointPresenter = [];
+    this._pointsPresenter = [];
 
     this._sortComponent = new TripSortView();
     this._filter = new TripFilterView();
@@ -21,6 +21,7 @@ export default class Route {
 
   init(points) {
     this._points = points.slice();
+    this._sortPoint(SortType.DAY);
     this._renderFilter();
     this._renderSort();
     this._renderPointsList(this._points);
@@ -47,20 +48,23 @@ export default class Route {
     points.forEach((point) => {
       const pointPresenter = new PointPresenter(this._siteListElement, this._handleModeChange);
       pointPresenter.init(point);
-      this._pointPresenter.push(pointPresenter);
+      this._pointsPresenter.push(pointPresenter);
     });
   }
 
   _sortPoint(sortType) {
     switch (sortType) {
       case SortType.DAY:
-        this._points.day.sort(sortByDay);
+        this._points.sort(sortByDay);
+        break;
+      case SortType.TIME:
+        this._points.sort(sortByTime);
         break;
       case SortType.PRICE:
         this._points.sort(sortByPrice);
         break;
-      case SortType.TIME:
-        this._points.sort(sortByTime);
+      default:
+        this._points.sort(sortByDay);
         break;
     }
   }
@@ -70,16 +74,18 @@ export default class Route {
       return;
     }
 
+    this._currentSortType = sortType;
     this._sortPoint(sortType);
-    this._clearPoints();
-    this._renderPointsList();
+    this._clearPointsList();
+    this._renderPointsList(this._points);
   }
 
   _handleModeChange() {
-    Object.values(this._pointPresenter).forEach((presenter) => presenter.resetView());
+    Object.values(this._pointsPresenter).forEach((presenter) => presenter.resetView());
   }
 
-  _clearPoints() {
-    Object.values(this._pointPresenter).forEach((presenter) => presenter.resetView());
+  _clearPointsList() {
+    Object.values(this._pointsPresenter).forEach((presenter) => presenter.destroy());
+    this._pointsPresenter = [];
   }
 }

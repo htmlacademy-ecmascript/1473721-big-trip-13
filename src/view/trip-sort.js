@@ -47,6 +47,8 @@ class TripSortView extends AbstractView {
 
     evt.preventDefault();
     this._callback.sortTypeChange(evt.target.dataset.sortType);
+    document.querySelectorAll(`input[name="trip-sort"]`).forEach((element) => element.removeAttribute(`checked`));
+    document.querySelector(`input[value="${evt.target.dataset.sortType}"]`).toggleAttribute(`checked`);
   }
 
   setSortTypeChangeHandler(callback) {

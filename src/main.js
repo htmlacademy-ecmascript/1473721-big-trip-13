@@ -16,8 +16,9 @@ const tripControlsElement = mainElement.querySelector(`.trip-main__trip-controls
 const siteMainElement = document.querySelector(`.page-body__page-main`);
 const tripEvents = siteMainElement.querySelector(`.trip-events`);
 
-render(tripEvents, new TripEventListView());
-const siteListElement = siteMainElement.querySelector(`.trip-events__list`);
+const tripEventList = new TripEventListView();
+render(tripEvents, tripEventList);
+const siteListElement = tripEventList.getElement();
 const routePresenter = new RoutePresenter(siteListElement);
 routePresenter.init(points);
 render(mainElement, new TripInfoView(points), RenderPosition.AFTERBEGIN);

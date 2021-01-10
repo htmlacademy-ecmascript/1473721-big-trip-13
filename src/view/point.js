@@ -7,7 +7,13 @@ const createPoint = ({
   price = `0`,
   day,
   uberPrice,
-  favorite}) => {
+  favorite,
+  timeInHour,
+  timeOutHour,
+  timeInMinute,
+  timeOutMinute,
+  duration
+}) => {
 
   const getFavorite = (state) => {
     let result = ``;
@@ -25,11 +31,11 @@ const createPoint = ({
     <h3 class="event__title">${type} ${city}</h3>
     <div class="event__schedule">
       <p class="event__time">
-        <time class="event__start-time" datetime="2019-03-18T10:30">10:30</time>
+        <time class="event__start-time" datetime="2019-03-18T10:30">${timeInHour}:${timeInMinute}</time>
         &mdash;
-        <time class="event__end-time" datetime="2019-03-18T11:00">11:00</time>
+        <time class="event__end-time" datetime="2019-03-18T11:00">${timeOutHour}:${timeOutMinute}</time>
       </p>
-      <p class="event__duration">30M</p>
+      <p class="event__duration">${duration}M</p>
     </div>
     <p class="event__price">
       &euro;&nbsp;<span class="event__price-value">${price}</span>
