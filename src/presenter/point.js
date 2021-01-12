@@ -39,6 +39,7 @@ export default class Point {
 
     this._editComponent.setCancelClickEdit(() => {
       this._replaceFormToPoint();
+      // console.log(this._editComponent.reset(point));
       document.removeEventListener(`keydown`, this._onEscKeyDown);
     });
 
@@ -59,6 +60,7 @@ export default class Point {
   _onCancelClick(evt) {
     evt.preventDefault();
     this._replaceFormToPoint();
+    // this._editComponent.reset();
     document.removeEventListener(`keydown`, this._onEscKeyDown);
   }
 

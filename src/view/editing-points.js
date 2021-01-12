@@ -1,8 +1,16 @@
 import {getOffers} from "../utils/task.js";
-import {PointField} from "../mock/task.js";
-import AbstractView from "./abstract.js";
+import {PointField, getDescription} from "../mock/task.js";
+// import AbstractView from "./abstract.js";
+import Smart from "./smart.js";
+import {ucFirst} from "../utils/common.js";
+import {getOptions} from "../mock/task.js";
 
-const createEditingPointElement = ({type = PointField.TYPE_POINT.TAXI,
+import flatpickr from "flatpickr";
+import dayjs from "dayjs";
+
+import "../../node_modules/flatpickr/dist/flatpickr.min.css";
+
+const createEditingPointElement = ({type = PointField.TYPE_POINT_DICTIONARY.TAXI,
   city = ` `,
   dateIn = `18/03/2020 14:22`,
   dateOut = `19/03/2020 11:05`,
@@ -19,7 +27,7 @@ const createEditingPointElement = ({type = PointField.TYPE_POINT.TAXI,
         <img class="event__type-icon" width="17" height="17" src="img/icons/${type.toLowerCase()}.png"
           alt="Event type icon">
       </label>
-      <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+      <input class="event__type-toggle visually-hidden" id="event-type-toggle-1" type="checkbox">
 
       <div class="event__type-list">
         <fieldset class="event__type-group">
@@ -148,17 +156,79 @@ const createEditingPointElement = ({type = PointField.TYPE_POINT.TAXI,
 </li>`;
 };
 
-class EditPointView extends AbstractView {
+class EditPointView extends Smart {
   constructor(point) {
     super();
     this._point = point;
     this._element = null;
+    this._datepicker = null;
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formCancelClickHandler = this._formCancelClickHandler.bind(this);
+    this._typeToggleHandler = this._typeToggleHandler.bind(this);
+    this._endRoutToggleHandler = this._endRoutToggleHandler.bind(this);
+
+    this._setInnerHandlers();
   }
 
   getTemplate() {
     return createEditingPointElement(this._point);
+  }
+
+  _setDatepicker() {
+    if (this._datepicker) {
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
+
+    if (this._data.isDueDate) {
+      this._datepicker = flatpickr(
+          this.getElement().querySelector(`.event__input--time`),
+          {
+            // dateFormat: `j F`,
+            // defaultDate: this._data.dueDate,
+            onChange: this._dueDateChangeHandler
+          }
+      );
+    }
+  }
+
+  // _dueDateChangeHandler([userDate]) {
+
+  //   this.updateData({
+  //     dueDate: dayjs(userDate).hour(23).minute(59).second(59).toDate()
+  //   });
+  // }
+
+  reset(point) {
+    this.updateData({point});
+  }
+
+  _setInnerHandlers() {
+    this._typePoints = this.getElement().querySelectorAll(`.event__type-input`);
+    this._typePoints.forEach((typePoint) => typePoint.addEventListener(`change`, this._typeToggleHandler));
+    this.getElement().querySelector(`.event__input--destination`).addEventListener(`change`, this._endRoutToggleHandler);
+  }
+
+  _typeToggleHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      type: ucFirst(evt.target.value),
+      options: getOptions(evt.target.value.toUpperCase())
+    });
+  }
+
+  _endRoutToggleHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      city: evt.target.value,
+      description: getDescription()
+    });
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setCancelClickEdit(this._callback.cancelClick);
   }
 
   _formSubmitHandler(evt) {

@@ -42,6 +42,7 @@ export default class Route {
       render(this._siteListElement, new NoPointView());
     }
     this._renderPoints(points);
+    // console.log(this._pointsPresenter);
   }
 
   _renderPoints(points) {

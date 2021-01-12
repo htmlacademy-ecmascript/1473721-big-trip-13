@@ -2,7 +2,7 @@ import {PointField} from "../mock/task.js";
 import AbstractView from "./abstract.js";
 
 const createPoint = ({
-  type = PointField.TYPE_POINT.TAXI,
+  type = PointField.TYPE_POINT_DICTIONARY.TAXI,
   city = ` `,
   price = `0`,
   day,

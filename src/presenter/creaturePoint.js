@@ -1,4 +1,4 @@
-import {render} from "../utils/render.js";
+import {render, RenderPosition} from "../utils/render.js";
 import CreatePointView from "../view/creature-point.js";
 
 export default class Menu {
@@ -6,6 +6,6 @@ export default class Menu {
     this._point = point;
   }
   init(element) {
-    render(element, new CreatePointView(this._point));
+    render(element, new CreatePointView(this._point), RenderPosition.AFTERBEGIN);
   }
 }

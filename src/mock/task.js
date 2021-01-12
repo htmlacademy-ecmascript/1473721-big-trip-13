@@ -2,7 +2,7 @@ import {getRandomInteger} from "../utils/common.js";
 import {formDate} from "../utils/task.js";
 
 const PointField = {
-  TYPE_POINT: {
+  TYPE_POINT_DICTIONARY: {
     TAXI: `Taxi`,
     BUS: `Bus`,
     TRAIN: `Train`,
@@ -11,12 +11,25 @@ const PointField = {
     DRIVE: `Drive`,
     FLIGHT: `Flight`,
     CHEK_IN: `Check-in`,
-    SIGHTSEENH: `Sightseeing`,
-    RESTURAUNT: `Restaurant`
+    SIGHTSEEING: `Sightseeing`,
+    RESTAURANT: `Restaurant`
   },
+  TYPE_POINT: [`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Drive`, `Flight`, `Check_in`, `Sightseeing`, `Restaurant`],
   CITY_POINT: [`Gelendzhik`, `Moscow`, `St.Petersburg`, `Krasnodar`, `Sochi`, `Omsk`, `Rostov-on-Don`],
   DESCRIPTION_POINT: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`.split(`.`),
-  OPTIONS: [`Option1`, `Option2`, `Option3`, `Option4`]
+  // OPTIONS: [`Option1`, `Option2`, `Option3`, `Option4`]
+  OPTIONS: {
+    TAXI: [`Option1`, `Option2`],
+    BUS: [`Option3`, `Option4`],
+    TRAIN: [`Option5`, `Option6`],
+    SHIP: [`Option7`, `Option8`],
+    TRANSPORT: [`Option9`, `Option10`],
+    DRIVE: [`Option11`, `Option12`],
+    FLIGHT: [`Option13`, `Option14`],
+    CHEK_IN: [`Option15`, `Option16`],
+    SIGHTSEEING: [`Option17`, `Option18`],
+    RESTAURANT: [`Option19`, `Option20`]
+  }
 };
 
 const DefaultValue = {
@@ -54,9 +67,7 @@ const SortType = {
   PRICE: `sort-price`,
 };
 
-const getString = (arr, minValue) => {
-  return arr[getRandomInteger(minValue, arr.length - DefaultValue.FOR_THE_RIGHT_LENGTH)];
-};
+const getString = (arr, minValue) => arr[getRandomInteger(minValue, arr.length - DefaultValue.FOR_THE_RIGHT_LENGTH)];
 
 const getDescription = () => {
   let randomDescription = ``;
@@ -95,11 +106,15 @@ const getRandomTimeOutMinute = () => getRandomInteger(DefaultValue.MIN_TIME_VALU
 
 const getRandomDuration = () => getRandomInteger(DefaultValue.MIN_MINUTE, DefaultValue.MAX_MINUTE);
 
+const getOptions = (type) => PointField.OPTIONS[`${type}`];
+
 const generatePoint = () => {
+  const PointType = getString(PointField.TYPE_POINT, DefaultValue.MIN_RANDOM_VALUE);
   return {
-    type: getString(PointField.TYPE_POINT, DefaultValue.MIN_RANDOM_VALUE),
+    // type: getString(PointField.TYPE_POINT, DefaultValue.MIN_RANDOM_VALUE),
+    type: PointType,
     city: getString(PointField.CITY_POINT, DefaultValue.MIN_RANDOM_VALUE),
-    options: PointField.OPTIONS,
+    options: getOptions(PointType.toUpperCase()),
     description: getDescription(),
     photos: getRandomPhoto(),
     dateIn: getRandomDate(),
@@ -119,5 +134,7 @@ const generatePoint = () => {
 export {
   generatePoint,
   PointField,
-  SortType
+  SortType,
+  getOptions,
+  getDescription
 };
