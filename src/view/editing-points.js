@@ -16,24 +16,24 @@ const createEditingPointElement = ({type = PointType.TAXI,
   dateIn = `18/03/2020 14:22`,
   dateOut = `19/03/2020 11:05`,
   price = `0`,
-  options,
-  description = ``}, option) => {
-    // console.log(...option);
+  options: selectedOffers,
+  description = ``}, offers) => {
 
-  const createOffersList = (offers) => {
-    console.log(...offers.offers);
-    // let number = 0;
-    // const reducer = (element, offer) => element + `<div class="event__offer-selector">
-    // <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.title}-1" type="checkbox"
-    //   name="event-offer-${offer.title}" checked>
-    // <label class="event__offer-label" for="event-offer-${offer.title}-1">
-    //     <span class="event__offer-title">${offer.title}</span>
-    //     &plus;&euro;&nbsp;
-    //     <span class="event__offer-price">${offer.price}</span>
-    // </label>
-    // </div>`;
-    // let offersElement = ``;
-    // return offers.offers.reduce(reducer, offersElement);
+  const createOffersList = (selectedOffersArray, offersArray) => {
+    return offersArray.reduce((acc, offer) => {
+
+      const checked = selectedOffersArray.some((selectedOffer) => selectedOffer.title.toLowerCase() === offer.title.toLowerCase());
+      const checkedValue = checked ? checked : ``;
+
+      acc += `<div class="event__offer-selector">
+        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.title}-1" type="checkbox" name="event-offer-${offer.title}" ${checkedValue}>
+        <label class="event__offer-label" for="event-offer-${offer.title}-1">
+          <span class="event__offer-title">${offer.title}</span>
+          &plus;&euro;&nbsp;
+          <span class="event__offer-price">${offer.price}</span>
+        </label>
+      </div>`;
+    }, ``);
   };
 
   const createEventsTypeList = (events) => {
@@ -106,7 +106,7 @@ const createEditingPointElement = ({type = PointType.TAXI,
       <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
       <div class="event__available-offers">
-      ${createOffersList(...option)}
+      ${createOffersList(selectedOffers, offers)}
       </div>
     </section>
 
@@ -141,7 +141,13 @@ class EditPointView extends Smart {
   }
 
   getOffersByType() {
-    return this._allOffers.filter((offer) => offer.type === this._point.type.toLowerCase());
+    const offerByType = this._allOffers.find((offer) => offer.type === this._point.type.toLowerCase());
+
+    if (offerByType) {
+      return offerByType.offers;
+    }
+
+    return [];
   }
 
   _setDatepicker() {

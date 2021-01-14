@@ -120,7 +120,22 @@ const getRandomTimeOutMinute = () => getRandomInteger(DefaultValue.MIN_TIME_VALU
 
 const getRandomDuration = () => getRandomInteger(DefaultValue.MIN_MINUTE, DefaultValue.MAX_MINUTE);
 
-const getOptions = (type) => PointField.OPTIONS[`${type}`];
+const getOptions = () => {
+  return [
+    {
+      type: PointType.TAXI,
+      offers: [
+        {
+          "title": `Upgrade to a business class`,
+          "price": 120
+        }, {
+          "title": `Choose the radio station`,
+          "price": 60
+        }
+      ]
+    }
+  ];
+};
 
 const removeDash = (type) => type.replace(`_`, `-`);
 
@@ -155,10 +170,12 @@ const getOffers = () => {
 
 const generatePoint = () => {
   const pointType = getString(PointField.TYPE_POINT, DefaultValue.MIN_RANDOM_VALUE);
+  console.log(getOptions());
+  console.log(getOffers());
   return {
     type: removeDash(pointType),
     city: getString(PointField.CITY_POINT, DefaultValue.MIN_RANDOM_VALUE),
-    options: getOptions(pointType.toUpperCase()),
+    options: getOptions(),
     description: getDescription(),
     photos: getRandomPhoto(),
     dateIn: getRandomDate(),
