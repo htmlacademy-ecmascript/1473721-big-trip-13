@@ -1,5 +1,5 @@
-import {getOffers} from "../utils/task.js";
-import {PointField, getDescription} from "../mock/task.js";
+import {getOffers, getRandomInteger, ValueForRandom} from "../utils/task.js";
+import {getDescription, PointType, pointTypeResource} from "../mock/task.js";
 // import AbstractView from "./abstract.js";
 import Smart from "./smart.js";
 import {ucFirst} from "../utils/common.js";
@@ -10,13 +10,42 @@ import dayjs from "dayjs";
 
 import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 
-const createEditingPointElement = ({type = PointField.TYPE_POINT_DICTIONARY.TAXI,
+const createEditingPointElement = ({type = PointType.TAXI,
   city = ` `,
+  id = `1`,
   dateIn = `18/03/2020 14:22`,
   dateOut = `19/03/2020 11:05`,
   price = `0`,
   options,
-  description = ``}) => {
+  description = ``}, option) => {
+    // console.log(...option);
+
+  const createOffersList = (offers) => {
+    console.log(...offers.offers);
+    // let number = 0;
+    // const reducer = (element, offer) => element + `<div class="event__offer-selector">
+    // <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.title}-1" type="checkbox"
+    //   name="event-offer-${offer.title}" checked>
+    // <label class="event__offer-label" for="event-offer-${offer.title}-1">
+    //     <span class="event__offer-title">${offer.title}</span>
+    //     &plus;&euro;&nbsp;
+    //     <span class="event__offer-price">${offer.price}</span>
+    // </label>
+    // </div>`;
+    // let offersElement = ``;
+    // return offers.offers.reduce(reducer, offersElement);
+  };
+
+  const createEventsTypeList = (events) => {
+    const reducer = (element, event) => element + `<div class="event__type-item">
+        <input id="event-type-${event.toLowerCase()}-${id}" class="event__type-input  visually-hidden" type="radio"
+          name="event-type" value="${event.toLowerCase()}">
+        <label class="event__type-label  event__type-label--${event.toLowerCase()}" for="event-type-${event.toLowerCase()}-${id}">${event}</label>
+      </div>`;
+
+    let eventsElement = ``;
+    return events.reduce(reducer, eventsElement);
+  };
 
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -24,7 +53,7 @@ const createEditingPointElement = ({type = PointField.TYPE_POINT_DICTIONARY.TAXI
     <div class="event__type-wrapper">
       <label class="event__type  event__type-btn" for="event-type-toggle-1">
         <span class="visually-hidden">Choose event type</span>
-        <img class="event__type-icon" width="17" height="17" src="img/icons/${type.toLowerCase()}.png"
+        <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png"
           alt="Event type icon">
       </label>
       <input class="event__type-toggle visually-hidden" id="event-type-toggle-1" type="checkbox">
@@ -32,73 +61,7 @@ const createEditingPointElement = ({type = PointField.TYPE_POINT_DICTIONARY.TAXI
       <div class="event__type-list">
         <fieldset class="event__type-group">
           <legend class="visually-hidden">Event type</legend>
-
-          <div class="event__type-item">
-            <input id="event-type-taxi-1" class="event__type-input  visually-hidden" type="radio"
-              name="event-type" value="taxi">
-            <label class="event__type-label  event__type-label--taxi" for="event-type-taxi-1">Taxi</label>
-          </div>
-
-          <div class="event__type-item">
-            <input id="event-type-bus-1" class="event__type-input  visually-hidden" type="radio"
-              name="event-type" value="bus">
-            <label class="event__type-label  event__type-label--bus" for="event-type-bus-1">Bus</label>
-          </div>
-
-          <div class="event__type-item">
-            <input id="event-type-train-1" class="event__type-input  visually-hidden" type="radio"
-              name="event-type" value="train">
-            <label class="event__type-label  event__type-label--train"
-              for="event-type-train-1">Train</label>
-          </div>
-
-          <div class="event__type-item">
-            <input id="event-type-ship-1" class="event__type-input  visually-hidden" type="radio"
-              name="event-type" value="ship">
-            <label class="event__type-label  event__type-label--ship" for="event-type-ship-1">Ship</label>
-          </div>
-
-          <div class="event__type-item">
-            <input id="event-type-transport-1" class="event__type-input  visually-hidden" type="radio"
-              name="event-type" value="transport">
-            <label class="event__type-label  event__type-label--transport"
-              for="event-type-transport-1">Transport</label>
-          </div>
-
-          <div class="event__type-item">
-            <input id="event-type-drive-1" class="event__type-input  visually-hidden" type="radio"
-              name="event-type" value="drive">
-            <label class="event__type-label  event__type-label--drive"
-              for="event-type-drive-1">Drive</label>
-          </div>
-
-          <div class="event__type-item">
-            <input id="event-type-flight-1" class="event__type-input  visually-hidden" type="radio"
-              name="event-type" value="flight" checked>
-            <label class="event__type-label  event__type-label--flight"
-              for="event-type-flight-1">Flight</label>
-          </div>
-
-          <div class="event__type-item">
-            <input id="event-type-check-in-1" class="event__type-input  visually-hidden" type="radio"
-              name="event-type" value="check-in">
-            <label class="event__type-label  event__type-label--check-in"
-              for="event-type-check-in-1">Check-in</label>
-          </div>
-
-          <div class="event__type-item">
-            <input id="event-type-sightseeing-1" class="event__type-input  visually-hidden" type="radio"
-              name="event-type" value="sightseeing">
-            <label class="event__type-label  event__type-label--sightseeing"
-              for="event-type-sightseeing-1">Sightseeing</label>
-          </div>
-
-          <div class="event__type-item">
-            <input id="event-type-restaurant-1" class="event__type-input  visually-hidden" type="radio"
-              name="event-type" value="restaurant">
-            <label class="event__type-label  event__type-label--restaurant"
-              for="event-type-restaurant-1">Restaurant</label>
-          </div>
+          ${createEventsTypeList(Object.values(pointTypeResource))}
         </fieldset>
       </div>
     </div>
@@ -143,7 +106,7 @@ const createEditingPointElement = ({type = PointField.TYPE_POINT_DICTIONARY.TAXI
       <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
       <div class="event__available-offers">
-      ${getOffers(options)}
+      ${createOffersList(...option)}
       </div>
     </section>
 
@@ -157,11 +120,14 @@ const createEditingPointElement = ({type = PointField.TYPE_POINT_DICTIONARY.TAXI
 };
 
 class EditPointView extends Smart {
-  constructor(point) {
+  constructor(point, allOffers) {
     super();
     this._point = point;
     this._element = null;
     this._datepicker = null;
+
+    this._allOffers = allOffers;
+
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formCancelClickHandler = this._formCancelClickHandler.bind(this);
     this._typeToggleHandler = this._typeToggleHandler.bind(this);
@@ -171,7 +137,11 @@ class EditPointView extends Smart {
   }
 
   getTemplate() {
-    return createEditingPointElement(this._point);
+    return createEditingPointElement(this._point, this.getOffersByType());
+  }
+
+  getOffersByType() {
+    return this._allOffers.filter((offer) => offer.type === this._point.type.toLowerCase());
   }
 
   _setDatepicker() {

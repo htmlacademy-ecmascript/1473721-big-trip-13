@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import {getRandomInteger} from "./common.js";
 
-const ValueForRandom = {
+export const ValueForRandom = {
   ZERO: 0,
   HUNDRED: 100
 };

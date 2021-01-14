@@ -1,19 +1,33 @@
 import {getRandomInteger} from "../utils/common.js";
 import {formDate} from "../utils/task.js";
 
+const PointType = {
+  TAXI: `taxi`,
+  BUS: `bus`,
+  TRAIN: `train`,
+  SHIP: `ship`,
+  TRANSPORT: `transport`,
+  DRIVE: `drive`,
+  FLIGHT: `flight`,
+  CHEK_IN: `check-in`,
+  SIGHTSEEING: `sightseeing`,
+  RESTAURANT: `restaurant`
+};
+
+const pointTypeResource = {
+  [PointType.TAXI]: `Taxi`,
+  [PointType.BUS]: `Bus`,
+  [PointType.TRAIN]: `Train`,
+  [PointType.SHIP]: `Ship`,
+  [PointType.TRANSPORT]: `Transport`,
+  [PointType.DRIVE]: `Drive`,
+  [PointType.FLIGHT]: `Flight`,
+  [PointType.CHEK_IN]: `Check-in`,
+  [PointType.SIGHTSEEING]: `Sightseeing`,
+  [PointType.RESTAURANT]: `Restaurant`,
+};
+
 const PointField = {
-  TYPE_POINT_DICTIONARY: {
-    TAXI: `Taxi`,
-    BUS: `Bus`,
-    TRAIN: `Train`,
-    SHIP: `Ship`,
-    TRANSPORT: `Transport`,
-    DRIVE: `Drive`,
-    FLIGHT: `Flight`,
-    CHEK_IN: `Check-in`,
-    SIGHTSEEING: `Sightseeing`,
-    RESTAURANT: `Restaurant`
-  },
   TYPE_POINT: [`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Drive`, `Flight`, `Check_in`, `Sightseeing`, `Restaurant`],
   CITY_POINT: [`Gelendzhik`, `Moscow`, `St.Petersburg`, `Krasnodar`, `Sochi`, `Omsk`, `Rostov-on-Don`],
   DESCRIPTION_POINT: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`.split(`.`),
@@ -26,7 +40,7 @@ const PointField = {
     TRANSPORT: [`Option9`, `Option10`],
     DRIVE: [`Option11`, `Option12`],
     FLIGHT: [`Option13`, `Option14`],
-    CHEK_IN: [`Option15`, `Option16`],
+    CHECK_IN: [`Option15`, `Option16`],
     SIGHTSEEING: [`Option17`, `Option18`],
     RESTAURANT: [`Option19`, `Option20`]
   }
@@ -108,13 +122,43 @@ const getRandomDuration = () => getRandomInteger(DefaultValue.MIN_MINUTE, Defaul
 
 const getOptions = (type) => PointField.OPTIONS[`${type}`];
 
+const removeDash = (type) => type.replace(`_`, `-`);
+
+const getOffers = () => {
+  return [
+    {
+      type: PointType.TAXI,
+      offers: [
+        {
+          "title": `Upgrade to a business class`,
+          "price": 120
+        }, {
+          "title": `Choose the radio station`,
+          "price": 60
+        }
+      ]
+    },
+    {
+      type: PointType.BUS,
+      offers: [
+        {
+          "title": `Upgrade to a business class`,
+          "price": 120
+        }, {
+          "title": `Choose the radio station`,
+          "price": 60
+        }
+      ]
+    }
+  ];
+};
+
 const generatePoint = () => {
-  const PointType = getString(PointField.TYPE_POINT, DefaultValue.MIN_RANDOM_VALUE);
+  const pointType = getString(PointField.TYPE_POINT, DefaultValue.MIN_RANDOM_VALUE);
   return {
-    // type: getString(PointField.TYPE_POINT, DefaultValue.MIN_RANDOM_VALUE),
-    type: PointType,
+    type: removeDash(pointType),
     city: getString(PointField.CITY_POINT, DefaultValue.MIN_RANDOM_VALUE),
-    options: getOptions(PointType.toUpperCase()),
+    options: getOptions(pointType.toUpperCase()),
     description: getDescription(),
     photos: getRandomPhoto(),
     dateIn: getRandomDate(),
@@ -127,7 +171,8 @@ const generatePoint = () => {
     timeOutHour: getRandomTimeOutHour(),
     timeInMinute: getRandomTimeInMinute(),
     timeOutMinute: getRandomTimeOutMinute(),
-    duration: getRandomDuration()
+    duration: getRandomDuration(),
+    id: new Date().valueOf()
   };
 };
 
@@ -136,5 +181,8 @@ export {
   PointField,
   SortType,
   getOptions,
-  getDescription
+  getDescription,
+  PointType,
+  pointTypeResource,
+  getOffers
 };

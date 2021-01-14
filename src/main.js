@@ -1,4 +1,4 @@
-import {generatePoint} from "./mock/task.js";
+import {generatePoint, getOffers} from "./mock/task.js";
 import RoutePresenter from "./presenter/route.js";
 import {render, RenderPosition} from "./utils/render.js";
 import TripInfoView from "./view/trip-info.js";
@@ -11,6 +11,8 @@ import CreaturePointPresenter from "./presenter/creaturePoint.js";
 const POINT_COUNT = 3;
 const points = new Array(POINT_COUNT).fill().map(generatePoint);
 
+const allOffers = getOffers();
+
 const mainElement = document.querySelector(`.trip-main`);
 const tripControlsElement = mainElement.querySelector(`.trip-main__trip-controls`);
 const siteMainElement = document.querySelector(`.page-body__page-main`);
@@ -21,7 +23,7 @@ const tripEventList = new TripEventListView();
 render(tripEvents, tripEventList);
 const siteListElement = tripEventList.getElement();
 const routePresenter = new RoutePresenter(siteListElement);
-routePresenter.init(points);
+routePresenter.init(points, allOffers);
 render(mainElement, new TripInfoView(points), RenderPosition.AFTERBEGIN);
 render(tripControlsElement, new SiteMenuView(), RenderPosition.AFTERBEGIN);
 render(tripControlsElement, new HeaderMenuView(), RenderPosition.AFTERBEGIN);

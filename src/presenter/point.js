@@ -16,6 +16,7 @@ export default class Point {
   constructor(pointsContainer, changeMode) {
     this._pointsContainer = pointsContainer;
     this._changeMode = changeMode;
+    // this._allOffers = [];
 
     this._mode = Mode.DEFAULT;
 
@@ -25,9 +26,11 @@ export default class Point {
     this._replacePointToForm = this._replacePointToForm.bind(this);
   }
 
-  init(point) {
+  init(point, allOffers) {
     this._pointComponent = new PointView(point);
-    this._editComponent = new EditPointView(point);
+    this._editComponent = new EditPointView(point, allOffers);
+
+    // this._allOffers = allOffers;
 
     this._pointComponent.setEditClickHandler(this._replacePointToForm);
     this._pointComponent.setFavoritesClickHandler(this._pointComponent.toggleFavorite);

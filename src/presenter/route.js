@@ -19,8 +19,9 @@ export default class Route {
     this._handleModeChange = this._handleModeChange.bind(this);
   }
 
-  init(points) {
+  init(points, allOffers) {
     this._points = points.slice();
+    this._allOffers = allOffers;
     this._sortPoint(SortType.DAY);
     this._renderFilter();
     this._renderSort();
@@ -42,13 +43,12 @@ export default class Route {
       render(this._siteListElement, new NoPointView());
     }
     this._renderPoints(points);
-    // console.log(this._pointsPresenter);
   }
 
   _renderPoints(points) {
     points.forEach((point) => {
       const pointPresenter = new PointPresenter(this._siteListElement, this._handleModeChange);
-      pointPresenter.init(point);
+      pointPresenter.init(point, this._allOffers);
       this._pointsPresenter.push(pointPresenter);
     });
   }
