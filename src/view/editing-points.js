@@ -1,14 +1,46 @@
-import {getOffers, getRandomInteger, ValueForRandom} from "../utils/task.js";
+// import {getOffers, getRandomInteger, ValueForRandom} from "../utils/task.js";
 import {getDescription, PointType, pointTypeResource} from "../mock/task.js";
 // import AbstractView from "./abstract.js";
 import Smart from "./smart.js";
 import {ucFirst} from "../utils/common.js";
-import {getOptions} from "../mock/task.js";
+// import {getOptions} from "../mock/task.js";
 
 import flatpickr from "flatpickr";
-import dayjs from "dayjs";
+// import dayjs from "dayjs";
 
 import "../../node_modules/flatpickr/dist/flatpickr.min.css";
+
+const createOffersList = (selectedOffers, offers) => {
+  return offers.reduce((acc, offer) => {
+
+    const checked = selectedOffers.some((selectedOffer) => selectedOffer.title.toLowerCase() === offer.title.toLowerCase());
+    const checkedValue = checked ? `checked` : ``;
+
+    acc += `<div class="event__offer-selector">
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.title}-1" type="checkbox" name="event-offer-${offer.title}" ${checkedValue}>
+      <label class="event__offer-label" for="event-offer-${offer.title}-1">
+        <span class="event__offer-title">${offer.title}</span>
+        &plus;&euro;&nbsp;
+        <span class="event__offer-price">${offer.price}</span>
+      </label>
+    </div>`;
+
+    return acc;
+  }, ``);
+};
+
+const createEventsTypeList = (events, id) => {
+  return events.reduce((acc, event) => {
+
+    acc += `<div class="event__type-item">
+    <input id="event-type-${event.toLowerCase()}-${id}" class="event__type-input  visually-hidden" type="radio"
+      name="event-type" value="${event.toLowerCase()}">
+    <label class="event__type-label  event__type-label--${event.toLowerCase()}" for="event-type-${event.toLowerCase()}-${id}">${event}</label>
+    </div>`;
+
+    return acc;
+  }, ``);
+};
 
 const createEditingPointElement = ({type = PointType.TAXI,
   city = ` `,
@@ -18,34 +50,6 @@ const createEditingPointElement = ({type = PointType.TAXI,
   price = `0`,
   options: selectedOffers,
   description = ``}, offers) => {
-
-  const createOffersList = (selectedOffersArray, offersArray) => {
-    return offersArray.reduce((acc, offer) => {
-
-      const checked = selectedOffersArray.some((selectedOffer) => selectedOffer.title.toLowerCase() === offer.title.toLowerCase());
-      const checkedValue = checked ? checked : ``;
-
-      acc += `<div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.title}-1" type="checkbox" name="event-offer-${offer.title}" ${checkedValue}>
-        <label class="event__offer-label" for="event-offer-${offer.title}-1">
-          <span class="event__offer-title">${offer.title}</span>
-          &plus;&euro;&nbsp;
-          <span class="event__offer-price">${offer.price}</span>
-        </label>
-      </div>`;
-    }, ``);
-  };
-
-  const createEventsTypeList = (events) => {
-    const reducer = (element, event) => element + `<div class="event__type-item">
-        <input id="event-type-${event.toLowerCase()}-${id}" class="event__type-input  visually-hidden" type="radio"
-          name="event-type" value="${event.toLowerCase()}">
-        <label class="event__type-label  event__type-label--${event.toLowerCase()}" for="event-type-${event.toLowerCase()}-${id}">${event}</label>
-      </div>`;
-
-    let eventsElement = ``;
-    return events.reduce(reducer, eventsElement);
-  };
 
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -61,7 +65,7 @@ const createEditingPointElement = ({type = PointType.TAXI,
       <div class="event__type-list">
         <fieldset class="event__type-group">
           <legend class="visually-hidden">Event type</legend>
-          ${createEventsTypeList(Object.values(pointTypeResource))}
+          ${createEventsTypeList(Object.values(pointTypeResource), id)}
         </fieldset>
       </div>
     </div>
@@ -132,6 +136,11 @@ class EditPointView extends Smart {
     this._formCancelClickHandler = this._formCancelClickHandler.bind(this);
     this._typeToggleHandler = this._typeToggleHandler.bind(this);
     this._endRoutToggleHandler = this._endRoutToggleHandler.bind(this);
+    this._checkHandler = this._checkHandler.bind(this);
+
+    this._availableOffers = this.getElement().querySelectorAll(`.event__offer-checkbox`);
+
+    this._toggleCheckOffers = this._toggleCheckOffers.bind(this);
 
     this._setInnerHandlers();
   }
@@ -168,6 +177,32 @@ class EditPointView extends Smart {
     }
   }
 
+  _toggleCheckOffers() {
+    // this._availableOffers.forEach(offer =>)
+  }
+
+  setCheckHandler(callback) {
+    this._callback.checkChange = callback;
+    this.getElement().querySelectorAll(`.event__offer-label`).forEach((element) => element.addEventListener(`click`, this._checkHandler));
+  }
+
+  _checkHandler(evt) {
+    evt.preventDefault();
+    if (evt.target.tagName !== `LABEL`) {
+      return;
+    }
+    const title = evt.target.querySelector(`.event__offer-title`).innerHTML;
+    const offers = this._allOffers.find((element) => element.type === this._point.type.toLowerCase());
+    const offer = offers.offers.find((element) => element.title === title);
+    const index = this._point.options.indexOf(offer);
+    if (index === -1) {
+      this._point.options.push(offer);
+    } else {
+      this._point.options.splice(index, 1);
+    }
+    this.getElement().querySelectorAll(`.event__offer-label`).forEach((element) => element.removeEventListener(`click`, this._checkHandler));
+  }
+
   // _dueDateChangeHandler([userDate]) {
 
   //   this.updateData({
@@ -176,7 +211,7 @@ class EditPointView extends Smart {
   // }
 
   reset(point) {
-    this.updateData({point});
+    this.updateData(point);
   }
 
   _setInnerHandlers() {
@@ -189,7 +224,6 @@ class EditPointView extends Smart {
     evt.preventDefault();
     this.updateData({
       type: ucFirst(evt.target.value),
-      options: getOptions(evt.target.value.toUpperCase())
     });
   }
 
@@ -199,6 +233,21 @@ class EditPointView extends Smart {
       city: evt.target.value,
       description: getDescription()
     });
+  }
+
+  addOffersInPoint() {
+    console.log(this._point.options);
+    // console.log(this.getElement().querySelectorAll(`.event__offer-checkbox`).filter((offer) => offer.hasAttribute(`checked`) === `checked`));
+    // const pr = this.getElement().querySelectorAll(`.event__offer-checkbox`);
+    // let help = [];
+    // pr.forEach((p) => {
+    // if (p.hasAttribute(`checked`)) {
+    // help.push(p);
+    // }
+    // });
+    // console.log(help);
+    // debugger;
+    // pr.filter((p) => console.log(p.hasAttribute(`checked`) === `true`));
   }
 
   restoreHandlers() {
@@ -217,6 +266,11 @@ class EditPointView extends Smart {
     this._callback.cancelClick();
   }
 
+  _formKeyDownHandler(evt) {
+    evt.preventDefault();
+    this._callback.keyDown();
+  }
+
   setFormSubmitHandler(callback) {
     this._callback.formSubmit = callback;
     this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
@@ -224,7 +278,12 @@ class EditPointView extends Smart {
 
   setCancelClickEdit(callback) {
     this._callback.cancelClick = callback;
-    this.getElement().querySelector(`form`).querySelector(`.event__reset-btn`).addEventListener(`click`, this._formCancelClickHandler);
+    this.getElement().querySelector(`form`).addEventListener(`reset`, this._formCancelClickHandler);
+  }
+
+  setKeyDownHandler(callback) {
+    this.callback.keyDown = callback;
+    document.addEventListener(`keydown`, this._formKeyDownHandler);
   }
 }
 

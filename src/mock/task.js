@@ -120,19 +120,11 @@ const getRandomTimeOutMinute = () => getRandomInteger(DefaultValue.MIN_TIME_VALU
 
 const getRandomDuration = () => getRandomInteger(DefaultValue.MIN_MINUTE, DefaultValue.MAX_MINUTE);
 
-const getOptions = () => {
+const getOptions = (type) => {
   return [
     {
-      type: PointType.TAXI,
-      offers: [
-        {
-          "title": `Upgrade to a business class`,
-          "price": 120
-        }, {
-          "title": `Choose the radio station`,
-          "price": 60
-        }
-      ]
+      "title": `${type.toUpperCase()}1`,
+      "price": 120
     }
   ];
 };
@@ -145,11 +137,14 @@ const getOffers = () => {
       type: PointType.TAXI,
       offers: [
         {
-          "title": `Upgrade to a business class`,
+          "title": `TAXI1`,
           "price": 120
         }, {
-          "title": `Choose the radio station`,
+          "title": `TAXI2`,
           "price": 60
+        }, {
+          "title": `TAXI3`,
+          "price": 70
         }
       ]
     },
@@ -157,10 +152,98 @@ const getOffers = () => {
       type: PointType.BUS,
       offers: [
         {
-          "title": `Upgrade to a business class`,
+          "title": `BUS1`,
           "price": 120
         }, {
-          "title": `Choose the radio station`,
+          "title": `BUS2`,
+          "price": 60
+        }
+      ]
+    }, {
+      type: PointType.CHEK_IN,
+      offers: [
+        {
+          "title": `CHEK_IN1`,
+          "price": 120
+        }, {
+          "title": `CHEK_IN2`,
+          "price": 60
+        }
+      ]
+    }, {
+      type: PointType.DRIVE,
+      offers: [
+        {
+          "title": `DRIVE1`,
+          "price": 120
+        }, {
+          "title": `DRIVE2`,
+          "price": 60
+        }
+      ]
+    }, {
+      type: PointType.FLIGHT,
+      offers: [
+        {
+          "title": `FLIGHT1`,
+          "price": 120
+        }, {
+          "title": `FLIGHT2`,
+          "price": 60
+        }
+      ]
+    }, {
+      type: PointType.RESTAURANT,
+      offers: [
+        {
+          "title": `RESTAURANT1`,
+          "price": 120
+        }, {
+          "title": `RESTAURANT2`,
+          "price": 60
+        }
+      ]
+    }, {
+      type: PointType.SHIP,
+      offers: [
+        {
+          "title": `SHIP1`,
+          "price": 120
+        }, {
+          "title": `SHIP2`,
+          "price": 60
+        }
+      ]
+    }, {
+      type: PointType.SIGHTSEEING,
+      offers: [
+        {
+          "title": `SIGHTSEEING1`,
+          "price": 120
+        }, {
+          "title": `SIGHTSEEING2`,
+          "price": 60
+        }
+      ]
+    }, {
+      type: PointType.TRAIN,
+      offers: [
+        {
+          "title": `TRAIN1`,
+          "price": 120
+        }, {
+          "title": `TRAIN2`,
+          "price": 60
+        }
+      ]
+    }, {
+      type: PointType.TRANSPORT,
+      offers: [
+        {
+          "title": `TRANSPORT1`,
+          "price": 120
+        }, {
+          "title": `TRANSPORT2`,
           "price": 60
         }
       ]
@@ -169,13 +252,11 @@ const getOffers = () => {
 };
 
 const generatePoint = () => {
-  const pointType = getString(PointField.TYPE_POINT, DefaultValue.MIN_RANDOM_VALUE);
-  console.log(getOptions());
-  console.log(getOffers());
+  const pointType = removeDash(getString(PointField.TYPE_POINT, DefaultValue.MIN_RANDOM_VALUE));
   return {
-    type: removeDash(pointType),
+    type: pointType,
     city: getString(PointField.CITY_POINT, DefaultValue.MIN_RANDOM_VALUE),
-    options: getOptions(),
+    options: getOptions(pointType),
     description: getDescription(),
     photos: getRandomPhoto(),
     dateIn: getRandomDate(),

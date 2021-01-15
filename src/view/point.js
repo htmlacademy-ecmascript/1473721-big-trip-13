@@ -1,12 +1,32 @@
 import {PointType} from "../mock/task.js";
 import AbstractView from "./abstract.js";
 
+const createOffersList = (offers) => {
+  return offers.reduce((acc, offer) => {
+
+    acc += `<li class="event__offer">
+    <span class="event__offer-title">${offer.title}</span>
+    &plus;&euro;&nbsp;
+    <span class="event__offer-price">${offer.price}</span>
+  </li>`;
+
+    return acc;
+  }, ``);
+};
+
+const getFavorite = (state) => {
+  let result = ``;
+  // eslint-disable-next-line no-unused-expressions
+  state ? result = `event__favorite-btn--active` : result = ``;
+  return result;
+};
+
 const createPoint = ({
   type = PointType.TAXI,
   city = ` `,
   price = `0`,
   day,
-  uberPrice,
+  options,
   favorite,
   timeInHour,
   timeOutHour,
@@ -14,13 +34,6 @@ const createPoint = ({
   timeOutMinute,
   duration
 }) => {
-
-  const getFavorite = (state) => {
-    let result = ``;
-    // eslint-disable-next-line no-unused-expressions
-    state ? result = `event__favorite-btn--active` : result = ``;
-    return result;
-  };
 
   return `<li class="trip-events__item">
   <div class="event">
@@ -42,11 +55,7 @@ const createPoint = ({
     </p>
     <h4 class="visually-hidden">Offers:</h4>
     <ul class="event__selected-offers">
-      <li class="event__offer">
-        <span class="event__offer-title">Order Uber</span>
-        &plus;&euro;&nbsp;
-        <span class="event__offer-price">${uberPrice}</span>
-      </li>
+    ${createOffersList(options)}
     </ul>
     <button class="event__favorite-btn ${getFavorite(favorite)}" type="button">
       <span class="visually-hidden">Add to favorite</span>

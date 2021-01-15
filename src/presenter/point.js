@@ -22,11 +22,13 @@ export default class Point {
 
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
     this._onCancelClick = this._onCancelClick.bind(this);
+    this._onSaveClick = this._onSaveClick.bind(this);
     this._replaceFormToPoint = this._replaceFormToPoint.bind(this);
     this._replacePointToForm = this._replacePointToForm.bind(this);
   }
 
   init(point, allOffers) {
+    this._point = point;
     this._pointComponent = new PointView(point);
     this._editComponent = new EditPointView(point, allOffers);
 
@@ -34,48 +36,62 @@ export default class Point {
 
     this._pointComponent.setEditClickHandler(this._replacePointToForm);
     this._pointComponent.setFavoritesClickHandler(this._pointComponent.toggleFavorite);
-
-    this._editComponent.setFormSubmitHandler(() => {
-      this._replaceFormToPoint();
-      document.removeEventListener(`keydown`, this._onEscKeyDown);
-    });
-
-    this._editComponent.setCancelClickEdit(() => {
-      this._replaceFormToPoint();
-      // console.log(this._editComponent.reset(point));
-      document.removeEventListener(`keydown`, this._onEscKeyDown);
-    });
+    this._editComponent.setFormSubmitHandler(this._replaceFormToPoint);
+    this._editComponent.setCancelClickEdit(this._replaceFormToPoint);
 
     render(this._pointsContainer, this._pointComponent);
+  }
+
+  _removeEventListener() {
+    this._form = this._editComponent.getElement().querySelector(`form`);
+    document.removeEventListener(`keydown`, this._onEscKeyDown);
+    this._form.removeEventListener(`reset`, this._onCancelClick);
+    this._form.removeEventListener(`submit`, this._onSaveClick);
   }
 
   _onEscKeyDown(evt) {
     if (evt.key === KEY_VALUE.ESCAPE || evt.key === KEY_VALUE.ESC) {
       evt.preventDefault();
-      this._formComponent = this._editComponent.getElement().querySelector(`form`);
-      this._formButtonCancel = this._formComponent.querySelector(`.event__reset-btn`);
+      // this._removeEventListener();
+      this._editComponent.addOffersInPoint();
+      this._editComponent.reset(this._point);
       this._replaceFormToPoint();
-      document.removeEventListener(`keydown`, this._onEscKeyDown);
-      this._formButtonCancel.removeEventListener(`click`, this._onCancelClick);
     }
   }
 
   _onCancelClick(evt) {
     evt.preventDefault();
+    // this._removeEventListener();
+    this._editComponent.reset(this._point);
     this._replaceFormToPoint();
-    // this._editComponent.reset();
-    document.removeEventListener(`keydown`, this._onEscKeyDown);
+  }
+
+  _onSaveClick(evt) {
+    evt.preventDefault();
+    // this._removeEventListener();
+
+    this._editComponent.addOffersInPoint();
+    this._replaceFormToPoint();
   }
 
   _replacePointToForm() {
     this._pointsContainer.replaceChild(this._editComponent.getElement(), this._pointComponent.getElement());
+    this._editComponent.setCheckHandler();
+    this._form = this._editComponent.getElement().querySelector(`form`);
     document.addEventListener(`keydown`, this._onEscKeyDown);
+    this._form.addEventListener(`reset`, this._onCancelClick);
+    this._form.addEventListener(`submit`, this._onSaveClick);
     this._changeMode();
     this._mode = Mode.EDITING;
   }
 
+  // _help() {
+  //   console.log(`я тут`);
+  // }
+
   _replaceFormToPoint() {
     this._pointsContainer.replaceChild(this._pointComponent.getElement(), this._editComponent.getElement());
+    this._removeEventListener();
     this._mode = Mode.DEFAULT;
   }
 
