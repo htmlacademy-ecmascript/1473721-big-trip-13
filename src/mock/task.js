@@ -28,7 +28,18 @@ const pointTypeResource = {
 };
 
 const PointField = {
-  TYPE_POINT: [`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Drive`, `Flight`, `Check_in`, `Sightseeing`, `Restaurant`],
+  TYPE_POINT: [
+    PointType.BUS,
+    PointType.TAXI,
+    PointType.TRAIN,
+    PointType.SHIP,
+    PointType.TRANSPORT,
+    PointType.DRIVE,
+    PointType.FLIGHT,
+    PointType.CHEK_IN,
+    PointType.SIGHTSEEING,
+    PointType.RESTAURANT,
+  ],
   CITY_POINT: [`Gelendzhik`, `Moscow`, `St.Petersburg`, `Krasnodar`, `Sochi`, `Omsk`, `Rostov-on-Don`],
   DESCRIPTION_POINT: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`.split(`.`),
   // OPTIONS: [`Option1`, `Option2`, `Option3`, `Option4`]
@@ -91,6 +102,14 @@ const getDescription = () => {
   return randomDescription;
 };
 
+const getDescriptionPhoto = () => {
+  let randomDescription = ``;
+  for (let i = 0; i < getRandomInteger(1, 6); i++) {
+    randomDescription += `${PointField.DESCRIPTION_POINT[getRandomInteger(DefaultValue.MIN_RANDOM_VALUE, PointField.DESCRIPTION_POINT.length - DefaultValue.FOR_THE_RIGHT_LENGTH)]}.`;
+  }
+  return randomDescription;
+};
+
 const getRandomPhoto = () => {
   const photos = [];
   for (let i = 0; i < getRandomInteger(DefaultValue.MIN_COUNT_PHOTO, DefaultValue.MAX_COUNT_PHOTO); i++) {
@@ -119,6 +138,87 @@ const getRandomTimeInMinute = () => getRandomInteger(DefaultValue.MIN_TIME_VALUE
 const getRandomTimeOutMinute = () => getRandomInteger(DefaultValue.MIN_TIME_VALUE_MINUTE, DefaultValue.MAX_TIME_VALUE_MINUTE);
 
 const getRandomDuration = () => getRandomInteger(DefaultValue.MIN_MINUTE, DefaultValue.MAX_MINUTE);
+
+const getAllDestination = () => {
+  return [{
+    description: getDescription(),
+    name: `Gelendzhik`,
+    pictures: [
+      {
+        src: getRandomPhoto(),
+        description: getDescriptionPhoto(),
+      }
+    ]
+  }, {
+    description: getDescription(),
+    name: `Moscow`,
+    pictures: [
+      {
+        src: getRandomPhoto(),
+        description: getDescriptionPhoto(),
+      }
+    ]
+  }, {
+    description: getDescription(),
+    name: `St.Petersburg`,
+    pictures: [
+      {
+        src: getRandomPhoto(),
+        description: getDescriptionPhoto(),
+      }
+    ]
+  }, {
+    description: getDescription(),
+    name: `Krasnodar`,
+    pictures: [
+      {
+        src: getRandomPhoto(),
+        description: getDescriptionPhoto(),
+      }
+    ]
+  }, {
+    description: getDescription(),
+    name: `Sochi`,
+    pictures: [
+      {
+        src: getRandomPhoto(),
+        description: getDescriptionPhoto(),
+      }
+    ]
+  }, {
+    description: getDescription(),
+    name: `Omsk`,
+    pictures: [
+      {
+        src: getRandomPhoto(),
+        description: getDescriptionPhoto(),
+      }
+    ]
+  }, {
+    description: getDescription(),
+    name: `Rostov-on-Don`,
+    pictures: [
+      {
+        src: getRandomPhoto(),
+        description: getDescriptionPhoto(),
+      }
+    ]
+  }
+  ];
+};
+
+const destinations = getAllDestination();
+console.log(destinations);
+
+const getDestination = (name) => {
+  const destinationByName = destinations.find((destination) => destination.name === name);
+
+  if (destinationByName) {
+    return destinationByName;
+  }
+
+  return [];
+};
 
 const getOptions = (type) => {
   return [
@@ -253,12 +353,12 @@ const getOffers = () => {
 
 const generatePoint = () => {
   const pointType = removeDash(getString(PointField.TYPE_POINT, DefaultValue.MIN_RANDOM_VALUE));
+  const pointCity = getString(PointField.CITY_POINT, DefaultValue.MIN_RANDOM_VALUE);
   return {
     type: pointType,
-    city: getString(PointField.CITY_POINT, DefaultValue.MIN_RANDOM_VALUE),
+    city: pointCity,
     options: getOptions(pointType),
-    description: getDescription(),
-    photos: getRandomPhoto(),
+    destination: getDestination(pointCity),
     dateIn: getRandomDate(),
     dateOut: getRandomDate(),
     price: getRandomPrice(),
@@ -282,5 +382,6 @@ export {
   getDescription,
   PointType,
   pointTypeResource,
-  getOffers
+  getOffers,
+  destinations
 };

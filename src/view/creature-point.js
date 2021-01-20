@@ -9,7 +9,7 @@ const createPointElement = ({
   dateOut = `19/03/2020 11:05`,
   price = `0`,
   options,
-  description = ``,
+  destination,
   photos}) => {
 
   return `<li class="trip-events__item">
@@ -143,11 +143,11 @@ const createPointElement = ({
 
       <section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        <p class="event__destination-description">${description}</p>
+        <p class="event__destination-description">${destination.description}</p>
 
         <div class="event__photos-container">
           <div class="event__photos-tape">
-          ${getPhoto(photos)}
+          ${destination.pictures.src}
           </div>
         </div>
       </section>
