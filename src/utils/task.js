@@ -32,6 +32,6 @@ export const getOffers = (options) => {
 
 export const formDate = (value, format) => dayjs(value).format(format);
 
-export const sortByDay = (pointA, pointB) => dayjs(pointA.day).diff(dayjs(pointB.day));
+export const sortByDay = (pointA, pointB) => dayjs(pointA.dateFrom).diff(dayjs(pointB.dateFrom));
 export const sortByTime = (pointA, pointB) => pointA.duration - pointB.duration;
 export const sortByPrice = (pointA, pointB) => pointA.price - pointB.price;

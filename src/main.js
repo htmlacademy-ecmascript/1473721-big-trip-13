@@ -30,8 +30,8 @@ render(tripControlsElement, new SiteMenuView(), RenderPosition.AFTERBEGIN);
 render(tripControlsElement, new HeaderMenuView(), RenderPosition.AFTERBEGIN);
 
 newEventButton.addEventListener(`click`, () => {
-  const creaturePointPresenter = new CreaturePointPresenter(points[0]);
-  creaturePointPresenter.init(siteListElement);
+  const creaturePointPresenter = new CreaturePointPresenter(siteListElement);
+  creaturePointPresenter.init(points, allOffers, allDestinations);
 });
 
 // render(tripEvents, new TripInformationView(), RenderPosition.AFTERBEGIN);

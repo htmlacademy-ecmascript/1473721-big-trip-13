@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import {getRandomInteger} from "../utils/common.js";
 import {formDate} from "../utils/task.js";
 
@@ -42,19 +43,6 @@ const PointField = {
   ],
   CITY_POINT: [`Gelendzhik`, `Moscow`, `St.Petersburg`, `Krasnodar`, `Sochi`, `Omsk`, `Rostov-on-Don`],
   DESCRIPTION_POINT: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`.split(`.`),
-  // OPTIONS: [`Option1`, `Option2`, `Option3`, `Option4`]
-  OPTIONS: {
-    TAXI: [`Option1`, `Option2`],
-    BUS: [`Option3`, `Option4`],
-    TRAIN: [`Option5`, `Option6`],
-    SHIP: [`Option7`, `Option8`],
-    TRANSPORT: [`Option9`, `Option10`],
-    DRIVE: [`Option11`, `Option12`],
-    FLIGHT: [`Option13`, `Option14`],
-    CHECK_IN: [`Option15`, `Option16`],
-    SIGHTSEEING: [`Option17`, `Option18`],
-    RESTAURANT: [`Option19`, `Option20`]
-  }
 };
 
 const DefaultValue = {
@@ -92,6 +80,8 @@ const SortType = {
   PRICE: `sort-price`,
 };
 
+const date = new Date();
+
 const getString = (arr, minValue) => arr[getRandomInteger(minValue, arr.length - DefaultValue.FOR_THE_RIGHT_LENGTH)];
 
 const getDescription = () => {
@@ -119,7 +109,7 @@ const getRandomPhoto = () => {
   return photos;
 };
 
-const getRandomDate = () => formDate(`${getRandomInteger(DefaultValue.MIN_YEAR_VALUE, DefaultValue.MAX_YEAR_VALUE)}-${getRandomInteger(DefaultValue.MIN_MONTH_VALUE, DefaultValue.MAX_MONTH_VALUE)}-${getRandomInteger(DefaultValue.MIN_DAY_VALUE, DefaultValue.MAX_DAY_VALUE)}-${getRandomInteger(DefaultValue.MIN_HOUR_VALUE, DefaultValue.MAX_HOUR_VALUE)}:${getRandomInteger(DefaultValue.MIN_MINUTE_VALUE, DefaultValue.MAX_MINUTE_VALUE)}`, `DD/MM/YY HH:mm`);
+// const getRandomDate = () => formDate(`${getRandomInteger(DefaultValue.MIN_YEAR_VALUE, DefaultValue.MAX_YEAR_VALUE)}-${getRandomInteger(DefaultValue.MIN_MONTH_VALUE, DefaultValue.MAX_MONTH_VALUE)}-${getRandomInteger(DefaultValue.MIN_DAY_VALUE, DefaultValue.MAX_DAY_VALUE)}-${getRandomInteger(DefaultValue.MIN_HOUR_VALUE, DefaultValue.MAX_HOUR_VALUE)}:${getRandomInteger(DefaultValue.MIN_MINUTE_VALUE, DefaultValue.MAX_MINUTE_VALUE)}`, `DD/MM/YY HH:mm`);
 
 const getRandomDay = () => formDate(`${getRandomInteger(DefaultValue.MIN_YEAR_VALUE, DefaultValue.MAX_YEAR_VALUE)}-${getRandomInteger(DefaultValue.MIN_MONTH_VALUE, DefaultValue.MAX_MONTH_VALUE)}-${getRandomInteger(DefaultValue.MIN_DAY_VALUE, DefaultValue.MAX_DAY_VALUE)}`, `MMM D`);
 
@@ -128,16 +118,6 @@ const getRandomPrice = () => getRandomInteger(DefaultValue.MIN_PRICE_VALUE, Defa
 const getRandomUberPrice = () => getRandomInteger(DefaultValue.MIN_PRICE_VALUE, DefaultValue.MAX_PRICE_VALUE);
 
 const getFavoriteState = () => Math.random() >= DefaultValue.FOR_BOOLEAN_VALUE;
-
-const getRandomTimeInHour = () => getRandomInteger(DefaultValue.MIN_TIME_VALUE_HOUR, DefaultValue.MAX_TIME_VALUE_HOUR);
-
-const getRandomTimeOutHour = () => getRandomInteger(DefaultValue.MIN_TIME_VALUE_HOUR, DefaultValue.MAX_TIME_VALUE_HOUR);
-
-const getRandomTimeInMinute = () => getRandomInteger(DefaultValue.MIN_TIME_VALUE_MINUTE, DefaultValue.MAX_TIME_VALUE_MINUTE);
-
-const getRandomTimeOutMinute = () => getRandomInteger(DefaultValue.MIN_TIME_VALUE_MINUTE, DefaultValue.MAX_TIME_VALUE_MINUTE);
-
-const getRandomDuration = () => getRandomInteger(DefaultValue.MIN_MINUTE, DefaultValue.MAX_MINUTE);
 
 const getAllDestination = () => {
   return [{
@@ -208,7 +188,6 @@ const getAllDestination = () => {
 };
 
 const destinations = getAllDestination();
-console.log(destinations);
 
 const getDestination = (name) => {
   const destinationByName = destinations.find((destination) => destination.name === name);
@@ -351,25 +330,33 @@ const getOffers = () => {
   ];
 };
 
+const getRandomTime = () => `${getRandomInteger(3, 27)}:${getRandomInteger(1, 59)}:${getRandomInteger(0, 59)}`;
+
+const getRandomDate = () => `20${getRandomInteger(18, 21)}-${getRandomInteger(1, 12)}-${getRandomInteger(1, 59)}`;
+
+const getRandomDateFrom = () => dayjs(`${getRandomDate()}:${getRandomTime()}`).toISOString();
+
+const getRandomDateTo = () => dayjs(`${getRandomDate()}:${getRandomTime()}`).toISOString();
+
+const getDuration = (dateFrom, dateTo) => dayjs(dateTo).diff(dayjs(dateFrom), `d`);
+
 const generatePoint = () => {
   const pointType = removeDash(getString(PointField.TYPE_POINT, DefaultValue.MIN_RANDOM_VALUE));
   const pointCity = getString(PointField.CITY_POINT, DefaultValue.MIN_RANDOM_VALUE);
+  const dateFrom = getRandomDateFrom();
+  const dateTo = getRandomDateTo();
   return {
     type: pointType,
     city: pointCity,
     options: getOptions(pointType),
     destination: getDestination(pointCity),
-    dateIn: getRandomDate(),
-    dateOut: getRandomDate(),
+    dateFrom,
+    dateTo,
+    duration: getDuration(dateFrom, dateTo),
     price: getRandomPrice(),
     day: getRandomDay(),
     uberPrice: getRandomUberPrice(),
     favorite: getFavoriteState(),
-    timeInHour: getRandomTimeInHour(),
-    timeOutHour: getRandomTimeOutHour(),
-    timeInMinute: getRandomTimeInMinute(),
-    timeOutMinute: getRandomTimeOutMinute(),
-    duration: getRandomDuration(),
     id: new Date().valueOf()
   };
 };

@@ -20,10 +20,8 @@ const createTripFilterElement = () =>
   <button class="visually-hidden" type="submit">Accept filter</button>
 </form>`;
 
-class TripFilterView extends AbstractView {
+export default class TripFilterView extends AbstractView {
   getTemplate() {
     return createTripFilterElement();
   }
 }
-
-export default TripFilterView;

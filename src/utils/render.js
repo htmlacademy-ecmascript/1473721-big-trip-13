@@ -65,3 +65,5 @@ export const remove = (component) => {
   component.getElement().remove();
   component.removeElement();
 };
+
+export const getOfferId = (title, id) => `event-offer-${title}-${id}`;

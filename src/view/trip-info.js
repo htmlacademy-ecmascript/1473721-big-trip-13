@@ -35,7 +35,7 @@ const createTripInfoElement = (points) => {
 </section>`;
 };
 
-class TripInfoView extends AbstractView {
+export default class TripInfoView extends AbstractView {
   constructor(point) {
     super();
     this._point = point;
@@ -46,5 +46,3 @@ class TripInfoView extends AbstractView {
     return createTripInfoElement(this._point);
   }
 }
-
-export default TripInfoView;

@@ -1,5 +1,6 @@
 import {SortType} from "../mock/task.js";
 import {sortByDay, sortByPrice, sortByTime} from "../utils/task.js";
+import {updateItem} from "../utils/common.js";
 import {render} from "../utils/render.js";
 import TripFilterView from "../view/trip-filter.js";
 import TripSortView from "../view/trip-sort.js";
@@ -15,8 +16,12 @@ export default class Route {
     this._sortComponent = new TripSortView();
     this._filter = new TripFilterView();
 
+    this._pointComponent = null;
+    this._pointEditComponent = null;
+
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
+    this._handlePointChange = this._handlePointChange.bind(this);
   }
 
   init(points, allOffers, allDestinations) {
@@ -48,7 +53,7 @@ export default class Route {
 
   _renderPoints(points) {
     points.forEach((point) => {
-      const pointPresenter = new PointPresenter(this._siteListElement, this._handleModeChange);
+      const pointPresenter = new PointPresenter(this._siteListElement, this._handleModeChange, this._handlePointChange);
       pointPresenter.init(point, this._allOffers, this._allDestinations);
       this._pointsPresenter.push(pointPresenter);
     });
@@ -84,6 +89,11 @@ export default class Route {
 
   _handleModeChange() {
     Object.values(this._pointsPresenter).forEach((presenter) => presenter.resetView());
+  }
+
+  _handlePointChange(updatePoint) {
+    this._points = updateItem(this._points, updatePoint);
+    this._pointsPresenter.find((element) => element.getId() === updatePoint.id).init(updatePoint, this._allOffers, this._allDestinations);
   }
 
   _clearPointsList() {
