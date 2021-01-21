@@ -29,7 +29,7 @@ const createTripSortElement = () =>
   </div>
 </form>`;
 
-class TripSortView extends AbstractView {
+export default class TripSortView extends AbstractView {
   constructor() {
     super();
 
@@ -56,5 +56,3 @@ class TripSortView extends AbstractView {
     this.getElement().addEventListener(`click`, this._sortTypeChangeHandler);
   }
 }
-
-export default TripSortView;

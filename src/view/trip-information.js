@@ -17,10 +17,8 @@ const createTripInformationElement = () =>
   </div>
 </section>`;
 
-class TripInformationView extends AbstractView {
+export default class TripInformationView extends AbstractView {
   getTemplate() {
     return createTripInformationElement();
   }
 }
-
-export default TripInformationView;

@@ -6,10 +6,8 @@ const createMenuTemplate = () =>
       <a class="trip-tabs__btn" href="#">Stats</a>
     </nav>`;
 
-class SiteMenuView extends AbstractView {
+export default class SiteMenuView extends AbstractView {
   getTemplate() {
     return createMenuTemplate();
   }
 }
-
-export default SiteMenuView;
