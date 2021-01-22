@@ -79,6 +79,7 @@ export default class Menu {
     replace(this._pointComponent.getElement(), this._createComponent.getElement());
     document.removeEventListener(`keydown`, this._onEscKeyDown);
     // this._mode = Mode.DEFAULT;
+    console.log(`cvtyf`);
   }
 
 
