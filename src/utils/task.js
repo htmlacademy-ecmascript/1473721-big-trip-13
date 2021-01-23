@@ -1,5 +1,8 @@
 import dayjs from "dayjs";
+import duration from "dayjs/plugin/duration.js";
 import {getRandomInteger} from "./common.js";
+
+dayjs.extend(duration);
 
 export const ValueForRandom = {
   ZERO: 0,
@@ -35,3 +38,26 @@ export const formDate = (value, format) => dayjs(value).format(format);
 export const sortByDay = (pointA, pointB) => dayjs(pointA.dateFrom).diff(dayjs(pointB.dateFrom));
 export const sortByTime = (pointA, pointB) => pointA.duration - pointB.duration;
 export const sortByPrice = (pointA, pointB) => pointA.price - pointB.price;
+
+export const getDuration = (dateFrom, dateTo) => {
+  const diff = dayjs(dateTo).diff(dayjs(dateFrom));
+  const diffDuration = dayjs.duration(diff);
+
+  const days = diffDuration.days();
+  const hours = diffDuration.hours();
+  const minutes = diffDuration.minutes();
+
+  let durationToRender = ``;
+
+  if (days > 0) {
+    durationToRender += `${days}D `;
+  }
+  if (hours > 1) {
+    durationToRender += `${hours}H `;
+  }
+  if (minutes > 0) {
+    durationToRender += `${minutes}M`;
+  }
+
+  return durationToRender;
+};

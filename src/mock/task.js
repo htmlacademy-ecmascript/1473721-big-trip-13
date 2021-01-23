@@ -338,8 +338,6 @@ const getRandomDateFrom = () => dayjs(`${getRandomDate()}:${getRandomTime()}`).t
 
 const getRandomDateTo = () => dayjs(`${getRandomDate()}:${getRandomTime()}`).toISOString();
 
-const getDuration = (dateFrom, dateTo) => dayjs(dateTo).diff(dayjs(dateFrom), `d`);
-
 const generatePoint = () => {
   const pointType = removeDash(getString(PointField.TYPE_POINT, DefaultValue.MIN_RANDOM_VALUE));
   const pointCity = getString(PointField.CITY_POINT, DefaultValue.MIN_RANDOM_VALUE);
@@ -352,9 +350,8 @@ const generatePoint = () => {
     destination: getDestination(pointCity),
     dateFrom,
     dateTo,
-    duration: getDuration(dateFrom, dateTo),
     price: getRandomPrice(),
-    day: getRandomDay(),
+    // day: getRandomDay(),
     uberPrice: getRandomUberPrice(),
     favorite: getFavoriteState(),
     id: new Date().valueOf()
