@@ -206,8 +206,7 @@ export default class EditPointView extends Smart {
         {
           enableTime: true,
           dateFormat: `d/m/y H:i`,
-          // eslint-disable-next-line camelcase
-          time_24hr: true,
+          [`time_24hr`]: true,
           maxDate: this._point.dateTo,
           defaultDate: this._point.dateFrom,
           onChange: this._dateFromChangeHandler
@@ -217,8 +216,7 @@ export default class EditPointView extends Smart {
         this.getElement().querySelector(`input[name="event-end-time"]`),
         {
           enableTime: true,
-          // eslint-disable-next-line camelcase
-          time_24hr: true,
+          [`time_24hr`]: true,
           dateFormat: `d/m/y H:i`,
           minDate: this._point.dateFrom,
           defaultDate: this._point.dateTo,
