@@ -35,3 +35,22 @@ export const formDate = (value, format) => dayjs(value).format(format);
 export const sortByDay = (pointA, pointB) => dayjs(pointA.dateFrom).diff(dayjs(pointB.dateFrom));
 export const sortByTime = (pointA, pointB) => pointA.duration - pointB.duration;
 export const sortByPrice = (pointA, pointB) => pointA.price - pointB.price;
+
+export const getDuration = (dateFrom, dateTo) => {
+  const d = dayjs(dateTo).diff(dayjs(dateFrom));
+  const days = formDate(d, `D`) - 1;
+  const hours = formDate(d, `H`) - 3;
+  const minutes = formDate(d, `m`) + 1;
+  let durationToRender = ``;
+  if (days > 0) {
+    durationToRender += `${days}D `;
+  }
+  if (hours > 1) {
+    durationToRender += `${hours}H `;
+  }
+  if (minutes > 0) {
+    durationToRender += `${minutes}M`;
+  }
+
+  return durationToRender;
+};

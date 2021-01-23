@@ -1,6 +1,6 @@
 import {PointType} from "../mock/task.js";
 import AbstractView from "./abstract.js";
-import {formDate} from "../utils/task.js";
+import {formDate, getDuration} from "../utils/task.js";
 
 // const getDateTime = (date) => dayjs(`${date}`).format(`YYYY-MM-DD`);
 
@@ -31,8 +31,7 @@ const createPoint = ({
   options,
   favorite,
   dateFrom,
-  dateTo,
-  duration
+  dateTo
 }) => {
 
   return `<li class="trip-events__item">
@@ -48,7 +47,7 @@ const createPoint = ({
         &mdash;
         <time class="event__end-time" datetime="${formDate(dateTo, `YYYY-MM-DDTHH:mm`)}">${formDate(dateTo, `HH:mm`)}</time>
       </p>
-      <p class="event__duration">${duration}</p>
+      <p class="event__duration">${getDuration(dateFrom, dateTo)}</p>
     </div>
     <p class="event__price">
       &euro;&nbsp;<span class="event__price-value">${price}</span>
