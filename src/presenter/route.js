@@ -32,12 +32,24 @@ export default class Route {
     this._pointsModel.addObserver(this._handleModelEvent);
     this._filtersModel.addObserver(this._handleModelEvent);
 
+    // this.hide = this.hide.bind(this);
+    // this.show = this.show.bind(this);
+
     this._pointNewPresenter = new PointNewPresenter(this._sortComponent, this._handleViewAction, this._offersModel, this._destinationsModel);
   }
 
   init() {
     this._renderSort();
     this._renderPointsList();
+  }
+
+  hide() {
+    console.log(this._siteListElement);
+    this._siteListElement.hide();
+  }
+
+  show() {
+    this._siteListElement.show();
   }
 
   createPoint() {

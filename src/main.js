@@ -6,12 +6,13 @@ import TripInfoView from "./view/trip-info.js";
 import SiteMenuView from "./view/menu.js";
 import HeaderMenuView from "./view/create-header-for-menu.js";
 import TripEventListView from "./view/trip-event-list.js";
-// import TripInformationView from "./view/trip-information.js";
-import CreaturePointPresenter from "./presenter/creaturePoint.js";
+import TripInformationView from "./view/trip-information.js";
+// import CreaturePointPresenter from "./presenter/creaturePoint.js";
 import PointsModel from "./model/points.js";
 import OffersModel from "./model/offers.js";
 import DestinationsModel from "./model/destinations.js";
 import FilterModel from "./model/filter.js";
+import {MenuItem} from "./const.js";
 
 const POINT_COUNT = 3;
 
@@ -35,6 +36,9 @@ const tripEvents = siteMainElement.querySelector(`.trip-events`);
 const newEventButton = document.querySelector(`.trip-main__event-add-btn`);
 
 const tripEventList = new TripEventListView();
+const siteMenu = new SiteMenuView();
+const TripInformation = new TripInformationView();
+
 render(tripEvents, tripEventList);
 const siteListElement = tripEventList.getElement();
 const routePresenter = new RoutePresenter(siteListElement, pointsModel, offersModel, destinationsModel, filtersModel);
@@ -42,13 +46,42 @@ const filterPresenter = new FilterPresenter(tripControlsElement, filtersModel, p
 filterPresenter.init();
 routePresenter.init();
 render(mainElement, new TripInfoView(points), RenderPosition.AFTERBEGIN);
-render(tripControlsElement, new SiteMenuView(), RenderPosition.AFTERBEGIN);
+render(tripControlsElement, siteMenu, RenderPosition.AFTERBEGIN);
 render(tripControlsElement, new HeaderMenuView(), RenderPosition.AFTERBEGIN);
 
-newEventButton.addEventListener(`click`, (evt) => {
-  evt.preventDefault();
-  routePresenter.createPoint();
-});
+render(tripEvents, TripInformation);
+TripInformation.hide();
 
-// render(tripEvents, new TripInformationView(), RenderPosition.AFTERBEGIN);
+const handleSiteMenuClick = (menuItem) => {
+  switch (menuItem) {
+    case MenuItem.ADD_NEW_POINT:
+      // Скрыть статистику
+      // Показать доску
+      // Показать форму добавления новой задачи
+      // Убрать выделение с ADD NEW TASK после сохранения
+      break;
+    case MenuItem.TABLE:
+      // Показать доску
+      // Скрыть статистику
+      break;
+    case MenuItem.STATISTICS:
+      // Скрыть доску
+      // Показать статистику
+      break;
+  }
+};
+
+siteMenu.setMenuClickHandler(handleSiteMenuClick);
+
+// newEventButton.addEventListener(`click`, (evt) => {
+//   evt.preventDefault();
+//   routePresenter.createPoint();
+// });
+
+// siteMenu.getElement().querySelector(`a[type="stats"]`).addEventListener(`click`, showStats);
+
+// function showStats() {
+//   routePresenter.hide();
+//   TripInformation.show();
+// }
 // render(document.querySelector(`.trip-events`), new TripInformationView(), RenderPosition.AFTERBEGIN);

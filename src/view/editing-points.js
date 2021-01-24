@@ -1,7 +1,9 @@
+import he from "he";
 import {PointType, pointTypeResource, PointField} from "../mock/task.js";
 import Smart from "./smart.js";
 import {getOfferId} from "../utils/render.js";
 import {formDate} from "../utils/task.js";
+
 
 import flatpickr from "flatpickr";
 
@@ -149,6 +151,7 @@ export default class EditPointView extends Smart {
     this._offerClickHandler = this._offerClickHandler.bind(this);
     this._dateFromChangeHandler = this._dateFromChangeHandler.bind(this);
     this._dateToChangeHandler = this._dateToChangeHandler.bind(this);
+    this._priceChangeHandler = this._priceChangeHandler.bind(this);
 
     this._availableOffers = this.getElement().querySelectorAll(`.event__offer-checkbox`);
 
@@ -251,6 +254,7 @@ export default class EditPointView extends Smart {
     element.querySelectorAll(`.event__type-input`).forEach((typePoint) => typePoint.addEventListener(`change`, this._typeChangeHandler));
     element.querySelector(`.event__input--destination`).addEventListener(`change`, this._destinationChangeHandler);
     element.querySelectorAll(`.event__offer-checkbox`).forEach((item) => item.addEventListener(`change`, this._offerClickHandler));
+    element.querySelector(`.event__input--price`).addEventListener(`input`, this._priceChangeHandler);
   }
 
   _typeChangeHandler(evt) {
@@ -263,10 +267,21 @@ export default class EditPointView extends Smart {
 
   _destinationChangeHandler(evt) {
     evt.preventDefault();
-
     this.updateData({
       city: evt.target.value
     });
+  }
+
+  _priceChangeHandler(evt) {
+    evt.preventDefault();
+    const priceValue = parseInt(evt.target.value);
+    if (!isNaN(priceValue)) {
+      this.updateData({
+        price: priceValue
+      }, true);
+    } else {
+      evt.target.setCustomValidity(`Insert the number`);
+    }
   }
 
   restoreHandlers() {
@@ -298,7 +313,6 @@ export default class EditPointView extends Smart {
 
   _formDeleteClickHandler(evt) {
     evt.preventDefault();
-    // this._callback.deleteClick();
     this._callback.deleteClick(EditPointView.parse(this._point));
   }
 
@@ -311,6 +325,12 @@ export default class EditPointView extends Smart {
     evt.preventDefault();
     this._callback.keyDown();
   }
+
+  // setChangePriceHandler(callback) {
+  //   this._callback.priceChange = callback;
+  //   console.log(this.getElement().querySelector(`.event__input--price`));
+  //   this.getElement().querySelector(`.event__input--price`).addEventListener(`onchange`, this._priceChangeHandler);
+  // }
 
   setSubmitClickHandler(callback) {
     this._callback.submitClick = callback;

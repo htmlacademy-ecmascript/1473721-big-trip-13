@@ -7,6 +7,9 @@ export default class AbstractView {
     }
     this._element = null;
     this._callback = {};
+
+    this.hide = this.hide.bind(this);
+    this.show = this.show.bind(this);
   }
 
   getTemplate() {
@@ -19,6 +22,19 @@ export default class AbstractView {
     }
 
     return this._element;
+  }
+
+  show() {
+    // console.log(this._element.classList);
+    this._element.classList.remove(`visually-hidden`);
+  }
+
+  hide() {
+    // debugger;
+    // console.log(this._element);
+    // console.log(this._element.classList);
+    this._element.classList.add(`visually-hidden`);
+
   }
 
   removeElement() {
