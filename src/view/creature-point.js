@@ -52,21 +52,23 @@ const createDestinitionList = (cityes) => {
 };
 
 const getPictureList = (pictures) => {
-  return pictures.reduce((acc, picture) => {
+  if (pictures) {
+    return pictures.reduce((acc, picture) => {
 
-    acc += `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`;
+      acc += `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`;
 
-    return acc;
-  }, ``);
+      return acc;
+    }, ``);
+  }
 };
 
 const createNewPointElement = ({type = PointType.TAXI,
-  city = ` `,
+  city = ``,
   id = `1`,
   dateFrom,
   dateTo,
   price = `0`,
-  options: selectedOffers}, offers, destination) => {
+  options: selectedOffers}, offers, destination = null) => {
 
   return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
@@ -145,15 +147,16 @@ const createNewPointElement = ({type = PointType.TAXI,
 };
 
 export default class CreatePointView extends Smart {
-  constructor(point, allOffers, allDestinations) {
+  // constructor(point, allOffers, allDestinations) {
+  constructor(allOffers, allDestinations) {
     super();
-    this._point = point;
+    // this._point = point;
     this._element = null;
     this._datepickerFrom = null;
     this._datepickerTo = null;
 
-    this._allOffers = allOffers;
-    this._allDestinations = allDestinations;
+    this._allOffers = allOffers.getOffers();
+    this._allDestinations = allDestinations.getDestinations();
 
     this._formSubmitClickHandler = this._formSubmitClickHandler.bind(this);
     this._formCancelClickHandler = this._formCancelClickHandler.bind(this);

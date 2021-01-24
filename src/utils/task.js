@@ -9,6 +9,18 @@ export const ValueForRandom = {
   HUNDRED: 100
 };
 
+const ValueForDuuration = {
+  MIN_VALUE: 0,
+  VALUE_FOR_DIFF: 10
+};
+
+export const FilterType = {
+  EVERYTHING: `everything`,
+  FUTURE: `fututre`,
+  PAST: `past`
+};
+
+
 export const getPhoto = (photos) => {
   const reducer = (element, photo) => element + `<img class="event__photo" src="${photo}" alt="Event photo">`;
 
@@ -36,7 +48,7 @@ export const getOffers = (options) => {
 export const formDate = (value, format) => dayjs(value).format(format);
 
 export const sortByDay = (pointA, pointB) => dayjs(pointA.dateFrom).diff(dayjs(pointB.dateFrom));
-export const sortByTime = (pointA, pointB) => pointA.duration - pointB.duration;
+export const sortByTime = (pointA, pointB) => dayjs(pointA.dateTo).diff(dayjs(pointA.dateFrom)) - dayjs(pointB.dateTo).diff(dayjs(pointB.dateFrom));
 export const sortByPrice = (pointA, pointB) => pointA.price - pointB.price;
 
 export const getDuration = (dateFrom, dateTo) => {
@@ -47,16 +59,23 @@ export const getDuration = (dateFrom, dateTo) => {
   const hours = diffDuration.hours();
   const minutes = diffDuration.minutes();
 
+  const ifLessThenTen = (value) => {
+    if (value < ValueForDuuration.VALUE_FOR_DIFF) {
+      return `0${value}`;
+    }
+    return value;
+  };
+
   let durationToRender = ``;
 
-  if (days > 0) {
-    durationToRender += `${days}D `;
+  if (days > ValueForDuuration.MIN_VALUE) {
+    durationToRender += `${ifLessThenTen(days)}D `;
   }
-  if (hours > 1) {
-    durationToRender += `${hours}H `;
+  if (hours >= ValueForDuuration.MIN_VALUE) {
+    durationToRender += `${ifLessThenTen(hours)}H `;
   }
-  if (minutes > 0) {
-    durationToRender += `${minutes}M`;
+  if (minutes >= ValueForDuuration.MIN_VALUE) {
+    durationToRender += `${ifLessThenTen(minutes)}M`;
   }
 
   return durationToRender;

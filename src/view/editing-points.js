@@ -109,7 +109,8 @@ const createEditingPointElement = ({type = PointType.TAXI,
     </div>
 
     <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-    <button class="event__reset-btn" type="reset">Cancel</button>
+    <button class="event__reset-btn" type="reset">Delete</button>
+    <button class="event__rollup-btn" type="button">
   </header>
   <section class="event__details">
     <section class="event__section  event__section--offers">
@@ -130,18 +131,19 @@ const createEditingPointElement = ({type = PointType.TAXI,
 };
 
 export default class EditPointView extends Smart {
-  constructor(point, allOffers, allDestinations) {
+  constructor(point, offersModel, destinationsModel) {
     super();
     this._point = point;
     this._element = null;
     this._datepickerFrom = null;
     this._datepickerTo = null;
 
-    this._allOffers = allOffers;
-    this._allDestinations = allDestinations;
+    this._offersModel = offersModel;
+    this._destinationsModel = destinationsModel;
 
     this._formSubmitClickHandler = this._formSubmitClickHandler.bind(this);
     this._formCancelClickHandler = this._formCancelClickHandler.bind(this);
+    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
     this._offerClickHandler = this._offerClickHandler.bind(this);
@@ -159,7 +161,7 @@ export default class EditPointView extends Smart {
   }
 
   getOffersByType() {
-    const offerByType = this._allOffers.find((offer) => offer.type === this._point.type);
+    const offerByType = this._offersModel.getOffers().find((offer) => offer.type === this._point.type);
 
     if (offerByType) {
       return offerByType.offers;
@@ -169,7 +171,7 @@ export default class EditPointView extends Smart {
   }
 
   getDistinationByType() {
-    const destinitionByType = this._allDestinations.find((destination) => destination.name === this._point.city);
+    const destinitionByType = this._destinationsModel.getDestinations().find((destination) => destination.name === this._point.city);
 
     if (destinitionByType) {
       return destinitionByType;
@@ -254,8 +256,9 @@ export default class EditPointView extends Smart {
   _typeChangeHandler(evt) {
     evt.preventDefault();
     this.updateData({
-      type: evt.target.value
+      type: evt.target.value,
     });
+    this._offerClickHandler();
   }
 
   _destinationChangeHandler(evt) {
@@ -269,6 +272,7 @@ export default class EditPointView extends Smart {
   restoreHandlers() {
     this._setInnerHandlers();
     this.setSubmitClickHandler(this._callback.submitClick);
+    this.setDeleteClickHandler(this._callback.deleteClick);
     this.setCancelClickHandler(this._callback.cancelClick);
     this._setDatepicker();
   }
@@ -278,9 +282,24 @@ export default class EditPointView extends Smart {
     return data;
   }
 
+  removeElement() {
+    super.removeElement();
+
+    if (this._datepicker) {
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
+  }
+
   _formSubmitClickHandler(evt) {
     evt.preventDefault();
     this._callback.submitClick(EditPointView.parse(this._point));
+  }
+
+  _formDeleteClickHandler(evt) {
+    evt.preventDefault();
+    // this._callback.deleteClick();
+    this._callback.deleteClick(EditPointView.parse(this._point));
   }
 
   _formCancelClickHandler(evt) {
@@ -298,9 +317,14 @@ export default class EditPointView extends Smart {
     this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitClickHandler);
   }
 
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector(`form`).addEventListener(`reset`, this._formDeleteClickHandler);
+  }
+
   setCancelClickHandler(callback) {
     this._callback.cancelClick = callback;
-    this.getElement().querySelector(`form`).addEventListener(`reset`, this._formCancelClickHandler);
+    this.getElement().querySelector(`form`).querySelector(`.event__rollup-btn`).addEventListener(`click`, this._formCancelClickHandler);
   }
 
   setKeyDownHandler(callback) {
