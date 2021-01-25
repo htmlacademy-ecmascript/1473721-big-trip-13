@@ -31,6 +31,7 @@ export default class Point {
     this._onDeleteClick = this._onDeleteClick.bind(this);
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
     this._onSaveClick = this._onSaveClick.bind(this);
+    this._onFavoriteClick = this._onFavoriteClick.bind(this);
   }
 
   // init(point, offersModel, allDestinations) {
@@ -45,6 +46,7 @@ export default class Point {
     this._editComponent = new EditPointView(point, this._offersModel, this._destinations);
 
     this._pointComponent.setEditClickHandler(this._onEditClick);
+    this._pointComponent.setFavoritesClickHandler(this._onFavoriteClick);
     this._editComponent.setDeleteClickHandler(this._onDeleteClick);
     this._editComponent.setSubmitClickHandler(this._onSaveClick);
     this._editComponent.setCancelClickHandler(this._onCancelClick);
@@ -101,6 +103,14 @@ export default class Point {
 
   _onCloseClick() {
     this._replaceFormToPoint();
+  }
+
+  _onFavoriteClick(point) {
+    this._changeData(
+        UserAction.UPDATE_POINT,
+        UpdateType.PATCH,
+        point
+    );
   }
 
   _replacePointToForm() {

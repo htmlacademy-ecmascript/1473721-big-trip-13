@@ -10,6 +10,7 @@ import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 const createOffersList = (selectedOffers, offers, id) => {
   return offers.reduce((acc, {title, price}) => {
 
+    debugger;
     const checked = selectedOffers.some((selectedOffer) => selectedOffer.title.toLowerCase() === title.toLowerCase());
     const checkedValue = checked ? `checked` : ``;
     const offerId = getOfferId(title, id);
@@ -59,6 +60,8 @@ const getPictureList = (pictures) => {
 
       return acc;
     }, ``);
+  } else {
+    return null;
   }
 };
 
@@ -146,7 +149,7 @@ const createNewPointElement = ({type = PointType.TAXI,
   </li>`;
 };
 
-export default class CreatePointView extends Smart {
+export default class EditPointView extends Smart {
   // constructor(point, allOffers, allDestinations) {
   constructor(allOffers, allDestinations) {
     super();
@@ -173,6 +176,7 @@ export default class CreatePointView extends Smart {
   }
 
   getTemplate() {
+    debugger;
     return createNewPointElement(this._point, this.getOffersByType(), this.getDistinationByType());
   }
 
@@ -292,7 +296,7 @@ export default class CreatePointView extends Smart {
 
   _formSubmitClickHandler(evt) {
     evt.preventDefault();
-    this._callback.submitClick(CreatePointView.parse(this._point));
+    this._callback.submitClick(EditPointView.parse(this._point));
   }
 
   _formCancelClickHandler(evt) {

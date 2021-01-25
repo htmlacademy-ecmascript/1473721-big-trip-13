@@ -1,5 +1,6 @@
 import {SortType, UpdateType, UserAction} from "../mock/task.js";
-import {sortByDay, sortByPrice, sortByTime, FilterType} from "../utils/task.js";
+// import {sortByDay, sortByPrice, sortByTime, FilterType} from "../utils/task.js";
+import {sortByDay, sortByPrice, sortByTime} from "../utils/task.js";
 // import {updateItem} from "../utils/common.js";
 import {render} from "../utils/render.js";
 // import TripFilterView from "../view/trip-filter.js";
@@ -35,7 +36,7 @@ export default class Route {
     // this.hide = this.hide.bind(this);
     // this.show = this.show.bind(this);
 
-    this._pointNewPresenter = new PointNewPresenter(this._sortComponent, this._handleViewAction, this._offersModel, this._destinationsModel);
+    this._pointNewPresenter = new PointNewPresenter(this._siteListElement, this._handleViewAction, this._offersModel, this._destinationsModel);
   }
 
   init() {
@@ -44,7 +45,6 @@ export default class Route {
   }
 
   hide() {
-    console.log(this._siteListElement);
     this._siteListElement.hide();
   }
 
@@ -52,10 +52,11 @@ export default class Route {
     this._siteListElement.show();
   }
 
-  createPoint() {
-    this._currentSortType = SortType.DAY;
-    this._filtersModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this._pointNewPresenter.init(this._pointsModel);
+  createPoint(callback) {
+    this._pointNewPresenter.init(callback);
+    // this._currentSortType = SortType.DAY;
+    // this._filtersModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    // this._pointNewPresenter.init(this._pointsModel);
   }
 
   _getPoints() {

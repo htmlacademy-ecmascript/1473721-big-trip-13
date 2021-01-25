@@ -1,4 +1,3 @@
-import he from "he";
 import {PointType, pointTypeResource, PointField} from "../mock/task.js";
 import Smart from "./smart.js";
 import {getOfferId} from "../utils/render.js";
@@ -106,7 +105,7 @@ const createEditingPointElement = ({type = PointType.TAXI,
         <span class="visually-hidden">Price</span>
         &euro;
       </label>
-      <input class="event__input  event__input--price" id="event-price-${id}" type="text" name="event-price"
+      <input class="event__input  event__input--price" id="event-price-${id}" type="number" name="event-price"
         value="${price}">
     </div>
 
@@ -252,7 +251,7 @@ export default class EditPointView extends Smart {
     const element = this.getElement();
 
     element.querySelectorAll(`.event__type-input`).forEach((typePoint) => typePoint.addEventListener(`change`, this._typeChangeHandler));
-    element.querySelector(`.event__input--destination`).addEventListener(`change`, this._destinationChangeHandler);
+    element.querySelector(`.event__input--destination`).addEventListener(`input`, this._destinationChangeHandler);
     element.querySelectorAll(`.event__offer-checkbox`).forEach((item) => item.addEventListener(`change`, this._offerClickHandler));
     element.querySelector(`.event__input--price`).addEventListener(`input`, this._priceChangeHandler);
   }
@@ -267,21 +266,20 @@ export default class EditPointView extends Smart {
 
   _destinationChangeHandler(evt) {
     evt.preventDefault();
-    this.updateData({
-      city: evt.target.value
+    this._destinationsModel.getDestinations().forEach((element) => {
+      if (element.name.includes(evt.target.value)) {
+        this.updateData({
+          city: element.name
+        }, true);
+      }
     });
   }
 
   _priceChangeHandler(evt) {
     evt.preventDefault();
-    const priceValue = parseInt(evt.target.value);
-    if (!isNaN(priceValue)) {
-      this.updateData({
-        price: priceValue
-      }, true);
-    } else {
-      evt.target.setCustomValidity(`Insert the number`);
-    }
+    this.updateData({
+      price: evt.target.value
+    }, true);
   }
 
   restoreHandlers() {
@@ -299,7 +297,6 @@ export default class EditPointView extends Smart {
 
   removeElement() {
     super.removeElement();
-
     if (this._datepicker) {
       this._datepicker.destroy();
       this._datepicker = null;
@@ -325,12 +322,6 @@ export default class EditPointView extends Smart {
     evt.preventDefault();
     this._callback.keyDown();
   }
-
-  // setChangePriceHandler(callback) {
-  //   this._callback.priceChange = callback;
-  //   console.log(this.getElement().querySelector(`.event__input--price`));
-  //   this.getElement().querySelector(`.event__input--price`).addEventListener(`onchange`, this._priceChangeHandler);
-  // }
 
   setSubmitClickHandler(callback) {
     this._callback.submitClick = callback;

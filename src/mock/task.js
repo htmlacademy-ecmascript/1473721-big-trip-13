@@ -358,7 +358,8 @@ const generatePoint = () => {
     price: getRandomPrice(),
     uberPrice: getRandomUberPrice(),
     favorite: getFavoriteState(),
-    id: new Date().valueOf()
+    // id: new Date().valueOf() * Math.random()
+    id: Date.now() + parseInt(Math.random() * 10000, 10)
   };
 };
 

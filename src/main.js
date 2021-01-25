@@ -1,6 +1,7 @@
-import {generatePoint, getOffers, destinations} from "./mock/task.js";
+import {generatePoint, getOffers, destinations, UpdateType} from "./mock/task.js";
 import RoutePresenter from "./presenter/route.js";
 import FilterPresenter from "./presenter/filter.js";
+// import {remove, render, RenderPosition} from "./utils/render.js";
 import {render, RenderPosition} from "./utils/render.js";
 import TripInfoView from "./view/trip-info.js";
 import SiteMenuView from "./view/menu.js";
@@ -13,6 +14,7 @@ import OffersModel from "./model/offers.js";
 import DestinationsModel from "./model/destinations.js";
 import FilterModel from "./model/filter.js";
 import {MenuItem} from "./const.js";
+import {FilterType} from "./utils/task.js";
 
 const POINT_COUNT = 3;
 
@@ -33,14 +35,16 @@ const mainElement = document.querySelector(`.trip-main`);
 const tripControlsElement = mainElement.querySelector(`.trip-main__trip-controls`);
 const siteMainElement = document.querySelector(`.page-body__page-main`);
 const tripEvents = siteMainElement.querySelector(`.trip-events`);
-const newEventButton = document.querySelector(`.trip-main__event-add-btn`);
+// const newEventButton = document.querySelector(`.trip-main__event-add-btn`);
 
 const tripEventList = new TripEventListView();
+tripEventList.init();
 const siteMenu = new SiteMenuView();
-const TripInformation = new TripInformationView();
+// const TripInformation = new TripInformationView();
 
 render(tripEvents, tripEventList);
-const siteListElement = tripEventList.getElement();
+// const siteListElement = tripEventList.getElement();
+const siteListElement = tripEventList;
 const routePresenter = new RoutePresenter(siteListElement, pointsModel, offersModel, destinationsModel, filtersModel);
 const filterPresenter = new FilterPresenter(tripControlsElement, filtersModel, pointsModel);
 filterPresenter.init();
@@ -49,24 +53,37 @@ render(mainElement, new TripInfoView(points), RenderPosition.AFTERBEGIN);
 render(tripControlsElement, siteMenu, RenderPosition.AFTERBEGIN);
 render(tripControlsElement, new HeaderMenuView(), RenderPosition.AFTERBEGIN);
 
-render(tripEvents, TripInformation);
-TripInformation.hide();
+// render(tripEvents, TripInformation);
+// TripInformation.hide();
+
+const handlePointNewFormClose = () => {
+  // siteMenu.getElement().querySelector(`[type=${MenuItem.TABLE}]`).classList.add(`trip-tabs__btn--active`);
+  // siteMenu.setMenuItem(MenuItem.TABLE);
+};
+
+let statisticsComponent = new TripInformationView(pointsModel.getPoints());
+statisticsComponent.init();
 
 const handleSiteMenuClick = (menuItem) => {
   switch (menuItem) {
     case MenuItem.ADD_NEW_POINT:
-      // Скрыть статистику
-      // Показать доску
-      // Показать форму добавления новой задачи
-      // Убрать выделение с ADD NEW TASK после сохранения
+      filtersModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+      statisticsComponent.hide();
+      routePresenter.show();
+      routePresenter.createPoint(handlePointNewFormClose);
       break;
     case MenuItem.TABLE:
-      // Показать доску
-      // Скрыть статистику
+      statisticsComponent.hide();
+      routePresenter.show();
       break;
     case MenuItem.STATISTICS:
-      // Скрыть доску
-      // Показать статистику
+      routePresenter.hide();
+      statisticsComponent.show();
+      render(tripEvents, statisticsComponent);
+      break;
+    default:
+      statisticsComponent.hide();
+      routePresenter.show();
       break;
   }
 };

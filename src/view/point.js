@@ -1,8 +1,7 @@
 import {PointType} from "../mock/task.js";
-import AbstractView from "./abstract.js";
+// import AbstractView from "./abstract.js";
 import {formDate, getDuration} from "../utils/task.js";
-
-// const getDateTime = (date) => dayjs(`${date}`).format(`YYYY-MM-DD`);
+import Smart from "./smart.js";
 
 const createOffersList = (offers) => {
   return offers.reduce((acc, offer) => {
@@ -17,11 +16,15 @@ const createOffersList = (offers) => {
   }, ``);
 };
 
-const getFavorite = (state) => {
-  let result = ``;
-  // eslint-disable-next-line no-unused-expressions
-  state ? result = `event__favorite-btn--active` : result = ``;
-  return result;
+// const getFavorite = (state) => {
+//   let result = ``;
+//   // eslint-disable-next-line no-unused-expressions
+//   state ? result = `event__favorite-btn--active` : result = ``;
+//   return result;
+// };
+
+const isFavorite = (favorite) => {
+  return favorite ? `event__favorite-btn--active` : ``;
 };
 
 const createPoint = ({
@@ -56,7 +59,7 @@ const createPoint = ({
     <ul class="event__selected-offers">
     ${createOffersList(options)}
     </ul>
-    <button class="event__favorite-btn ${getFavorite(favorite)}" type="button">
+    <button class="event__favorite-btn ${isFavorite(favorite)}" type="button">
       <span class="visually-hidden">Add to favorite</span>
       <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
         <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"/>
@@ -69,7 +72,7 @@ const createPoint = ({
 </li>`;
 };
 
-export default class PointView extends AbstractView {
+export default class PointView extends Smart {
   constructor(point) {
     super();
     this._point = point;
@@ -94,19 +97,26 @@ export default class PointView extends AbstractView {
     this._callback.editClick();
   }
 
+  _favoriteClickHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      favorite: this._point.favorite ? false : true
+    });
+    this._callback.favoriteClick(this._point);
+  }
+
   setEditClickHandler(callback) {
     this._callback.editClick = callback;
     this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._editClickHandler);
   }
 
-  _favoriteClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.favoriteClick();
-    this.getElement().querySelector(`.event__favorite-btn`).classList.toggle(`event__favorite-btn--active`);
-  }
-
   setFavoritesClickHandler(callback) {
     this._callback.favoriteClick = callback;
     this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, this._favoriteClickHandler);
+  }
+
+  restoreHandlers() {
+    this.setEditClickHandler(this._callback.editClick);
+    this.setFavoritesClickHandler(this._callback.favoriteClick);
   }
 }

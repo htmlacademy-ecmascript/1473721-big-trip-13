@@ -1,15 +1,17 @@
-import AbstractView from "./abstract.js";
+// import AbstractView from "./abstract.js";
+import Abstract from "./abstract.js";
 
 const createMenuTemplate = () =>
   `<nav class="trip-controls__trip-tabs  trip-tabs">
-      <a class="trip-tabs__btn  trip-tabs__btn--active" type="table" href="#">Table</a>
-      <a class="trip-tabs__btn" href="#" type="stats">Stats</a>
+      <a class="trip-tabs__btn" data-type="TABLE" href="#">Table</a>
+      <a class="trip-tabs__btn" href="#" data-type="STATISTICS">Stats</a>
     </nav>`;
 
-export default class SiteMenuView extends AbstractView {
+export default class SiteMenuView extends Abstract {
   constructor() {
     super();
     this._menuClickHandler = this._menuClickHandler.bind(this);
+    this._menuLinks = this.getElement().querySelectorAll(`.trip-tabs__btn`);
   }
 
   getTemplate() {
@@ -18,22 +20,26 @@ export default class SiteMenuView extends AbstractView {
 
   _menuClickHandler(evt) {
     evt.preventDefault();
-    this._callback.menuClick(evt.target.value);
+    this._menuLinks.forEach((element) => element.classList.remove(`trip-tabs__btn--active`));
+    evt.target.classList.add(`trip-tabs__btn--active`);
+    this._callback.menuClick(evt.target.dataset.type);
   }
 
   setMenuClickHandler(callback) {
     this._callback.menuClick = callback;
-    this.getElement().addEventListener(`click`, this._menuClickHandler);
+    this._menuLinks.forEach((element) => element.addEventListener(`click`, this._menuClickHandler));
+    document.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, this._menuClickHandler);
   }
 
   setMenuItem(menuItem) {
-    console.log(menuItem);
-    const items = this.getElement().querySelectorAll(`.trip-tabs__btn`);
-    items.forEach((item) => {
-      if (item.classList.contains(`trip-tabs__btn--active`)) {
-        console.log(`ghbdtn`);
-      }
-    });
+    this._p = menuItem;
+    // console.log(menuItem);
+    // const items = this.getElement().querySelectorAll(`.trip-tabs__btn`);
+    // items.forEach((item) => {
+    //   if (item.classList.contains(`trip-tabs__btn--active`)) {
+    //     console.log(`ghbdtn`);
+    //   }
+    // });
 
     // if (item.classList.contains(`trip-tabs__btn--active`)) {
     //   item.checked = true;

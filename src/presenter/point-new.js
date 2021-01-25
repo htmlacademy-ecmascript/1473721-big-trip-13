@@ -2,7 +2,7 @@
 // import {generateId} from "../mock/task.js";
 import {remove, render, RenderPosition} from "../utils/render.js";
 // import {UserAction, UpdateType} from "../const.js";
-import CreatePointView from "../view/creature-point.js";
+import CreatePointView from "../view/edit-point-new.js";
 import {KEY_VALUE} from "./point.js";
 import {UserAction, UpdateType} from "../mock/task.js";
 
