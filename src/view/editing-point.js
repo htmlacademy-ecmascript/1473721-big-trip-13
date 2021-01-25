@@ -75,13 +75,24 @@ const createDestinitionList = (cityes) => {
   }, ``);
 };
 
+const getView = (flag) => {
+  if (flag) {
+    return `<button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+    <button class="event__reset-btn" type="reset">Delete</button>
+    <button class="event__rollup-btn" type="button">`;
+  } else {
+    return `<button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+    <button class="event__reset-btn" type="reset">Cancel</button>`;
+  }
+};
+
 const createEditingPointElement = ({type = PointType.TAXI,
   city = ` `,
   id = `1`,
   dateFrom,
   dateTo,
   price = `0`,
-  options: selectedOffers}, offers, destination) => {
+  options: selectedOffers}, offers, destination, isEditViewMode) => {
 
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -131,10 +142,7 @@ const createEditingPointElement = ({type = PointType.TAXI,
       <input class="event__input  event__input--price" id="event-price-${id}" type="number" name="event-price"
         value="${price}">
     </div>
-
-    <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-    <button class="event__reset-btn" type="reset">Delete</button>
-    <button class="event__rollup-btn" type="button">
+    ${getView(isEditViewMode)}
   </header>
   <section class="event__details">
     <section class="event__section  event__section--offers">
@@ -155,7 +163,7 @@ const createEditingPointElement = ({type = PointType.TAXI,
 };
 
 export default class EditPointView extends Smart {
-  constructor(offersModel, destinationsModel, point = DEFAULT_POINT ) {
+  constructor(offersModel, destinationsModel, isEditViewMode, point = DEFAULT_POINT) {
     super();
     this._point = point;
     this._element = null;
@@ -164,6 +172,7 @@ export default class EditPointView extends Smart {
 
     this._offersModel = offersModel;
     this._destinationsModel = destinationsModel;
+    this._isEditViewMode = isEditViewMode;
 
     this._formSubmitClickHandler = this._formSubmitClickHandler.bind(this);
     this._formCancelClickHandler = this._formCancelClickHandler.bind(this);
@@ -182,7 +191,7 @@ export default class EditPointView extends Smart {
   }
 
   getTemplate() {
-    return createEditingPointElement(this._point, this.getOffersByType(), this.getDistinationByType());
+    return createEditingPointElement(this._point, this.getOffersByType(), this.getDistinationByType(), this._isEditViewMode);
   }
 
   getOffersByType() {
@@ -333,7 +342,11 @@ export default class EditPointView extends Smart {
 
   _formDeleteClickHandler(evt) {
     evt.preventDefault();
-    this._callback.deleteClick(EditPointView.parse(this._point));
+    if (this._isEditViewMode) {
+      this._callback.deleteClick(EditPointView.parse(this._point));
+    } else {
+      this._callback.cancelClick();
+    }
   }
 
   _formCancelClickHandler(evt) {
@@ -358,7 +371,9 @@ export default class EditPointView extends Smart {
 
   setCancelClickHandler(callback) {
     this._callback.cancelClick = callback;
-    this.getElement().querySelector(`form`).querySelector(`.event__rollup-btn`).addEventListener(`click`, this._formCancelClickHandler);
+    if (this._isEditViewMode) {
+      this.getElement().querySelector(`form`).querySelector(`.event__rollup-btn`).addEventListener(`click`, this._formCancelClickHandler);
+    }
   }
 
   setKeyDownHandler(callback) {

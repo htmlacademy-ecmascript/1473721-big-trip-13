@@ -13,6 +13,35 @@ const TextChart = {
   TIME_SPEND: `TIME-SPEND`
 };
 
+const getDuration = (diff) => {
+  const diffDuration = dayjs.duration(diff);
+
+  const days = diffDuration.days();
+  const hours = diffDuration.hours();
+  const minutes = diffDuration.minutes();
+
+  const ifLessThenTen = (value) => {
+    if (value < ValueForDuuration.VALUE_FOR_DIFF) {
+      return `0${value}`;
+    }
+    return value;
+  };
+
+  let durationToRender = ``;
+
+  if (days > ValueForDuuration.MIN_VALUE) {
+    durationToRender += `${ifLessThenTen(days)}D `;
+  }
+  if (hours >= ValueForDuuration.MIN_VALUE) {
+    durationToRender += `${ifLessThenTen(hours)}H `;
+  }
+  if (minutes >= ValueForDuuration.MIN_VALUE) {
+    durationToRender += `${ifLessThenTen(minutes)}M`;
+  }
+
+  return durationToRender;
+};
+
 const renderChart = (text, type, labels, data) => {
   const getSymbol = (typeText, val) => {
     switch (typeText) {
@@ -21,7 +50,7 @@ const renderChart = (text, type, labels, data) => {
       case (TextChart.TYPE):
         return `${val}x`;
       case (TextChart.TIME_SPEND):
-        return `${val}D`;
+        return getDuration(val);
       default:
         return `€ ${val}`;
     }
@@ -171,39 +200,9 @@ export default class TripInformationView extends Smart {
           timeSpend += dayjs(point.dateTo).diff(dayjs(point.dateFrom));
         }
       });
-      // times.push(this._getDuration(timeSpend));
       times.push(timeSpend);
     });
     return times;
-  }
-
-  _getDuration(diff) {
-    const diffDuration = dayjs.duration(diff);
-
-    const days = diffDuration.days();
-    const hours = diffDuration.hours();
-    const minutes = diffDuration.minutes();
-
-    const ifLessThenTen = (value) => {
-      if (value < ValueForDuuration.VALUE_FOR_DIFF) {
-        return `0${value}`;
-      }
-      return value;
-    };
-
-    let durationToRender = ``;
-
-    if (days > ValueForDuuration.MIN_VALUE) {
-      durationToRender += `${ifLessThenTen(days)}D `;
-    }
-    if (hours >= ValueForDuuration.MIN_VALUE) {
-      durationToRender += `${ifLessThenTen(hours)}H `;
-    }
-    if (minutes >= ValueForDuuration.MIN_VALUE) {
-      durationToRender += `${ifLessThenTen(minutes)}M`;
-    }
-
-    return durationToRender;
   }
 
   _setCharts() {

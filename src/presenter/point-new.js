@@ -31,9 +31,10 @@ export default class PointNew {
       return;
     }
 
+    this._isEditViewMode = false;
     // this._editComponent = new CreatePointView(pointsModel, this._offersModel, this._destinations);
     // this._editComponent = new CreatePointView(this._offersModel, this._destinations);
-    this._editComponent = new EditPointView(this._offersModel, this._destinations);
+    this._editComponent = new EditPointView(this._offersModel, this._destinations, this._isEditViewMode);
     this._editComponent.setSubmitClickHandler(this._onSaveClick);
     this._editComponent.setCancelClickHandler(this._onCancelClick);
     this._editComponent.setDeleteClickHandler(this._onDeleteClick);

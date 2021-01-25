@@ -25,6 +25,7 @@ export default class Point {
 
     this._pointComponent = null;
     this._editComponent = null;
+    this._isEditViewMode = true;
 
     this._onEditClick = this._onEditClick.bind(this);
     this._onCancelClick = this._onCancelClick.bind(this);
@@ -42,7 +43,7 @@ export default class Point {
 
     this._point = point;
     this._pointComponent = new PointView(point);
-    this._editComponent = new EditPointView(this._offersModel, this._destinations, point);
+    this._editComponent = new EditPointView(this._offersModel, this._destinations, this._isEditViewMode, point);
 
     this._pointComponent.setEditClickHandler(this._onEditClick);
     this._pointComponent.setFavoritesClickHandler(this._onFavoriteClick);
