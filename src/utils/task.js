@@ -9,7 +9,7 @@ export const ValueForRandom = {
   HUNDRED: 100
 };
 
-const ValueForDuuration = {
+export const ValueForDuuration = {
   MIN_VALUE: 0,
   VALUE_FOR_DIFF: 10
 };

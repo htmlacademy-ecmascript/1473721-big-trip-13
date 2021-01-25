@@ -2,11 +2,34 @@ import {PointType, pointTypeResource, PointField} from "../mock/task.js";
 import Smart from "./smart.js";
 import {getOfferId} from "../utils/render.js";
 import {formDate} from "../utils/task.js";
-
-
 import flatpickr from "flatpickr";
-
 import "../../node_modules/flatpickr/dist/flatpickr.min.css";
+
+const DEFAULT_POINT = {
+  city: `Gelendzhik`,
+  dateFrom: `2018-06-11T04:34:29.000Z`,
+  dateTo: `2019-01-18T06:09:28.000Z`,
+  destination: {
+    description: ` Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Aliquam erat volutpat.`,
+    name: `Gelendzhik`,
+    pictures: [
+      {
+        description: `Sed sed nisi sed augue convallis suscipit in sed felis. In rutrum ac purus sit amet tempus. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui.`,
+        src: [`http://picsum.photos/248/152?r=15`, `http://picsum.photos/248/152?r=15`],
+      }
+    ]},
+  favorite: false,
+  id: Date.now() + parseInt(Math.random() * 10000, 10),
+  options: [
+    {
+      title: `SHIP1`,
+      price: 120
+    }
+  ],
+  price: 42288,
+  type: `ship`,
+  uberPrice: 39379,
+};
 
 const createOffersList = (selectedOffers, offers, id) => {
   return offers.reduce((acc, {title, price}) => {
@@ -132,7 +155,7 @@ const createEditingPointElement = ({type = PointType.TAXI,
 };
 
 export default class EditPointView extends Smart {
-  constructor(point, offersModel, destinationsModel) {
+  constructor(offersModel, destinationsModel, point = DEFAULT_POINT ) {
     super();
     this._point = point;
     this._element = null;

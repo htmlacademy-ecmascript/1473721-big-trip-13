@@ -1,5 +1,5 @@
 import {render, remove, replace} from "../utils/render.js";
-import EditPointView from "../view/editing-points.js";
+import EditPointView from "../view/editing-point.js";
 import PointView from "../view/point.js";
 import {UserAction, UpdateType} from "../mock/task.js";
 
@@ -40,10 +40,9 @@ export default class Point {
     const prevPointComponent = this._pointComponent;
     const prevPointEditComponent = this._editComponent;
 
-
     this._point = point;
     this._pointComponent = new PointView(point);
-    this._editComponent = new EditPointView(point, this._offersModel, this._destinations);
+    this._editComponent = new EditPointView(this._offersModel, this._destinations, point);
 
     this._pointComponent.setEditClickHandler(this._onEditClick);
     this._pointComponent.setFavoritesClickHandler(this._onFavoriteClick);

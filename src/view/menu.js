@@ -3,7 +3,7 @@ import Abstract from "./abstract.js";
 
 const createMenuTemplate = () =>
   `<nav class="trip-controls__trip-tabs  trip-tabs">
-      <a class="trip-tabs__btn" data-type="TABLE" href="#">Table</a>
+      <a class="trip-tabs__btn trip-tabs__btn--active" data-type="TABLE" href="#">Table</a>
       <a class="trip-tabs__btn" href="#" data-type="STATISTICS">Stats</a>
     </nav>`;
 
@@ -27,7 +27,11 @@ export default class SiteMenuView extends Abstract {
 
   setMenuClickHandler(callback) {
     this._callback.menuClick = callback;
-    this._menuLinks.forEach((element) => element.addEventListener(`click`, this._menuClickHandler));
+    this._menuLinks.forEach((element) => {
+      // if (!element.classList.contains(`trip-tabs__btn--active`)) {
+      element.addEventListener(`click`, this._menuClickHandler);
+      // }
+    });
     document.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, this._menuClickHandler);
   }
 

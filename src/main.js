@@ -2,7 +2,7 @@ import {generatePoint, getOffers, destinations, UpdateType} from "./mock/task.js
 import RoutePresenter from "./presenter/route.js";
 import FilterPresenter from "./presenter/filter.js";
 // import {remove, render, RenderPosition} from "./utils/render.js";
-import {render, RenderPosition} from "./utils/render.js";
+import {remove, render, RenderPosition} from "./utils/render.js";
 import TripInfoView from "./view/trip-info.js";
 import SiteMenuView from "./view/menu.js";
 import HeaderMenuView from "./view/create-header-for-menu.js";
@@ -47,8 +47,7 @@ render(tripEvents, tripEventList);
 const siteListElement = tripEventList;
 const routePresenter = new RoutePresenter(siteListElement, pointsModel, offersModel, destinationsModel, filtersModel);
 const filterPresenter = new FilterPresenter(tripControlsElement, filtersModel, pointsModel);
-filterPresenter.init();
-routePresenter.init();
+// routePresenter.init();
 render(mainElement, new TripInfoView(points), RenderPosition.AFTERBEGIN);
 render(tripControlsElement, siteMenu, RenderPosition.AFTERBEGIN);
 render(tripControlsElement, new HeaderMenuView(), RenderPosition.AFTERBEGIN);
@@ -57,28 +56,40 @@ render(tripControlsElement, new HeaderMenuView(), RenderPosition.AFTERBEGIN);
 // TripInformation.hide();
 
 const handlePointNewFormClose = () => {
-  // siteMenu.getElement().querySelector(`[type=${MenuItem.TABLE}]`).classList.add(`trip-tabs__btn--active`);
+  siteMenu.getElement().querySelector(`[type=${MenuItem.ADD_NEW_POINT}]`).classList.remove(`trip-tabs__btn--active`);
   // siteMenu.setMenuItem(MenuItem.TABLE);
 };
 
-let statisticsComponent = new TripInformationView(pointsModel.getPoints());
-statisticsComponent.init();
+// let statisticsComponent = new TripInformationView(pointsModel.getPoints());
+let statisticsComponent = null;
+// statisticsComponent.init();
 
 const handleSiteMenuClick = (menuItem) => {
   switch (menuItem) {
     case MenuItem.ADD_NEW_POINT:
-      filtersModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-      statisticsComponent.hide();
-      routePresenter.show();
+      remove(statisticsComponent);
+      routePresenter.destroy();
+      // filtersModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+      routePresenter.init();
       routePresenter.createPoint(handlePointNewFormClose);
+      // filtersModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+      // statisticsComponent.hide();
+      // routePresenter.show();
+      // routePresenter.createPoint(handlePointNewFormClose);
       break;
     case MenuItem.TABLE:
-      statisticsComponent.hide();
-      routePresenter.show();
+      // filtersModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+      routePresenter.init();
+      remove(statisticsComponent);
+      // statisticsComponent.hide();
+      // routePresenter.show();
       break;
     case MenuItem.STATISTICS:
-      routePresenter.hide();
-      statisticsComponent.show();
+      routePresenter.destroy();
+      statisticsComponent = new TripInformationView(pointsModel.getPoints());
+      statisticsComponent.init();
+      // routePresenter.hide();
+      // statisticsComponent.show();
       render(tripEvents, statisticsComponent);
       break;
     default:
@@ -89,6 +100,8 @@ const handleSiteMenuClick = (menuItem) => {
 };
 
 siteMenu.setMenuClickHandler(handleSiteMenuClick);
+filterPresenter.init();
+routePresenter.init();
 
 // newEventButton.addEventListener(`click`, (evt) => {
 //   evt.preventDefault();

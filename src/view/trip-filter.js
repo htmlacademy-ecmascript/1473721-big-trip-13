@@ -1,9 +1,10 @@
 import Smart from "./smart.js";
 
-const getFilters = (filters) => {
+const getFilters = (filters, currentFilter) => {
+  debugger;
   return filters.reduce((acc, filter) => {
 
-    const checkedValue = filter.checked ? `checked` : ``;
+    const checkedValue = filter.type === currentFilter ? `checked` : ``;
 
     acc += ` <div class="trip-filters__filter">
     <input id="filter-${filter.type}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${filter.type}" ${checkedValue}>
@@ -14,9 +15,9 @@ const getFilters = (filters) => {
   }, ``);
 };
 
-const createTripFilterElement = (filters) =>
+const createTripFilterElement = (filters, currentFilter) =>
   `<form class="trip-filters" action="#" method="get">
-  ${getFilters(filters)}
+  ${getFilters(filters, currentFilter)}
   <button class="visually-hidden" type="submit">Accept filter</button>
 </form>`;
 
@@ -30,7 +31,7 @@ export default class TripFilterView extends Smart {
   }
 
   getTemplate() {
-    return createTripFilterElement(this._filters);
+    return createTripFilterElement(this._filters, this._currentFilter);
   }
 
   _filterTypeChangeHandler(evt) {
