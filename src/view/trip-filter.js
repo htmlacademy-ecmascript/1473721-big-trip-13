@@ -1,7 +1,6 @@
 import Smart from "./smart.js";
 
 const getFilters = (filters, currentFilter) => {
-  debugger;
   return filters.reduce((acc, filter) => {
 
     const checkedValue = filter.type === currentFilter ? `checked` : ``;

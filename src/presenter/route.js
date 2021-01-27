@@ -1,9 +1,6 @@
 import {SortType, UpdateType, UserAction} from "../mock/task.js";
-// import {sortByDay, sortByPrice, sortByTime, FilterType} from "../utils/task.js";
 import {sortByDay, sortByPrice, sortByTime} from "../utils/task.js";
-// import {updateItem} from "../utils/common.js";
-import {remove, render} from "../utils/render.js";
-// import TripFilterView from "../view/trip-filter.js";
+import {remove, render, RenderPosition} from "../utils/render.js";
 import TripSortView from "../view/trip-sort.js";
 import NoPointView from "../view/no-point.js";
 import PointPresenter from "./point.js";
@@ -31,18 +28,15 @@ export default class Route {
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
 
-    this._pointsModel.addObserver(this._handleModelEvent);
-    this._filtersModel.addObserver(this._handleModelEvent);
-
-    // this.hide = this.hide.bind(this);
-    // this.show = this.show.bind(this);
-
     this._pointNewPresenter = new PointNewPresenter(this._siteListElement, this._handleViewAction, this._offersModel, this._destinationsModel);
   }
 
   init() {
-    this._renderSort();
     this._renderPointsList();
+    this._renderSort();
+
+    this._pointsModel.addObserver(this._handleModelEvent);
+    this._filtersModel.addObserver(this._handleModelEvent);
   }
 
   destroy() {
@@ -60,11 +54,7 @@ export default class Route {
   }
 
   createPoint(callback) {
-    this._pointsPresenter.push(this._pointNewPresenter);
     this._pointNewPresenter.init(callback);
-    // this._currentSortType = SortType.DAY;
-    // this._filtersModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    // this._pointNewPresenter.init(this._pointsModel);
   }
 
   _getPoints() {
@@ -85,7 +75,7 @@ export default class Route {
   }
 
   _renderSort() {
-    render(this._siteListElement, this._sortComponent);
+    render(this._siteListElement, this._sortComponent, RenderPosition.AFTERBEGIN);
     this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
   }
 
@@ -100,11 +90,13 @@ export default class Route {
   }
 
   _renderPoints(points) {
-    points.forEach((point) => {
-      const pointPresenter = new PointPresenter(this._siteListElement, this._handleModeChange, this._handleViewAction, this._offersModel, this._destinationsModel);
-      pointPresenter.init(point);
-      this._pointsPresenter.push(pointPresenter);
-    });
+    if (this._pointsPresenter.length === 0) {
+      points.forEach((point) => {
+        const pointPresenter = new PointPresenter(this._siteListElement, this._handleModeChange, this._handleViewAction, this._offersModel, this._destinationsModel);
+        pointPresenter.init(point);
+        this._pointsPresenter.push(pointPresenter);
+      });
+    }
   }
 
   _handleSortTypeChange(sortType) {
@@ -118,13 +110,11 @@ export default class Route {
   }
 
   _handleModeChange() {
-    // this._pointNewPresenter.destroy();
     Object.values(this._pointsPresenter).forEach((presenter) => presenter.resetView());
   }
 
   _handlePointChange(point) {
     this._pointsPresenter.find((element) => element.getId() === point.id).init(point);
-    // this._pointsModel.getPoints().find((element) => element.getId() === point.id).init(point);
   }
 
   _handleViewAction(actionType, updateType, update) {
@@ -134,7 +124,6 @@ export default class Route {
         break;
       case UserAction.ADD_POINT:
         this._pointsModel.addPoint(updateType, update);
-        // this._pointsPresenter.push(this._pointNewPresenter);
         break;
       case UserAction.DELETE_POINT:
         this._pointsModel.deletePoint(updateType, update);
@@ -164,6 +153,7 @@ export default class Route {
     if (this._noPointView) {
       remove(this._noPointView);
     }
+
     this._pointNewPresenter.destroy();
     Object.values(this._pointsPresenter).forEach((presenter) => presenter.destroy());
     this._pointsPresenter = [];

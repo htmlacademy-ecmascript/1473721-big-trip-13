@@ -1,8 +1,4 @@
-// import TaskEditView from "../view/task-edit.js";
-// import {generateId} from "../mock/task.js";
-import {remove, render, RenderPosition} from "../utils/render.js";
-// import {UserAction, UpdateType} from "../const.js";
-// import CreatePointView from "../view/edit-point-new.js";
+import {remove, renderNewEditPoint} from "../utils/render.js";
 import EditPointView from "../view/editing-point.js";
 import {KEY_VALUE} from "./point.js";
 import {UserAction, UpdateType} from "../mock/task.js";
@@ -24,49 +20,30 @@ export default class PointNew {
   }
 
   init(callback) {
-    debugger;
     this._destroyCallback = callback;
-    // console.log(pointsModel.get);
+
     if (this._editComponent !== null) {
       return;
     }
 
     this._isEditViewMode = false;
-    // this._editComponent = new CreatePointView(pointsModel, this._offersModel, this._destinations);
-    // this._editComponent = new CreatePointView(this._offersModel, this._destinations);
     this._editComponent = new EditPointView(this._offersModel, this._destinations, this._isEditViewMode);
     this._editComponent.setSubmitClickHandler(this._onSaveClick);
     this._editComponent.setCancelClickHandler(this._onCancelClick);
     this._editComponent.setDeleteClickHandler(this._onDeleteClick);
 
-    render(this._pointsContainer, this._editComponent, RenderPosition.AFTERBEGIN);
+    renderNewEditPoint(this._pointsContainer, this._editComponent);
 
     document.addEventListener(`keydown`, this._onEscKeyDown);
   }
 
-  // понять что надо этот или в самом низу
-
-  // destroy() {
-  //   if (this._editComponent === null) {
-  //     return;
-  //   }
-
-  //   remove(this._editComponent);
-  //   this._editComponent = null;
-
-  //   document.removeEventListener(`keydown`, this._onEscKeyDown);
-  // }
-
   _onSaveClick(point) {
-    debugger;
     this._point = point;
     this._changeData(
         UserAction.ADD_POINT,
-        UpdateType.MINOR,
+        UpdateType.MAJOR,
         Object.assign({id: new Date().valueOf()}, point)
     );
-    debugger;
-    this.destroy();
   }
 
   _onCancelClick() {
@@ -79,14 +56,8 @@ export default class PointNew {
       evt.preventDefault();
       remove(this._editComponent);
       this._editComponent.reset(this._point);
-      // this._replaceFormToPoint();
+      this.destroy();
     }
-  }
-
-  // начал добавлять
-
-  getId() {
-    return this._point.id;
   }
 
   destroy() {
@@ -94,11 +65,12 @@ export default class PointNew {
       return;
     }
 
-    // if (this._destroyCallback !== null) {
-    //   debugger;
-    //   // this._destroyCallback();
-    // }
-    // remove(this._pointComponent);
+    if (this._destroyCallback !== null) {
+      this._destroyCallback();
+    }
+
     remove(this._editComponent);
+    this._editComponent = null;
+    document.removeEventListener(`keydown`, this._onEscKeyDown);
   }
 }
