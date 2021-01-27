@@ -3,7 +3,6 @@ import duration from "dayjs/plugin/duration.js";
 import Smart from "./smart.js";
 import Chart from "chart.js";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import {ValueForDuuration} from "../utils/task.js";
 
 dayjs.extend(duration);
 
@@ -14,32 +13,7 @@ const TextChart = {
 };
 
 const getDuration = (diff) => {
-  const diffDuration = dayjs.duration(diff);
-
-  const days = diffDuration.days();
-  const hours = diffDuration.hours();
-  const minutes = diffDuration.minutes();
-
-  const ifLessThenTen = (value) => {
-    if (value < ValueForDuuration.VALUE_FOR_DIFF) {
-      return `0${value}`;
-    }
-    return value;
-  };
-
-  let durationToRender = ``;
-
-  if (days > ValueForDuuration.MIN_VALUE) {
-    durationToRender += `${ifLessThenTen(days)}D `;
-  }
-  if (hours >= ValueForDuuration.MIN_VALUE) {
-    durationToRender += `${ifLessThenTen(hours)}H `;
-  }
-  if (minutes >= ValueForDuuration.MIN_VALUE) {
-    durationToRender += `${ifLessThenTen(minutes)}M`;
-  }
-
-  return durationToRender;
+  return `${ dayjs.duration(diff).days()}D`;
 };
 
 const renderChart = (text, type, labels, data) => {
