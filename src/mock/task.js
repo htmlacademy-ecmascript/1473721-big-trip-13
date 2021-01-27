@@ -1,6 +1,5 @@
 import dayjs from "dayjs";
 import {getRandomInteger} from "../utils/common.js";
-import {formDate} from "../utils/task.js";
 
 const PointType = {
   TAXI: `taxi`,
@@ -80,7 +79,17 @@ const SortType = {
   PRICE: `sort-price`,
 };
 
-const date = new Date();
+export const UserAction = {
+  UPDATE_POINT: `UPDATE_POINT`,
+  ADD_POINT: `ADD_POINT`,
+  DELETE_POINT: `DELETE_POINT`
+};
+
+export const UpdateType = {
+  PATCH: `PATCH`,
+  MINOR: `MINOR`,
+  MAJOR: `MAJOR`
+};
 
 const getString = (arr, minValue) => arr[getRandomInteger(minValue, arr.length - DefaultValue.FOR_THE_RIGHT_LENGTH)];
 
@@ -108,10 +117,6 @@ const getRandomPhoto = () => {
 
   return photos;
 };
-
-// const getRandomDate = () => formDate(`${getRandomInteger(DefaultValue.MIN_YEAR_VALUE, DefaultValue.MAX_YEAR_VALUE)}-${getRandomInteger(DefaultValue.MIN_MONTH_VALUE, DefaultValue.MAX_MONTH_VALUE)}-${getRandomInteger(DefaultValue.MIN_DAY_VALUE, DefaultValue.MAX_DAY_VALUE)}-${getRandomInteger(DefaultValue.MIN_HOUR_VALUE, DefaultValue.MAX_HOUR_VALUE)}:${getRandomInteger(DefaultValue.MIN_MINUTE_VALUE, DefaultValue.MAX_MINUTE_VALUE)}`, `DD/MM/YY HH:mm`);
-
-const getRandomDay = () => formDate(`${getRandomInteger(DefaultValue.MIN_YEAR_VALUE, DefaultValue.MAX_YEAR_VALUE)}-${getRandomInteger(DefaultValue.MIN_MONTH_VALUE, DefaultValue.MAX_MONTH_VALUE)}-${getRandomInteger(DefaultValue.MIN_DAY_VALUE, DefaultValue.MAX_DAY_VALUE)}`, `MMM D`);
 
 const getRandomPrice = () => getRandomInteger(DefaultValue.MIN_PRICE_VALUE, DefaultValue.MAX_PRICE_VALUE);
 
@@ -351,10 +356,10 @@ const generatePoint = () => {
     dateFrom,
     dateTo,
     price: getRandomPrice(),
-    // day: getRandomDay(),
     uberPrice: getRandomUberPrice(),
     favorite: getFavoriteState(),
-    id: new Date().valueOf()
+    // id: new Date().valueOf() * Math.random()
+    id: Date.now() + parseInt(Math.random() * 10000, 10)
   };
 };
 

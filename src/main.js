@@ -1,38 +1,87 @@
-import {generatePoint, getOffers, destinations} from "./mock/task.js";
+import {generatePoint, getOffers, destinations, UpdateType} from "./mock/task.js";
 import RoutePresenter from "./presenter/route.js";
-import {render, RenderPosition} from "./utils/render.js";
+import FilterPresenter from "./presenter/filter.js";
+import {remove, render, RenderPosition} from "./utils/render.js";
 import TripInfoView from "./view/trip-info.js";
 import SiteMenuView from "./view/menu.js";
 import HeaderMenuView from "./view/create-header-for-menu.js";
 import TripEventListView from "./view/trip-event-list.js";
-// import TripInformationView from "./view/trip-information.js";
-import CreaturePointPresenter from "./presenter/creaturePoint.js";
+import TripInformationView from "./view/trip-information.js";
+import PointsModel from "./model/points.js";
+import OffersModel from "./model/offers.js";
+import DestinationsModel from "./model/destinations.js";
+import FilterModel from "./model/filter.js";
+import {MenuItem} from "./const.js";
+import {FilterType} from "./utils/task.js";
 
 const POINT_COUNT = 3;
+
 const points = new Array(POINT_COUNT).fill().map(generatePoint);
 
 const allOffers = getOffers();
 const allDestinations = destinations;
 
+const pointsModel = new PointsModel();
+pointsModel.setPoints(points);
+const offersModel = new OffersModel();
+offersModel.setOffers(allOffers);
+const destinationsModel = new DestinationsModel();
+destinationsModel.setDestinations(allDestinations);
+const filtersModel = new FilterModel();
+
 const mainElement = document.querySelector(`.trip-main`);
 const tripControlsElement = mainElement.querySelector(`.trip-main__trip-controls`);
 const siteMainElement = document.querySelector(`.page-body__page-main`);
 const tripEvents = siteMainElement.querySelector(`.trip-events`);
-const newEventButton = document.querySelector(`.trip-main__event-add-btn`);
+let statisticsComponent = null;
 
 const tripEventList = new TripEventListView();
+tripEventList.init();
+const siteMenu = new SiteMenuView();
+
 render(tripEvents, tripEventList);
-const siteListElement = tripEventList.getElement();
-const routePresenter = new RoutePresenter(siteListElement);
-routePresenter.init(points, allOffers, allDestinations);
+
+const siteListElement = tripEventList;
+const routePresenter = new RoutePresenter(siteListElement, pointsModel, offersModel, destinationsModel, filtersModel);
+const filterPresenter = new FilterPresenter(tripControlsElement, filtersModel, pointsModel);
+
 render(mainElement, new TripInfoView(points), RenderPosition.AFTERBEGIN);
-render(tripControlsElement, new SiteMenuView(), RenderPosition.AFTERBEGIN);
+render(tripControlsElement, siteMenu, RenderPosition.AFTERBEGIN);
 render(tripControlsElement, new HeaderMenuView(), RenderPosition.AFTERBEGIN);
 
-newEventButton.addEventListener(`click`, () => {
-  const creaturePointPresenter = new CreaturePointPresenter(siteListElement);
-  creaturePointPresenter.init(points, allOffers, allDestinations);
-});
+const handlePointNewFormClose = () => {
+  siteMenu.setAddNewButtonState(false);
+  siteMenu.setActiveMenu(MenuItem.TABLE);
+};
 
-// render(tripEvents, new TripInformationView(), RenderPosition.AFTERBEGIN);
-// render(document.querySelector(`.trip-events`), new TripInformationView(), RenderPosition.AFTERBEGIN);
+const handleSiteMenuClick = (menuItem) => {
+  switch (menuItem) {
+    case MenuItem.ADD_NEW_POINT:
+      remove(statisticsComponent);
+      routePresenter.destroy();
+      filtersModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+      routePresenter.init();
+      routePresenter.createPoint(handlePointNewFormClose);
+      siteMenu.setAddNewButtonState(true);
+      break;
+    case MenuItem.TABLE:
+      routePresenter.init();
+      remove(statisticsComponent);
+      break;
+    case MenuItem.STATISTICS:
+      routePresenter.destroy();
+      statisticsComponent = new TripInformationView(pointsModel.getPoints());
+      statisticsComponent.init();
+      render(tripEvents, statisticsComponent);
+      break;
+    default:
+      routePresenter.init();
+      remove(statisticsComponent);
+      break;
+  }
+};
+
+siteMenu.setMenuClickHandler(handleSiteMenuClick);
+siteMenu.setActiveMenu(MenuItem.TABLE);
+filterPresenter.init();
+routePresenter.init();

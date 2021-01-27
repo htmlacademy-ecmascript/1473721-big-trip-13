@@ -2,10 +2,34 @@ import {PointType, pointTypeResource, PointField} from "../mock/task.js";
 import Smart from "./smart.js";
 import {getOfferId} from "../utils/render.js";
 import {formDate} from "../utils/task.js";
-
 import flatpickr from "flatpickr";
-
 import "../../node_modules/flatpickr/dist/flatpickr.min.css";
+
+const DEFAULT_POINT = {
+  city: `Gelendzhik`,
+  dateFrom: `2018-06-11T04:34:29.000Z`,
+  dateTo: `2019-01-18T06:09:28.000Z`,
+  destination: {
+    description: ` Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Aliquam erat volutpat.`,
+    name: `Gelendzhik`,
+    pictures: [
+      {
+        description: `Sed sed nisi sed augue convallis suscipit in sed felis. In rutrum ac purus sit amet tempus. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui.`,
+        src: [`http://picsum.photos/248/152?r=15`, `http://picsum.photos/248/152?r=15`],
+      }
+    ]},
+  favorite: false,
+  id: Date.now() + parseInt(Math.random() * 10000, 10),
+  options: [
+    {
+      title: `SHIP1`,
+      price: 120
+    }
+  ],
+  price: 42288,
+  type: `ship`,
+  uberPrice: 39379,
+};
 
 const createOffersList = (selectedOffers, offers, id) => {
   return offers.reduce((acc, {title, price}) => {
@@ -51,13 +75,24 @@ const createDestinitionList = (cityes) => {
   }, ``);
 };
 
+const getView = (flag) => {
+  if (flag) {
+    return `<button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+    <button class="event__reset-btn" type="reset">Delete</button>
+    <button class="event__rollup-btn" type="button">`;
+  } else {
+    return `<button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+    <button class="event__reset-btn" type="reset">Cancel</button>`;
+  }
+};
+
 const createEditingPointElement = ({type = PointType.TAXI,
   city = ` `,
   id = `1`,
   dateFrom,
   dateTo,
   price = `0`,
-  options: selectedOffers}, offers, destination) => {
+  options: selectedOffers}, offers, destination, isEditViewMode) => {
 
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -104,12 +139,10 @@ const createEditingPointElement = ({type = PointType.TAXI,
         <span class="visually-hidden">Price</span>
         &euro;
       </label>
-      <input class="event__input  event__input--price" id="event-price-${id}" type="text" name="event-price"
+      <input class="event__input  event__input--price" id="event-price-${id}" type="number" name="event-price"
         value="${price}">
     </div>
-
-    <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-    <button class="event__reset-btn" type="reset">Cancel</button>
+    ${getView(isEditViewMode)}
   </header>
   <section class="event__details">
     <section class="event__section  event__section--offers">
@@ -130,23 +163,26 @@ const createEditingPointElement = ({type = PointType.TAXI,
 };
 
 export default class EditPointView extends Smart {
-  constructor(point, allOffers, allDestinations) {
+  constructor(offersModel, destinationsModel, isEditViewMode, point = DEFAULT_POINT) {
     super();
     this._point = point;
     this._element = null;
     this._datepickerFrom = null;
     this._datepickerTo = null;
 
-    this._allOffers = allOffers;
-    this._allDestinations = allDestinations;
+    this._offersModel = offersModel;
+    this._destinationsModel = destinationsModel;
+    this._isEditViewMode = isEditViewMode;
 
     this._formSubmitClickHandler = this._formSubmitClickHandler.bind(this);
     this._formCancelClickHandler = this._formCancelClickHandler.bind(this);
+    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
     this._offerClickHandler = this._offerClickHandler.bind(this);
     this._dateFromChangeHandler = this._dateFromChangeHandler.bind(this);
     this._dateToChangeHandler = this._dateToChangeHandler.bind(this);
+    this._priceChangeHandler = this._priceChangeHandler.bind(this);
 
     this._availableOffers = this.getElement().querySelectorAll(`.event__offer-checkbox`);
 
@@ -155,11 +191,11 @@ export default class EditPointView extends Smart {
   }
 
   getTemplate() {
-    return createEditingPointElement(this._point, this.getOffersByType(), this.getDistinationByType());
+    return createEditingPointElement(this._point, this.getOffersByType(), this.getDistinationByType(), this._isEditViewMode);
   }
 
   getOffersByType() {
-    const offerByType = this._allOffers.find((offer) => offer.type === this._point.type);
+    const offerByType = this._offersModel.getOffers().find((offer) => offer.type === this._point.type);
 
     if (offerByType) {
       return offerByType.offers;
@@ -169,7 +205,7 @@ export default class EditPointView extends Smart {
   }
 
   getDistinationByType() {
-    const destinitionByType = this._allDestinations.find((destination) => destination.name === this._point.city);
+    const destinitionByType = this._destinationsModel.getDestinations().find((destination) => destination.name === this._point.city);
 
     if (destinitionByType) {
       return destinitionByType;
@@ -247,28 +283,41 @@ export default class EditPointView extends Smart {
     const element = this.getElement();
 
     element.querySelectorAll(`.event__type-input`).forEach((typePoint) => typePoint.addEventListener(`change`, this._typeChangeHandler));
-    element.querySelector(`.event__input--destination`).addEventListener(`change`, this._destinationChangeHandler);
+    element.querySelector(`.event__input--destination`).addEventListener(`input`, this._destinationChangeHandler);
     element.querySelectorAll(`.event__offer-checkbox`).forEach((item) => item.addEventListener(`change`, this._offerClickHandler));
+    element.querySelector(`.event__input--price`).addEventListener(`input`, this._priceChangeHandler);
   }
 
   _typeChangeHandler(evt) {
     evt.preventDefault();
     this.updateData({
-      type: evt.target.value
+      type: evt.target.value,
     });
+    this._offerClickHandler();
   }
 
   _destinationChangeHandler(evt) {
     evt.preventDefault();
-
-    this.updateData({
-      city: evt.target.value
+    this._destinationsModel.getDestinations().forEach((element) => {
+      if (element.name.includes(evt.target.value)) {
+        this.updateData({
+          city: element.name
+        }, true);
+      }
     });
+  }
+
+  _priceChangeHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      price: evt.target.value
+    }, true);
   }
 
   restoreHandlers() {
     this._setInnerHandlers();
     this.setSubmitClickHandler(this._callback.submitClick);
+    this.setDeleteClickHandler(this._callback.deleteClick);
     this.setCancelClickHandler(this._callback.cancelClick);
     this._setDatepicker();
   }
@@ -278,9 +327,26 @@ export default class EditPointView extends Smart {
     return data;
   }
 
+  removeElement() {
+    super.removeElement();
+    if (this._datepicker) {
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
+  }
+
   _formSubmitClickHandler(evt) {
     evt.preventDefault();
     this._callback.submitClick(EditPointView.parse(this._point));
+  }
+
+  _formDeleteClickHandler(evt) {
+    evt.preventDefault();
+    if (this._isEditViewMode) {
+      this._callback.deleteClick(EditPointView.parse(this._point));
+    } else {
+      this._callback.cancelClick();
+    }
   }
 
   _formCancelClickHandler(evt) {
@@ -298,9 +364,16 @@ export default class EditPointView extends Smart {
     this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitClickHandler);
   }
 
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector(`form`).addEventListener(`reset`, this._formDeleteClickHandler);
+  }
+
   setCancelClickHandler(callback) {
     this._callback.cancelClick = callback;
-    this.getElement().querySelector(`form`).addEventListener(`reset`, this._formCancelClickHandler);
+    if (this._isEditViewMode) {
+      this.getElement().querySelector(`form`).querySelector(`.event__rollup-btn`).addEventListener(`click`, this._formCancelClickHandler);
+    }
   }
 
   setKeyDownHandler(callback) {
