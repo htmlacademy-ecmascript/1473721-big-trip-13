@@ -1,4 +1,5 @@
 import Observer from "../utils/observer.js";
+import Offers from "./offers.js";
 
 export default class Points extends Observer {
   constructor() {
@@ -53,7 +54,8 @@ export default class Points extends Observer {
           price: point.base_price,
           dateFrom: point.date_from,
           dateTo: point.date_to,
-          favorite: point.is_favorite
+          favorite: point.is_favorite,
+          options: point.offers
         }
     );
 
@@ -61,6 +63,7 @@ export default class Points extends Observer {
     delete adaptedPoint.date_from;
     delete adaptedPoint.date_to;
     delete adaptedPoint.is_favorite;
+    delete adaptedPoint.offers;
 
     return adaptedPoint;
   }
@@ -73,7 +76,8 @@ export default class Points extends Observer {
           "base_price": point.price,
           "date_from": point.dateFrom,
           "date_to": point.dateTo,
-          "is_favorite": point.favorite
+          "is_favorite": point.favorite,
+          "offers": point.options
         }
     );
 
@@ -82,6 +86,7 @@ export default class Points extends Observer {
     delete adaptedPoint.dateFrom;
     delete adaptedPoint.dateTo;
     delete adaptedPoint.favorite;
+    delete adaptedPoint.options;
 
     return adaptedPoint;
   }

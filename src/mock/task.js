@@ -92,286 +92,286 @@ export const UpdateType = {
   INIT: `INIT`
 };
 
-const getString = (arr, minValue) => arr[getRandomInteger(minValue, arr.length - DefaultValue.FOR_THE_RIGHT_LENGTH)];
+// const getString = (arr, minValue) => arr[getRandomInteger(minValue, arr.length - DefaultValue.FOR_THE_RIGHT_LENGTH)];
 
-const getDescription = () => {
-  let randomDescription = ``;
-  for (let i = 0; i < getRandomInteger(DefaultValue.MIN_DESCRIPTION_VALUE, DefaultValue.MAX_DESCRIPTION_VALUE); i++) {
-    randomDescription += `${PointField.DESCRIPTION_POINT[getRandomInteger(DefaultValue.MIN_RANDOM_VALUE, PointField.DESCRIPTION_POINT.length - DefaultValue.FOR_THE_RIGHT_LENGTH)]}.`;
-  }
-  return randomDescription;
-};
+// const getDescription = () => {
+//   let randomDescription = ``;
+//   for (let i = 0; i < getRandomInteger(DefaultValue.MIN_DESCRIPTION_VALUE, DefaultValue.MAX_DESCRIPTION_VALUE); i++) {
+//     randomDescription += `${PointField.DESCRIPTION_POINT[getRandomInteger(DefaultValue.MIN_RANDOM_VALUE, PointField.DESCRIPTION_POINT.length - DefaultValue.FOR_THE_RIGHT_LENGTH)]}.`;
+//   }
+//   return randomDescription;
+// };
 
-const getDescriptionPhoto = () => {
-  let randomDescription = ``;
-  for (let i = 0; i < getRandomInteger(1, 6); i++) {
-    randomDescription += `${PointField.DESCRIPTION_POINT[getRandomInteger(DefaultValue.MIN_RANDOM_VALUE, PointField.DESCRIPTION_POINT.length - DefaultValue.FOR_THE_RIGHT_LENGTH)]}.`;
-  }
-  return randomDescription;
-};
+// const getDescriptionPhoto = () => {
+//   let randomDescription = ``;
+//   for (let i = 0; i < getRandomInteger(1, 6); i++) {
+//     randomDescription += `${PointField.DESCRIPTION_POINT[getRandomInteger(DefaultValue.MIN_RANDOM_VALUE, PointField.DESCRIPTION_POINT.length - DefaultValue.FOR_THE_RIGHT_LENGTH)]}.`;
+//   }
+//   return randomDescription;
+// };
 
-const getRandomPhoto = () => {
-  const photos = [];
-  for (let i = 0; i < getRandomInteger(DefaultValue.MIN_COUNT_PHOTO, DefaultValue.MAX_COUNT_PHOTO); i++) {
-    photos.push(`http://picsum.photos/248/152?r=${getRandomInteger(DefaultValue.MIN_RANDOM_VALUE, DefaultValue.MAX_RANDOM_VALUE)}`);
-  }
+// const getRandomPhoto = () => {
+//   const photos = [];
+//   for (let i = 0; i < getRandomInteger(DefaultValue.MIN_COUNT_PHOTO, DefaultValue.MAX_COUNT_PHOTO); i++) {
+//     photos.push(`http://picsum.photos/248/152?r=${getRandomInteger(DefaultValue.MIN_RANDOM_VALUE, DefaultValue.MAX_RANDOM_VALUE)}`);
+//   }
 
-  return photos;
-};
+//   return photos;
+// };
 
-const getRandomPrice = () => getRandomInteger(DefaultValue.MIN_PRICE_VALUE, DefaultValue.MAX_PRICE_VALUE);
+// const getRandomPrice = () => getRandomInteger(DefaultValue.MIN_PRICE_VALUE, DefaultValue.MAX_PRICE_VALUE);
 
-const getRandomUberPrice = () => getRandomInteger(DefaultValue.MIN_PRICE_VALUE, DefaultValue.MAX_PRICE_VALUE);
+// const getRandomUberPrice = () => getRandomInteger(DefaultValue.MIN_PRICE_VALUE, DefaultValue.MAX_PRICE_VALUE);
 
-const getFavoriteState = () => Math.random() >= DefaultValue.FOR_BOOLEAN_VALUE;
+// const getFavoriteState = () => Math.random() >= DefaultValue.FOR_BOOLEAN_VALUE;
 
-const getAllDestination = () => {
-  return [{
-    description: getDescription(),
-    name: `Gelendzhik`,
-    pictures: [
-      {
-        src: getRandomPhoto(),
-        description: getDescriptionPhoto(),
-      }
-    ]
-  }, {
-    description: getDescription(),
-    name: `Moscow`,
-    pictures: [
-      {
-        src: getRandomPhoto(),
-        description: getDescriptionPhoto(),
-      }
-    ]
-  }, {
-    description: getDescription(),
-    name: `St.Petersburg`,
-    pictures: [
-      {
-        src: getRandomPhoto(),
-        description: getDescriptionPhoto(),
-      }
-    ]
-  }, {
-    description: getDescription(),
-    name: `Krasnodar`,
-    pictures: [
-      {
-        src: getRandomPhoto(),
-        description: getDescriptionPhoto(),
-      }
-    ]
-  }, {
-    description: getDescription(),
-    name: `Sochi`,
-    pictures: [
-      {
-        src: getRandomPhoto(),
-        description: getDescriptionPhoto(),
-      }
-    ]
-  }, {
-    description: getDescription(),
-    name: `Omsk`,
-    pictures: [
-      {
-        src: getRandomPhoto(),
-        description: getDescriptionPhoto(),
-      }
-    ]
-  }, {
-    description: getDescription(),
-    name: `Rostov-on-Don`,
-    pictures: [
-      {
-        src: getRandomPhoto(),
-        description: getDescriptionPhoto(),
-      }
-    ]
-  }
-  ];
-};
+// const getAllDestination = () => {
+//   return [{
+//     description: getDescription(),
+//     name: `Gelendzhik`,
+//     pictures: [
+//       {
+//         src: getRandomPhoto(),
+//         description: getDescriptionPhoto(),
+//       }
+//     ]
+//   }, {
+//     description: getDescription(),
+//     name: `Moscow`,
+//     pictures: [
+//       {
+//         src: getRandomPhoto(),
+//         description: getDescriptionPhoto(),
+//       }
+//     ]
+//   }, {
+//     description: getDescription(),
+//     name: `St.Petersburg`,
+//     pictures: [
+//       {
+//         src: getRandomPhoto(),
+//         description: getDescriptionPhoto(),
+//       }
+//     ]
+//   }, {
+//     description: getDescription(),
+//     name: `Krasnodar`,
+//     pictures: [
+//       {
+//         src: getRandomPhoto(),
+//         description: getDescriptionPhoto(),
+//       }
+//     ]
+//   }, {
+//     description: getDescription(),
+//     name: `Sochi`,
+//     pictures: [
+//       {
+//         src: getRandomPhoto(),
+//         description: getDescriptionPhoto(),
+//       }
+//     ]
+//   }, {
+//     description: getDescription(),
+//     name: `Omsk`,
+//     pictures: [
+//       {
+//         src: getRandomPhoto(),
+//         description: getDescriptionPhoto(),
+//       }
+//     ]
+//   }, {
+//     description: getDescription(),
+//     name: `Rostov-on-Don`,
+//     pictures: [
+//       {
+//         src: getRandomPhoto(),
+//         description: getDescriptionPhoto(),
+//       }
+//     ]
+//   }
+//   ];
+// };
 
-const destinations = getAllDestination();
+// const allDestinations = getAllDestination();
 
-const getDestination = (name) => {
-  const destinationByName = destinations.find((destination) => destination.name === name);
+// const getDestination = (name) => {
+//   const destinationByName = destinations.find((destination) => destination.name === name);
 
-  if (destinationByName) {
-    return destinationByName;
-  }
+//   if (destinationByName) {
+//     return destinationByName;
+//   }
 
-  return [];
-};
+//   return [];
+// };
 
-const getOptions = (type) => {
-  return [
-    {
-      "title": `${type.toUpperCase()}1`,
-      "price": 120
-    }
-  ];
-};
+// const getOptions = (type) => {
+//   return [
+//     {
+//       "title": `${type.toUpperCase()}1`,
+//       "price": 120
+//     }
+//   ];
+// };
 
-const removeDash = (type) => type.replace(`_`, `-`);
+// const removeDash = (type) => type.replace(`_`, `-`);
 
-const getOffers = () => {
-  return [
-    {
-      type: PointType.TAXI,
-      offers: [
-        {
-          "title": `TAXI1`,
-          "price": 120
-        }, {
-          "title": `TAXI2`,
-          "price": 60
-        }, {
-          "title": `TAXI3`,
-          "price": 70
-        }
-      ]
-    },
-    {
-      type: PointType.BUS,
-      offers: [
-        {
-          "title": `BUS1`,
-          "price": 120
-        }, {
-          "title": `BUS2`,
-          "price": 60
-        }
-      ]
-    }, {
-      type: PointType.CHEK_IN,
-      offers: [
-        {
-          "title": `CHEK_IN1`,
-          "price": 120
-        }, {
-          "title": `CHEK_IN2`,
-          "price": 60
-        }
-      ]
-    }, {
-      type: PointType.DRIVE,
-      offers: [
-        {
-          "title": `DRIVE1`,
-          "price": 120
-        }, {
-          "title": `DRIVE2`,
-          "price": 60
-        }
-      ]
-    }, {
-      type: PointType.FLIGHT,
-      offers: [
-        {
-          "title": `FLIGHT1`,
-          "price": 120
-        }, {
-          "title": `FLIGHT2`,
-          "price": 60
-        }
-      ]
-    }, {
-      type: PointType.RESTAURANT,
-      offers: [
-        {
-          "title": `RESTAURANT1`,
-          "price": 120
-        }, {
-          "title": `RESTAURANT2`,
-          "price": 60
-        }
-      ]
-    }, {
-      type: PointType.SHIP,
-      offers: [
-        {
-          "title": `SHIP1`,
-          "price": 120
-        }, {
-          "title": `SHIP2`,
-          "price": 60
-        }
-      ]
-    }, {
-      type: PointType.SIGHTSEEING,
-      offers: [
-        {
-          "title": `SIGHTSEEING1`,
-          "price": 120
-        }, {
-          "title": `SIGHTSEEING2`,
-          "price": 60
-        }
-      ]
-    }, {
-      type: PointType.TRAIN,
-      offers: [
-        {
-          "title": `TRAIN1`,
-          "price": 120
-        }, {
-          "title": `TRAIN2`,
-          "price": 60
-        }
-      ]
-    }, {
-      type: PointType.TRANSPORT,
-      offers: [
-        {
-          "title": `TRANSPORT1`,
-          "price": 120
-        }, {
-          "title": `TRANSPORT2`,
-          "price": 60
-        }
-      ]
-    }
-  ];
-};
+// const getOffers = () => {
+//   return [
+//     {
+//       type: PointType.TAXI,
+//       offers: [
+//         {
+//           "title": `TAXI1`,
+//           "price": 120
+//         }, {
+//           "title": `TAXI2`,
+//           "price": 60
+//         }, {
+//           "title": `TAXI3`,
+//           "price": 70
+//         }
+//       ]
+//     },
+//     {
+//       type: PointType.BUS,
+//       offers: [
+//         {
+//           "title": `BUS1`,
+//           "price": 120
+//         }, {
+//           "title": `BUS2`,
+//           "price": 60
+//         }
+//       ]
+//     }, {
+//       type: PointType.CHEK_IN,
+//       offers: [
+//         {
+//           "title": `CHEK_IN1`,
+//           "price": 120
+//         }, {
+//           "title": `CHEK_IN2`,
+//           "price": 60
+//         }
+//       ]
+//     }, {
+//       type: PointType.DRIVE,
+//       offers: [
+//         {
+//           "title": `DRIVE1`,
+//           "price": 120
+//         }, {
+//           "title": `DRIVE2`,
+//           "price": 60
+//         }
+//       ]
+//     }, {
+//       type: PointType.FLIGHT,
+//       offers: [
+//         {
+//           "title": `FLIGHT1`,
+//           "price": 120
+//         }, {
+//           "title": `FLIGHT2`,
+//           "price": 60
+//         }
+//       ]
+//     }, {
+//       type: PointType.RESTAURANT,
+//       offers: [
+//         {
+//           "title": `RESTAURANT1`,
+//           "price": 120
+//         }, {
+//           "title": `RESTAURANT2`,
+//           "price": 60
+//         }
+//       ]
+//     }, {
+//       type: PointType.SHIP,
+//       offers: [
+//         {
+//           "title": `SHIP1`,
+//           "price": 120
+//         }, {
+//           "title": `SHIP2`,
+//           "price": 60
+//         }
+//       ]
+//     }, {
+//       type: PointType.SIGHTSEEING,
+//       offers: [
+//         {
+//           "title": `SIGHTSEEING1`,
+//           "price": 120
+//         }, {
+//           "title": `SIGHTSEEING2`,
+//           "price": 60
+//         }
+//       ]
+//     }, {
+//       type: PointType.TRAIN,
+//       offers: [
+//         {
+//           "title": `TRAIN1`,
+//           "price": 120
+//         }, {
+//           "title": `TRAIN2`,
+//           "price": 60
+//         }
+//       ]
+//     }, {
+//       type: PointType.TRANSPORT,
+//       offers: [
+//         {
+//           "title": `TRANSPORT1`,
+//           "price": 120
+//         }, {
+//           "title": `TRANSPORT2`,
+//           "price": 60
+//         }
+//       ]
+//     }
+//   ];
+// };
 
-const getRandomTime = () => `${getRandomInteger(3, 27)}:${getRandomInteger(1, 59)}:${getRandomInteger(0, 59)}`;
+// const getRandomTime = () => `${getRandomInteger(3, 27)}:${getRandomInteger(1, 59)}:${getRandomInteger(0, 59)}`;
 
-const getRandomDate = () => `20${getRandomInteger(18, 21)}-${getRandomInteger(1, 12)}-${getRandomInteger(1, 59)}`;
+// const getRandomDate = () => `20${getRandomInteger(18, 21)}-${getRandomInteger(1, 12)}-${getRandomInteger(1, 59)}`;
 
-const getRandomDateFrom = () => dayjs(`${getRandomDate()}:${getRandomTime()}`).toISOString();
+// const getRandomDateFrom = () => dayjs(`${getRandomDate()}:${getRandomTime()}`).toISOString();
 
-const getRandomDateTo = () => dayjs(`${getRandomDate()}:${getRandomTime()}`).toISOString();
+// const getRandomDateTo = () => dayjs(`${getRandomDate()}:${getRandomTime()}`).toISOString();
 
-const generatePoint = () => {
-  const pointType = removeDash(getString(PointField.TYPE_POINT, DefaultValue.MIN_RANDOM_VALUE));
-  const pointCity = getString(PointField.CITY_POINT, DefaultValue.MIN_RANDOM_VALUE);
-  const dateFrom = getRandomDateFrom();
-  const dateTo = getRandomDateTo();
-  return {
-    type: pointType,
-    city: pointCity,
-    options: getOptions(pointType),
-    destination: getDestination(pointCity),
-    dateFrom,
-    dateTo,
-    price: getRandomPrice(),
-    uberPrice: getRandomUberPrice(),
-    favorite: getFavoriteState(),
-    // id: new Date().valueOf() * Math.random()
-    id: Date.now() + parseInt(Math.random() * 10000, 10)
-  };
-};
+// const generatePoint = () => {
+//   const pointType = removeDash(getString(PointField.TYPE_POINT, DefaultValue.MIN_RANDOM_VALUE));
+//   const pointCity = getString(PointField.CITY_POINT, DefaultValue.MIN_RANDOM_VALUE);
+//   const dateFrom = getRandomDateFrom();
+//   const dateTo = getRandomDateTo();
+//   return {
+//     type: pointType,
+//     city: pointCity,
+//     options: getOptions(pointType),
+//     destination: getDestination(pointCity),
+//     dateFrom,
+//     dateTo,
+//     price: getRandomPrice(),
+//     uberPrice: getRandomUberPrice(),
+//     favorite: getFavoriteState(),
+//     // id: new Date().valueOf() * Math.random()
+//     id: Date.now() + parseInt(Math.random() * 10000, 10)
+//   };
+// };
 
 export {
-  generatePoint,
+  // generatePoint,
   PointField,
   SortType,
-  getOptions,
-  getDescription,
+  // getOptions,
+  // getDescription,
   PointType,
   pointTypeResource,
-  getOffers,
-  destinations
+  // getOffers,
+  // allDestinations
 };

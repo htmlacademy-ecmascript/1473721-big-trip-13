@@ -4,16 +4,20 @@ import {formDate, getDuration} from "../utils/task.js";
 import Smart from "./smart.js";
 
 const createOffersList = (offers) => {
-  return offers.reduce((acc, offer) => {
+  if (offers) {
+    return offers.reduce((acc, offer) => {
 
-    acc += `<li class="event__offer">
-    <span class="event__offer-title">${offer.title}</span>
-    &plus;&euro;&nbsp;
-    <span class="event__offer-price">${offer.price}</span>
-  </li>`;
+      acc += `<li class="event__offer">
+      <span class="event__offer-title">${offer.title}</span>
+      &plus;&euro;&nbsp;
+      <span class="event__offer-price">${offer.price}</span>
+    </li>`;
 
-    return acc;
-  }, ``);
+      return acc;
+    }, ``);
+  } else {
+    return ``;
+  }
 };
 
 const isFavorite = (favorite) => {
@@ -22,21 +26,21 @@ const isFavorite = (favorite) => {
 
 const createPoint = ({
   type = PointType.TAXI,
-  city = ` `,
   price = `0`,
   options,
+  destination,
   favorite,
   dateFrom,
   dateTo
 }) => {
-  console.log(type);
+
   return `<li class="trip-events__item">
   <div class="event">
     <time class="event__date" datetime="${formDate(dateFrom, `YYYY-MM-DD`)}">${formDate(dateFrom, `MMM DD`)}</time>
     <div class="event__type">
       <img class="event__type-icon" width="42" height="42" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
     </div>
-    <h3 class="event__title">${type} ${city}</h3>
+    <h3 class="event__title">${type} ${destination.name}</h3>
     <div class="event__schedule">
       <p class="event__time">
         <time class="event__start-time" datetime="${formDate(dateFrom, `YYYY-MM-DDTHH:mm`)}">${formDate(dateFrom, `HH:mm`)}</time>
@@ -69,7 +73,6 @@ export default class PointView extends Smart {
   constructor(point) {
     super();
     this._point = point;
-    debugger;
     this._element = null;
     this._editClickHandler = this._editClickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);

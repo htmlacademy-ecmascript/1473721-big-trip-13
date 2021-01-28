@@ -80,10 +80,8 @@ export default class Route {
 
   _renderPointsList() {
     const points = this._getPoints();
-    debugger;
 
     if (points.length === 0) {
-      debugger;
       this._noPointView = new NoPointView();
       render(this._siteListElement, this._noPointView);
       return;
@@ -92,34 +90,20 @@ export default class Route {
   }
 
   _renderRoute() {
-    debugger;
     if (this._isLoading) {
       this._renderLoading();
       return;
     }
-
-    // const points = this._getPoints();
-
-    // if (points.length === 0) {
-    //   this._noPointView = new NoPointView();
-    //   render(this._siteListElement, this._noPointView);
-    //   return;
-    // }
-    // this._renderPoints(points);
 
     this._renderPointsList();
     this._renderSort();
   }
 
   _renderPoints(points) {
-    debugger;
     if (this._pointsPresenter.length === 0) {
       points.forEach((point) => {
-        debugger;
         const pointPresenter = new PointPresenter(this._siteListElement, this._handleModeChange, this._handleViewAction, this._offersModel, this._destinationsModel);
-        debugger;
         pointPresenter.init(point);
-        debugger;
         this._pointsPresenter.push(pointPresenter);
       });
     }
@@ -181,7 +165,6 @@ export default class Route {
       case UpdateType.INIT:
         this._isLoading = false;
         remove(this._loadingComponent);
-        debugger;
         this._renderRoute();
         break;
     }

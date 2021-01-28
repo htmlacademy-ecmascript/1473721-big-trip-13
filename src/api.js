@@ -1,4 +1,5 @@
 import PointsModel from "./model/points.js";
+import OffersMofel from "./model/offers.js";
 
 const Method = {
   GET: `GET`,
@@ -20,6 +21,16 @@ export default class Api {
     return this._load({url: `points`})
       .then(Api.toJSON)
       .then((points) => points.map(PointsModel.adaptToClient));
+  }
+
+  getOffers() {
+    return this._load({url: `offers`})
+    .then(Api.toJSON);
+  }
+
+  getDestinations() {
+    return this._load({url: `destinations`})
+    .then(Api.toJSON);
   }
 
   updatePoint(point) {
