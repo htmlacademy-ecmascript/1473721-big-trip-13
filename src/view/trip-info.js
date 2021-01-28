@@ -12,13 +12,13 @@ const createTripInfoElement = (points) => {
   const getTripInfo = () => {
     let info = ``;
 
-    if (points.length !== ItemValue.LENGTH_ZERO) {
-      if (points.length <= COUNT_TRIP_CITY) {
-        info = points.map((point) => point.city).join(` &mdash; `);
-      } else {
-        info = `${points[ItemValue.FISRT].city} &mdash; ... &mdash; ${points[points.length - 1].city}`;
-      }
-    }
+    // if (points.length !== ItemValue.LENGTH_ZERO) {
+    //   if (points.length <= COUNT_TRIP_CITY) {
+    //     info = points.map((point) => point.destination.name).join(` &mdash; `);
+    //   } else {
+    //     info = `${points[ItemValue.FISRT].destination.name} &mdash; ... &mdash; ${points[points.length - 1].destination.name}`;
+    //   }
+    // }
 
     return info;
   };
@@ -36,13 +36,14 @@ const createTripInfoElement = (points) => {
 };
 
 export default class TripInfoView extends AbstractView {
-  constructor(point) {
+  constructor(pointsModel) {
     super();
-    this._point = point;
+    // this._pointsModel = pointsModel;
+    this._pointsModel = null;
     this._element = null;
   }
 
   getTemplate() {
-    return createTripInfoElement(this._point);
+    return createTripInfoElement(this._pointsModel);
   }
 }

@@ -38,6 +38,7 @@ export default class Point {
   // init(point, offersModel, allDestinations) {
   init(point) {
 
+    debugger;
     const prevPointComponent = this._pointComponent;
     const prevPointEditComponent = this._editComponent;
 

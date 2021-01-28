@@ -22,13 +22,15 @@ export default class SiteMenuView extends Abstract {
   }
 
   setActiveMenu(menuType) {
-    this._menuLinks.forEach((element) => {
-      if (element.dataset.type === menuType) {
-        element.classList.add(`trip-tabs__btn--active`);
-      } else {
-        element.classList.remove(`trip-tabs__btn--active`);
-      }
-    });
+    if (this._menuLinks) {
+      this._menuLinks.forEach((element) => {
+        if (element.dataset.type === menuType) {
+          element.classList.add(`trip-tabs__btn--active`);
+        } else {
+          element.classList.remove(`trip-tabs__btn--active`);
+        }
+      });
+    }
   }
 
   setAddNewButtonState(isDisables) {

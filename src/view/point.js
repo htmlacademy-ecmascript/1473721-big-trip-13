@@ -16,13 +16,6 @@ const createOffersList = (offers) => {
   }, ``);
 };
 
-// const getFavorite = (state) => {
-//   let result = ``;
-//   // eslint-disable-next-line no-unused-expressions
-//   state ? result = `event__favorite-btn--active` : result = ``;
-//   return result;
-// };
-
 const isFavorite = (favorite) => {
   return favorite ? `event__favorite-btn--active` : ``;
 };
@@ -36,7 +29,7 @@ const createPoint = ({
   dateFrom,
   dateTo
 }) => {
-
+  console.log(type);
   return `<li class="trip-events__item">
   <div class="event">
     <time class="event__date" datetime="${formDate(dateFrom, `YYYY-MM-DD`)}">${formDate(dateFrom, `MMM DD`)}</time>
@@ -76,6 +69,7 @@ export default class PointView extends Smart {
   constructor(point) {
     super();
     this._point = point;
+    debugger;
     this._element = null;
     this._editClickHandler = this._editClickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
