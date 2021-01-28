@@ -1,4 +1,4 @@
-import {PointType, pointTypeResource, PointField} from "../mock/task.js";
+import {PointType, pointTypeResource} from "../const.js";
 import Smart from "./smart.js";
 import {getOfferId} from "../utils/render.js";
 import {formDate} from "../utils/task.js";
@@ -18,7 +18,7 @@ const DEFAULT_POINT = {
       }
     ]},
   favorite: false,
-  id: Date.now() + parseInt(Math.random() * 10000, 10),
+  // id: ,
   options: [
     {
       title: `Choose comfort class`,
@@ -29,7 +29,7 @@ const DEFAULT_POINT = {
   type: `drive`,
 };
 
-const createOffersList = (selectedOffers, offers, id) => {
+const createOffersList = (selectedOffers, offers, id, isDisabled) => {
   if (selectedOffers) {
     return offers.reduce((acc, {title, price}) => {
 
@@ -38,7 +38,7 @@ const createOffersList = (selectedOffers, offers, id) => {
       const offerId = getOfferId(title, id);
 
       acc += `<div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="${offerId}" type="checkbox" name="event-offer-${title}" ${checkedValue}>
+        <input class="event__offer-checkbox  visually-hidden" id="${offerId}" type="checkbox" name="event-offer-${title}" ${checkedValue} ${isDisabled ? `disabled` : ``}>
         <label class="event__offer-label" for="${offerId}">
           <span class="event__offer-title">${title}</span>
           &plus;&euro;&nbsp;
@@ -53,14 +53,14 @@ const createOffersList = (selectedOffers, offers, id) => {
   }
 };
 
-const createEventsTypeList = (events, selectedEvent, id) => {
+const createEventsTypeList = (events, selectedEvent, id, isDisabled) => {
   return events.reduce((acc, event) => {
 
     const checkedValue = event === selectedEvent ? `checked` : ``;
 
     acc += `<div class="event__type-item">
     <input id="event-type-${event}-${id}" class="event__type-input  visually-hidden" type="radio"
-      name="event-type" value="${event}" ${checkedValue}>
+      name="event-type" value="${event}" ${checkedValue} ${isDisabled ? `disabled` : ``}>
     <label class="event__type-label  event__type-label--${event}" for="event-type-${event}-${id}">${pointTypeResource[event]}</label>
     </div>`;
 
@@ -68,20 +68,20 @@ const createEventsTypeList = (events, selectedEvent, id) => {
   }, ``);
 };
 
-const createDestinitionList = (destinations) => {
+const createDestinitionList = (destinations, isDisabled) => {
   return destinations.reduce((acc, destination) => {
 
-    acc += `<option value="${destination.name}"></option>`;
+    acc += `<option value="${destination.name}${isDisabled ? `disabled` : ``}"></option>`;
 
     return acc;
   }, ``);
 };
 
-const getViewEditing = (flag) => {
+const getViewEditing = (flag, isDisabled, isSaving, isDeleting) => {
   if (flag) {
-    return `<button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-    <button class="event__reset-btn" type="reset">Delete</button>
-    <button class="event__rollup-btn" type="button">`;
+    return `<button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? `disabled` : ``}> ${isSaving ? `Saving...` : `Save`}</button>
+    <button class="event__reset-btn" type="reset" ${isDisabled ? `disabled` : ``}> ${isDeleting ? `Deleting...` : `Delete`}</button>
+    <button class="event__rollup-btn" type="button" ${isDisabled ? `disabled` : ``}></button>`;
   } else {
     return `<button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
     <button class="event__reset-btn" type="reset">Cancel</button>`;
@@ -115,7 +115,7 @@ const createEditingPointElement = ({type = PointType.TAXI,
   dateTo,
   price = `0`,
   destination,
-  options: selectedOffers}, offers, destinations, isEditViewMode) => {
+  options: selectedOffers}, offers, destinations, isEditViewMode, {isDisabled, isSaving, isDeleting}) => {
 
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -126,12 +126,12 @@ const createEditingPointElement = ({type = PointType.TAXI,
         <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png"
           alt="Event type icon">
       </label>
-      <input class="event__type-toggle visually-hidden" id="event-type-toggle-${id}" type="checkbox">
+      <input class="event__type-toggle visually-hidden" id="event-type-toggle-${id}" type="checkbox" ${isDisabled ? `disabled` : ``}>
 
       <div class="event__type-list">
         <fieldset class="event__type-group">
           <legend class="visually-hidden">Event type</legend>
-          ${createEventsTypeList(Object.values(PointType), type, id)}
+          ${createEventsTypeList(Object.values(PointType), type, id, isDisabled)}
         </fieldset>
       </div>
     </div>
@@ -141,20 +141,20 @@ const createEditingPointElement = ({type = PointType.TAXI,
        ${type}
       </label>
       <input class="event__input  event__input--destination" id="event-destination-${id}" type="text"
-        name="event-destination" value="${destination.name}" list="destination-list-${id}">
+        name="event-destination" value="${destination.name}" list="destination-list-${id}" ${isDisabled ? `disabled` : ``}>
       <datalist id="destination-list-${id}">
-        ${createDestinitionList(destinations)}
+        ${createDestinitionList(destinations, isDisabled)}
       </datalist>
     </div>
 
     <div class="event__field-group  event__field-group--time">
       <label class="visually-hidden" for="event-start-time-${id}">From</label>
       <input class="event__input  event__input--time" id="event-start-time-${id}" type="text"
-        name="event-start-time" value="${formDate(dateFrom, `DD/MM/YY HH:mm`)}">
+        name="event-start-time" value="${formDate(dateFrom, `DD/MM/YY HH:mm`)}" ${isDisabled ? `disabled` : ``}>
       &mdash;
       <label class="visually-hidden" for="event-end-time-${id}">To</label>
       <input class="event__input  event__input--time" id="event-end-time-${id}" type="text"
-        name="event-end-time" value="${formDate(dateTo, `DD/MM/YY HH:mm`)}">
+        name="event-end-time" value="${formDate(dateTo, `DD/MM/YY HH:mm`)}" ${isDisabled ? `disabled` : ``}>
     </div>
 
     <div class="event__field-group  event__field-group--price">
@@ -163,16 +163,16 @@ const createEditingPointElement = ({type = PointType.TAXI,
         &euro;
       </label>
       <input class="event__input  event__input--price" id="event-price-${id}" type="number" name="event-price"
-        value="${price}">
+        value="${price}" ${isDisabled ? `disabled` : ``}>
     </div>
-    ${getViewEditing(isEditViewMode)}
+    ${getViewEditing(isEditViewMode, isDisabled, isSaving, isDeleting)}
   </header>
   <section class="event__details">
     <section class="event__section  event__section--offers">
       <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
       <div class="event__available-offers">
-      ${createOffersList(selectedOffers, offers, id)}
+      ${createOffersList(selectedOffers, offers, id, isDisabled)}
       </div>
     </section>
 
@@ -193,10 +193,15 @@ export default class EditPointView extends Smart {
     this._element = null;
     this._datepickerFrom = null;
     this._datepickerTo = null;
+    this._data = EditPointView.parsePointToData(this._point);
 
     this._offersModel = offersModel;
     this._destinationsModel = destinationsModel;
     this._isEditViewMode = isEditViewMode;
+
+    this._isDisabled = false;
+    this._isSaving = false;
+    this._isDeleting = false;
 
     this._formSubmitClickHandler = this._formSubmitClickHandler.bind(this);
     this._formCancelClickHandler = this._formCancelClickHandler.bind(this);
@@ -216,11 +221,13 @@ export default class EditPointView extends Smart {
   }
 
   getTemplate() {
-    return createEditingPointElement(this._point, this.getOffersByType(), this.getDistinationByType(false), this._isEditViewMode);
+    // return createEditingPointElement(this._point, this.getOffersByType(), this.getDistinationByType(false), this._isEditViewMode, this._isDisabled, this._isSaving, this._isDeleting);
+    return createEditingPointElement(this._point, this.getOffersByType(), this.getDistinationByType(false), this._isEditViewMode, this._data);
   }
 
   getOffersByType() {
     const offerByType = this._offersModel.getOffers().find((offer) => offer.type === this._point.type);
+    // const offerByType = this._offersModel.getOffers().find((offer) => offer.type === this._data.type);/
 
     if (offerByType) {
       return offerByType.offers;
@@ -274,6 +281,8 @@ export default class EditPointView extends Smart {
           [`time_24hr`]: true,
           maxDate: this._point.dateTo,
           defaultDate: this._point.dateFrom,
+          // maxDate: this._data.dateTo,
+          // defaultDate: this._data.dateFrom,
           onChange: this._dateFromChangeHandler
         }
     );
@@ -285,6 +294,8 @@ export default class EditPointView extends Smart {
           dateFormat: `d/m/y H:i`,
           minDate: this._point.dateFrom,
           defaultDate: this._point.dateTo,
+          // minDate: this._data.dateFrom,
+          // defaultDate: this._data.dateTo,
           onChange: this._dateToChangeHandler
         }
     );
@@ -297,6 +308,7 @@ export default class EditPointView extends Smart {
 
     const options = offersByType.filter(({title}) => {
       return checkedOffersIds.some((checkedOffersId) => checkedOffersId === getOfferId(title, this._point.id));
+      // return checkedOffersIds.some((checkedOffersId) => checkedOffersId === getOfferId(title, this._data.id));
     });
 
     this.updateData({
@@ -321,7 +333,7 @@ export default class EditPointView extends Smart {
   _typeChangeHandler(evt) {
     evt.preventDefault();
     this.updateData({
-      type: evt.target.value,
+      type: evt.target.value
     });
     this._offerClickHandler();
   }
@@ -342,7 +354,6 @@ export default class EditPointView extends Smart {
     this.updateData({
       destination: this.getDistinationByType(true, evt.target.value)
     });
-    console.log(this._point);
   }
 
   _priceChangeHandler(evt) {
@@ -360,8 +371,21 @@ export default class EditPointView extends Smart {
     this._setDatepicker();
   }
 
-  static parse(data) {
+  static parsePointToData(data) {
+    return Object.assign({}, data, {
+      isDisabled: false,
+      isSaving: false,
+      isDeleting: false
+    });
+  }
+
+  static parseDataToPoint(data) {
     data = Object.assign({}, data);
+
+    delete data.isDisabled;
+    delete data.isSaving;
+    delete data.isDeleting;
+
     return data;
   }
 
@@ -375,13 +399,19 @@ export default class EditPointView extends Smart {
 
   _formSubmitClickHandler(evt) {
     evt.preventDefault();
-    this._callback.submitClick(EditPointView.parse(this._point));
+    // this._data.isDisabled = true;
+    // this._data.isSaving = true;
+    this._callback.submitClick(EditPointView.parseDataToPoint(this._point));
+    // this._callback.submitClick(EditPointView.parseDataToPoint(this._data));
   }
 
   _formDeleteClickHandler(evt) {
     evt.preventDefault();
     if (this._isEditViewMode) {
-      this._callback.deleteClick(EditPointView.parse(this._point));
+      this._callback.deleteClick(EditPointView.parseDataToPoint(this._point));
+      // this._callback.deleteClick(EditPointView.parseDataToPoint(this._data));
+      // this._isDisabled = true;
+      // this._isDeleting = true;
     } else {
       this._callback.cancelClick();
     }

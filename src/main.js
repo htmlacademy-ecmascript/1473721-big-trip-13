@@ -1,4 +1,4 @@
-import {generatePoint, getOffers, allDestinations, UpdateType} from "./mock/task.js";
+import {UpdateType, MenuItem} from "./const.js";
 import RoutePresenter from "./presenter/route.js";
 import FilterPresenter from "./presenter/filter.js";
 import {remove, render, RenderPosition} from "./utils/render.js";
@@ -11,20 +11,13 @@ import PointsModel from "./model/points.js";
 import OffersModel from "./model/offers.js";
 import DestinationsModel from "./model/destinations.js";
 import FilterModel from "./model/filter.js";
-import {MenuItem} from "./const.js";
 import {FilterType} from "./utils/task.js";
 import Api from "./api.js";
 
-// const POINT_COUNT = 3;
-const AUTHORIZATION = `Basic VGVJGhwdgjwgd3647`;
+const AUTHORIZATION = `Basic VGVJGhwdgjwgd364`;
 const END_POINT = `https://13.ecmascript.pages.academy/big-trip`;
 
 const api = new Api(END_POINT, AUTHORIZATION);
-
-// const points = new Array(POINT_COUNT).fill().map(generatePoint);
-
-// const allOffers = getOffers();
-// const destinations = allDestinations;
 
 const pointsModel = new PointsModel();
 
@@ -46,7 +39,7 @@ const siteMenu = new SiteMenuView();
 render(tripEvents, tripEventList);
 
 const siteListElement = tripEventList;
-// const routePresenter = new RoutePresenter(siteListElement, pointsModel, offersModel, destinationsModel, filtersModel);
+
 const routePresenter = new RoutePresenter(siteListElement, pointsModel, offersModel, destinationsModel, filtersModel, api);
 const filterPresenter = new FilterPresenter(tripControlsElement, filtersModel, pointsModel);
 
@@ -108,12 +101,11 @@ api.getPoints()
   render(tripControlsElement, siteMenu, RenderPosition.AFTERBEGIN);
   siteMenu.setActiveMenu(MenuItem.TABLE);
   siteMenu.setMenuClickHandler(handleSiteMenuClick);
+})
+.catch(() => {
+  pointsModel.setPoints(UpdateType.INIT, []);
+  render(mainElement, new TripInfoView(pointsModel.getPoints()), RenderPosition.AFTERBEGIN);
+  render(tripControlsElement, siteMenu, RenderPosition.AFTERBEGIN);
+  siteMenu.setActiveMenu(MenuItem.TABLE);
+  siteMenu.setMenuClickHandler(handleSiteMenuClick);
 });
-// .catch(() => {
-//   debugger;
-//   pointsModel.setPoints(UpdateType.INIT, []);
-//   render(mainElement, new TripInfoView(pointsModel.getPoints()), RenderPosition.AFTERBEGIN);
-//   render(tripControlsElement, siteMenu, RenderPosition.AFTERBEGIN);
-//   siteMenu.setActiveMenu(MenuItem.TABLE);
-//   siteMenu.setMenuClickHandler(handleSiteMenuClick);
-// });

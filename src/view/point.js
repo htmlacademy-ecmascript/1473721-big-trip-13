@@ -1,5 +1,4 @@
-import {PointType} from "../mock/task.js";
-// import AbstractView from "./abstract.js";
+import {PointType} from "../const.js";
 import {formDate, getDuration} from "../utils/task.js";
 import Smart from "./smart.js";
 

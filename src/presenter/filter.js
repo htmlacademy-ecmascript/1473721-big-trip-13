@@ -3,7 +3,7 @@ import {render, replace, remove} from "../utils/render.js";
 // import {filter} from "../utils/filter.js";
 
 import {FilterType} from "../utils/task.js";
-import {UpdateType} from "../mock/task.js";
+import {UpdateType} from "../const.js";
 
 export default class Filter {
   constructor(filterContainer, filterModel, pointsModel) {

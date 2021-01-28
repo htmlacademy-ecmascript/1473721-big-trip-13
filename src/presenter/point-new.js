@@ -1,7 +1,7 @@
 import {remove, renderNewEditPoint} from "../utils/render.js";
 import EditPointView from "../view/editing-point.js";
 import {KEY_VALUE} from "./point.js";
-import {UserAction, UpdateType} from "../mock/task.js";
+import {UserAction, UpdateType} from "../const.js";
 
 export default class PointNew {
   constructor(pointsContainer, changeData, offersModel, destinations) {
@@ -42,7 +42,8 @@ export default class PointNew {
     this._changeData(
         UserAction.ADD_POINT,
         UpdateType.MAJOR,
-        Object.assign({id: new Date().valueOf()}, point)
+        // Object.assign({id: new Date().valueOf()}, point)
+        point
     );
   }
 
@@ -58,6 +59,25 @@ export default class PointNew {
       this._editComponent.reset(this._point);
       this.destroy();
     }
+  }
+
+  setSaving() {
+    this._editComponent.updateData({
+      isDisabled: true,
+      isSaving: true
+    });
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this._editComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false
+      });
+    };
+
+    this._eitComponent.shake(resetFormState);
   }
 
   destroy() {

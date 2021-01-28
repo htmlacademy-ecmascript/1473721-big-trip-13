@@ -1,7 +1,7 @@
 import {render, remove, replace} from "../utils/render.js";
 import EditPointView from "../view/editing-point.js";
 import PointView from "../view/point.js";
-import {UserAction, UpdateType} from "../mock/task.js";
+import {UserAction, UpdateType} from "../const.js";
 
 export const KEY_VALUE = {
   ESCAPE: `Escape`,
@@ -11,6 +11,12 @@ export const KEY_VALUE = {
 const Mode = {
   DEFAULT: `DEFAULT`,
   EDITING: `EDITING`
+};
+
+export const State = {
+  SAVING: `SAVING`,
+  DELETING: `DELETING`,
+  ABORTING: `ABORTING`
 };
 
 export default class Point {
@@ -58,10 +64,40 @@ export default class Point {
       replace(this._pointComponent, prevPointComponent);
     }
     if (this._mode === Mode.EDITING) {
-      replace(this._editComponent, prevPointEditComponent);
+      // replace(this._editComponent, prevPointEditComponent);
+      replace(this._pointComponent, prevPointEditComponent);
+      this._mode = Mode.DEFAULT;
     }
     remove(prevPointComponent);
     remove(prevPointEditComponent);
+  }
+
+  setViewState(state) {
+    const resetFormState = () => {
+      this._editComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false
+      });
+    };
+    switch (state) {
+      case State.SAVING:
+        this._editComponent.updateData({
+          isDisabled: true,
+          isSaving: true
+        });
+        break;
+      case State.DELETING:
+        this._editComponent.updateData({
+          isDisabled: true,
+          isDeleting: true
+        });
+        break;
+      case State.ABORTING:
+        this._pointComponent.shake(resetFormState);
+        this._editComponent.shake(resetFormState);
+        break;
+    }
   }
 
   _onEscKeyDown(evt) {
@@ -93,7 +129,7 @@ export default class Point {
         isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
         point
     );
-    this._replaceFormToPoint();
+    // this._replaceFormToPoint();
   }
 
   _onEditClick() {
