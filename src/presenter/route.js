@@ -131,9 +131,9 @@ export default class Route {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        console.log(this._pointsPresenter.length);
         console.log(update.id);
-        // console.log(this._pointsPresenter[update.id]);
+        console.log(this._pointsPresenter.length);
+        console.log(this._pointsPresenter[update.id]);
         this._pointsPresenter[update.id].setViewState(PointPresenterViewState.SAVING);
         this._api.updatePoint(update)
         .then((response) => {
@@ -144,6 +144,9 @@ export default class Route {
         });
         break;
       case UserAction.ADD_POINT:
+        console.log(update.id);
+        console.log(this._pointsPresenter.length);
+        console.log(this._pointsPresenter[update.id]);
         this._pointNewPresenter.setSaving();
         this._api.addPoint(update)
         .then((response) => {
@@ -154,6 +157,9 @@ export default class Route {
         });
         break;
       case UserAction.DELETE_POINT:
+        console.log(update.id);
+        console.log(this._pointsPresenter.length);
+        console.log(this._pointsPresenter[update.id]);
         this._pointsPresenter[update.id].setViewState(PointPresenterViewState.DELETING);
         this._api.deletePoint(update)
         .then(() => {

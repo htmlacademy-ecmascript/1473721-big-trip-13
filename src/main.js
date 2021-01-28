@@ -14,7 +14,7 @@ import FilterModel from "./model/filter.js";
 import {FilterType} from "./utils/task.js";
 import Api from "./api.js";
 
-const AUTHORIZATION = `Basic VGVJGhwdgjwgd364`;
+const AUTHORIZATION = `Basic VGVJGhwdgjwgd364q`;
 const END_POINT = `https://13.ecmascript.pages.academy/big-trip`;
 
 const api = new Api(END_POINT, AUTHORIZATION);
