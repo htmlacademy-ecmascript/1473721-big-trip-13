@@ -18,7 +18,6 @@ const DEFAULT_POINT = {
       }
     ]},
   favorite: false,
-  // id: ,
   options: [
     {
       title: `Choose comfort class`,
@@ -189,11 +188,11 @@ const createEditingPointElement = ({type = PointType.TAXI,
 export default class EditPointView extends Smart {
   constructor(offersModel, destinationsModel, isEditViewMode, point = DEFAULT_POINT) {
     super();
-    this._point = point;
+    this._data = point;
     this._element = null;
     this._datepickerFrom = null;
     this._datepickerTo = null;
-    this._data = EditPointView.parsePointToData(this._point);
+    this._data = EditPointView.parsePointToData(this._data);
 
     this._offersModel = offersModel;
     this._destinationsModel = destinationsModel;
@@ -222,11 +221,11 @@ export default class EditPointView extends Smart {
 
   getTemplate() {
     // return createEditingPointElement(this._point, this.getOffersByType(), this.getDistinationByType(false), this._isEditViewMode, this._isDisabled, this._isSaving, this._isDeleting);
-    return createEditingPointElement(this._point, this.getOffersByType(), this.getDistinationByType(false), this._isEditViewMode, this._data);
+    return createEditingPointElement(this._data, this.getOffersByType(), this.getDistinationByType(false), this._isEditViewMode, this._data);
   }
 
   getOffersByType() {
-    const offerByType = this._offersModel.getOffers().find((offer) => offer.type === this._point.type);
+    const offerByType = this._offersModel.getOffers().find((offer) => offer.type === this._data.type);
     // const offerByType = this._offersModel.getOffers().find((offer) => offer.type === this._data.type);/
 
     if (offerByType) {
@@ -279,10 +278,8 @@ export default class EditPointView extends Smart {
           enableTime: true,
           dateFormat: `d/m/y H:i`,
           [`time_24hr`]: true,
-          maxDate: this._point.dateTo,
-          defaultDate: this._point.dateFrom,
-          // maxDate: this._data.dateTo,
-          // defaultDate: this._data.dateFrom,
+          maxDate: this._data.dateTo,
+          defaultDate: this._data.dateFrom,
           onChange: this._dateFromChangeHandler
         }
     );
@@ -292,10 +289,8 @@ export default class EditPointView extends Smart {
           enableTime: true,
           [`time_24hr`]: true,
           dateFormat: `d/m/y H:i`,
-          minDate: this._point.dateFrom,
-          defaultDate: this._point.dateTo,
-          // minDate: this._data.dateFrom,
-          // defaultDate: this._data.dateTo,
+          minDate: this._data.dateFrom,
+          defaultDate: this._data.dateTo,
           onChange: this._dateToChangeHandler
         }
     );
@@ -307,7 +302,7 @@ export default class EditPointView extends Smart {
     const offersByType = this.getOffersByType();
 
     const options = offersByType.filter(({title}) => {
-      return checkedOffersIds.some((checkedOffersId) => checkedOffersId === getOfferId(title, this._point.id));
+      return checkedOffersIds.some((checkedOffersId) => checkedOffersId === getOfferId(title, this._data.id));
       // return checkedOffersIds.some((checkedOffersId) => checkedOffersId === getOfferId(title, this._data.id));
     });
 
@@ -401,14 +396,14 @@ export default class EditPointView extends Smart {
     evt.preventDefault();
     // this._data.isDisabled = true;
     // this._data.isSaving = true;
-    this._callback.submitClick(EditPointView.parseDataToPoint(this._point));
+    this._callback.submitClick(EditPointView.parseDataToPoint(this._data));
     // this._callback.submitClick(EditPointView.parseDataToPoint(this._data));
   }
 
   _formDeleteClickHandler(evt) {
     evt.preventDefault();
     if (this._isEditViewMode) {
-      this._callback.deleteClick(EditPointView.parseDataToPoint(this._point));
+      this._callback.deleteClick(EditPointView.parseDataToPoint(this._data));
       // this._callback.deleteClick(EditPointView.parseDataToPoint(this._data));
       // this._isDisabled = true;
       // this._isDeleting = true;

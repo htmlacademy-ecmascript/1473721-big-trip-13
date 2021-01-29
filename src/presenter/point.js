@@ -2,6 +2,8 @@ import {render, remove, replace} from "../utils/render.js";
 import EditPointView from "../view/editing-point.js";
 import PointView from "../view/point.js";
 import {UserAction, UpdateType} from "../const.js";
+import {isOnline} from "../utils/common.js";
+import {toast} from "../utils/toast/toast.js";
 
 export const KEY_VALUE = {
   ESCAPE: `Escape`,
@@ -64,7 +66,6 @@ export default class Point {
       replace(this._pointComponent, prevPointComponent);
     }
     if (this._mode === Mode.EDITING) {
-      // replace(this._editComponent, prevPointEditComponent);
       replace(this._pointComponent, prevPointEditComponent);
       this._mode = Mode.DEFAULT;
     }
@@ -84,7 +85,7 @@ export default class Point {
       case State.SAVING:
         this._editComponent.updateData({
           isDisabled: true,
-          isSaving: true
+          isSaving: true,
         });
         break;
       case State.DELETING:
@@ -114,6 +115,11 @@ export default class Point {
   }
 
   _onDeleteClick(point) {
+    if (!isOnline()) {
+      toast(`You can't delete point offline`);
+      return;
+    }
+
     this._changeData(
         UserAction.DELETE_POINT,
         UpdateType.MAJOR,
@@ -123,6 +129,11 @@ export default class Point {
   }
 
   _onSaveClick(point) {
+    if (!isOnline()) {
+      toast(`You can't save point offline`);
+      return;
+    }
+
     const isMinorUpdate = this._point.dateFrom !== point.dateFrom || this._point.dateTo !== point.dateTo || this._point.price !== point.price;
     this._changeData(
         UserAction.UPDATE_POINT,
@@ -133,6 +144,10 @@ export default class Point {
   }
 
   _onEditClick() {
+    if (!isOnline()) {
+      toast(`You can't edit point offline`);
+      return;
+    }
     this._replacePointToForm();
   }
 

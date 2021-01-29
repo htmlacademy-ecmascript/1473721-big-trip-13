@@ -12,12 +12,22 @@ import OffersModel from "./model/offers.js";
 import DestinationsModel from "./model/destinations.js";
 import FilterModel from "./model/filter.js";
 import {FilterType} from "./utils/task.js";
-import Api from "./api.js";
+import Api from "./api/api.js";
+import {isOnline} from "./utils/common.js";
+import {toast} from "./utils/toast/toast.js";
+import Store from "./api/store.js";
+import Provider from "./api/provider.js";
 
-const AUTHORIZATION = `Basic VGVJGhwdgjwgd364q`;
+const AUTHORIZATION = `Basic VGVJGhwdgjwgd36gr`;
 const END_POINT = `https://13.ecmascript.pages.academy/big-trip`;
+const STORE_PREFIX = `bigTrip-localstorage`;
+const STORE_VER = `v13`;
+const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
 
 const api = new Api(END_POINT, AUTHORIZATION);
+
+const store = new Store(STORE_NAME, window.localStorage);
+const apiWithProvider = new Provider(api, store);
 
 const pointsModel = new PointsModel();
 
@@ -35,12 +45,13 @@ let statisticsComponent = null;
 const tripEventList = new TripEventListView();
 tripEventList.init();
 const siteMenu = new SiteMenuView();
+const tripInfoView = new TripInfoView(pointsModel);
 
 render(tripEvents, tripEventList);
 
 const siteListElement = tripEventList;
 
-const routePresenter = new RoutePresenter(siteListElement, pointsModel, offersModel, destinationsModel, filtersModel, api);
+const routePresenter = new RoutePresenter(siteListElement, pointsModel, offersModel, destinationsModel, filtersModel, tripInfoView, apiWithProvider);
 const filterPresenter = new FilterPresenter(tripControlsElement, filtersModel, pointsModel);
 
 // render(mainElement, new TripInfoView(points), RenderPosition.AFTERBEGIN);
@@ -60,6 +71,11 @@ const handleSiteMenuClick = (menuItem) => {
       routePresenter.destroy();
       filtersModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
       routePresenter.init();
+      if (!isOnline()) {
+        toast(`You can't create new point offline`);
+        siteMenu.setActiveMenu(MenuItem.TASKS);
+        break;
+      }
       routePresenter.createPoint(handlePointNewFormClose);
       siteMenu.setAddNewButtonState(true);
       break;
@@ -83,29 +99,36 @@ const handleSiteMenuClick = (menuItem) => {
 filterPresenter.init();
 routePresenter.init();
 
-api.getOffers()
-.then((offers) => {
+Promise.all([api.getOffers(), api.getDestinations(), api.getPoints()]).then(([offers = [], destinations = [], points = []]) => {
+  debugger;
   offersModel.setOffers(offers);
-});
-
-api.getDestinations()
-.then((destinations) => {
   destinationsModel.setDestinations(destinations);
-});
-
-api.getPoints()
-.then((points) => {
   pointsModel.setPoints(UpdateType.INIT, points);
   // render(mainElement, new TripInfoView(pointsModel.getPoints()), RenderPosition.AFTERBEGIN);
-  render(mainElement, new TripInfoView(pointsModel), RenderPosition.AFTERBEGIN);
+  render(mainElement, tripInfoView, RenderPosition.AFTERBEGIN);
   render(tripControlsElement, siteMenu, RenderPosition.AFTERBEGIN);
   siteMenu.setActiveMenu(MenuItem.TABLE);
   siteMenu.setMenuClickHandler(handleSiteMenuClick);
 })
 .catch(() => {
   pointsModel.setPoints(UpdateType.INIT, []);
-  render(mainElement, new TripInfoView(pointsModel.getPoints()), RenderPosition.AFTERBEGIN);
+  render(mainElement, tripInfoView, RenderPosition.AFTERBEGIN);
   render(tripControlsElement, siteMenu, RenderPosition.AFTERBEGIN);
   siteMenu.setActiveMenu(MenuItem.TABLE);
   siteMenu.setMenuClickHandler(handleSiteMenuClick);
 });
+
+window.addEventListener(`load`, () => {
+  navigator.serviceWorker.register(`/sw.js`);
+});
+
+window.addEventListener(`online`, () => {
+  document.title = document.title.replace(` [offline]`, ``);
+  apiWithProvider.sync();
+});
+
+window.addEventListener(`offline`, () => {
+  document.title += ` [offline]`;
+});
+
+// render(mainElement, new TripInfoView(pointsModel), RenderPosition.AFTERBEGIN);

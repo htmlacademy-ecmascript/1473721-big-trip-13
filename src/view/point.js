@@ -71,7 +71,7 @@ const createPoint = ({
 export default class PointView extends Smart {
   constructor(point) {
     super();
-    this._point = point;
+    this._data = point;
     this._element = null;
     this._editClickHandler = this._editClickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
@@ -79,13 +79,13 @@ export default class PointView extends Smart {
   }
 
   getTemplate() {
-    return createPoint(this._point);
+    return createPoint(this._data);
   }
 
   toggleFavorite() {
-    let state = this._point.favorite;
+    let state = this._data.favorite;
     // eslint-disable-next-line no-unused-expressions
-    state === true ? this._point.favorite = false : this._point.favorite = true;
+    state === true ? this._data.favorite = false : this._data.favorite = true;
   }
 
   _editClickHandler(evt) {
@@ -96,9 +96,9 @@ export default class PointView extends Smart {
   _favoriteClickHandler(evt) {
     evt.preventDefault();
     this.updateData({
-      favorite: this._point.favorite ? false : true
+      favorite: this._data.favorite ? false : true
     });
-    this._callback.favoriteClick(this._point);
+    this._callback.favoriteClick(this._data);
   }
 
   setEditClickHandler(callback) {

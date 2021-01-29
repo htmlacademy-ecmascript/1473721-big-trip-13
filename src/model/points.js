@@ -1,5 +1,4 @@
 import Observer from "../utils/observer.js";
-import Offers from "./offers.js";
 
 export default class Points extends Observer {
   constructor() {

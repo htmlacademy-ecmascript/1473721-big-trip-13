@@ -9,8 +9,9 @@ import PointNewPresenter from "./point-new.js";
 import LoadingView from "../view/loading.js";
 
 export default class Route {
-  constructor(container, pointsModel, offersModel, destinationsModel, filtersModel, api) {
+  constructor(container, pointsModel, offersModel, destinationsModel, filtersModel, tripInfoView, api) {
     this._siteListElement = container;
+    this._tripInfoView = tripInfoView;
     this._pointsModel = pointsModel;
     this._offersModel = offersModel;
     this._filtersModel = filtersModel;
@@ -129,44 +130,39 @@ export default class Route {
   }
 
   _handleViewAction(actionType, updateType, update) {
+    const pointPresenter = this._pointsPresenter.find((element) => element.getId() === update.id);
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        console.log(update.id);
-        console.log(this._pointsPresenter.length);
-        console.log(this._pointsPresenter[update.id]);
-        this._pointsPresenter[update.id].setViewState(PointPresenterViewState.SAVING);
+        pointPresenter.setViewState(PointPresenterViewState.SAVING);
         this._api.updatePoint(update)
         .then((response) => {
           this._pointsModel.updatePoint(updateType, response);
+          this._tripInfoView.updateView({price: update.price, dateFrom: update.dateFrom});
         })
         .catch(() => {
-          this._pointsPresenter[update.id].setViewState(PointPresenterViewState.ABORTING);
+          pointPresenter.setViewState(PointPresenterViewState.ABORTING);
         });
         break;
       case UserAction.ADD_POINT:
-        console.log(update.id);
-        console.log(this._pointsPresenter.length);
-        console.log(this._pointsPresenter[update.id]);
         this._pointNewPresenter.setSaving();
         this._api.addPoint(update)
         .then((response) => {
           this._pointsModel.addPoint(updateType, response);
+          this._tripInfoView.updateView({price: update.price, dateFrom: update.dateFrom});
         })
         .catch(() => {
           this._pointNewPresenter.setAborting();
         });
         break;
       case UserAction.DELETE_POINT:
-        console.log(update.id);
-        console.log(this._pointsPresenter.length);
-        console.log(this._pointsPresenter[update.id]);
-        this._pointsPresenter[update.id].setViewState(PointPresenterViewState.DELETING);
+        pointPresenter.setViewState(PointPresenterViewState.DELETING);
         this._api.deletePoint(update)
         .then(() => {
           this._pointsModel.deletePoint(updateType, update);
+          this._tripInfoView.updateView({price: update.price, dateFrom: update.dateFrom});
         })
         .catch(() => {
-          this._pointsPresenter[update.id].setViewState(PointPresenterViewState.ABORTING);
+          pointPresenter.setViewState(PointPresenterViewState.ABORTING);
         });
         break;
     }

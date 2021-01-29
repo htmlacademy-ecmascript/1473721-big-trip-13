@@ -41,14 +41,16 @@ export default class TripSortView extends AbstractView {
   }
 
   _sortTypeChangeHandler(evt) {
-    if (evt.target.tagName !== `LABEL`) {
-      return;
-    }
+    if (evt.target.dataset.sortType) {
+      if (evt.target.tagName !== `LABEL`) {
+        return;
+      }
 
-    evt.preventDefault();
-    this._callback.sortTypeChange(evt.target.dataset.sortType);
-    document.querySelectorAll(`input[name="trip-sort"]`).forEach((element) => element.removeAttribute(`checked`));
-    document.querySelector(`input[value="${evt.target.dataset.sortType}"]`).toggleAttribute(`checked`);
+      evt.preventDefault();
+      this._callback.sortTypeChange(evt.target.dataset.sortType);
+      document.querySelectorAll(`input[name="trip-sort"]`).forEach((element) => element.removeAttribute(`checked`));
+      document.querySelector(`input[value="${evt.target.dataset.sortType}"]`).toggleAttribute(`checked`);
+    }
   }
 
   setSortTypeChangeHandler(callback) {
