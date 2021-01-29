@@ -6,11 +6,6 @@ const createTripEventListElement = () =>
 export default class TripEventListView extends AbstractView {
   constructor() {
     super();
-    this._element = null;
-  }
-
-  init() {
-    this._element = this.getElement();
   }
 
   getTemplate() {

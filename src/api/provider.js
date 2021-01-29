@@ -56,9 +56,9 @@ export default class Provider {
   updatePoint(point) {
     if (isOnline()) {
       return this._api.updatePoint(point)
-        .then((updatedPoin) => {
-          this._store.setItem(updatedPoin.id, PointsModel.adaptToServer(updatedPoin));
-          return updatedPoin;
+        .then((updatedPoint) => {
+          this._store.setItem(updatedPoint.id, PointsModel.adaptToServer(updatedPoint));
+          return updatedPoint;
         });
     }
 

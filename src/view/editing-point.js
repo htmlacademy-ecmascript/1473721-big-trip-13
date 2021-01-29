@@ -189,7 +189,6 @@ export default class EditPointView extends Smart {
   constructor(offersModel, destinationsModel, isEditViewMode, point = DEFAULT_POINT) {
     super();
     this._data = point;
-    this._element = null;
     this._datepickerFrom = null;
     this._datepickerTo = null;
     this._data = EditPointView.parsePointToData(this._data);

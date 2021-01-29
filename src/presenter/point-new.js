@@ -1,4 +1,4 @@
-import {remove, renderNewEditPoint} from "../utils/render.js";
+import {remove, render, RenderPosition} from "../utils/render.js";
 import EditPointView from "../view/editing-point.js";
 import {KEY_VALUE} from "./point.js";
 import {UserAction, UpdateType} from "../const.js";
@@ -32,7 +32,8 @@ export default class PointNew {
     this._editComponent.setCancelClickHandler(this._onCancelClick);
     this._editComponent.setDeleteClickHandler(this._onDeleteClick);
 
-    renderNewEditPoint(this._pointsContainer, this._editComponent);
+    const element = this._pointsContainer.getElement().querySelector(`.trip-events__item`);
+    render(this._pointsContainer, this._editComponent, RenderPosition.INSERT_BEFORE, element);
 
     document.addEventListener(`keydown`, this._onEscKeyDown);
   }

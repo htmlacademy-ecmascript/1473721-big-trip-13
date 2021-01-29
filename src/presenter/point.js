@@ -125,7 +125,7 @@ export default class Point {
         UpdateType.MAJOR,
         point
     );
-    this._replaceFormToPoint();
+    // this._replaceFormToPoint();
   }
 
   _onSaveClick(point) {

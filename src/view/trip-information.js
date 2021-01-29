@@ -116,7 +116,6 @@ const createTripInformationElement = () =>
 export default class TripInformationView extends Smart {
   constructor(pointsModel) {
     super();
-    this._element = null;
     this._pointsModel = pointsModel;
   }
 
@@ -125,7 +124,6 @@ export default class TripInformationView extends Smart {
     this._element = this.getElement();
     this._labels = [...new Set(this._pointsModel.map((point) => point.type.toUpperCase()))];
     this._setCharts();
-    // this.hide();
   }
 
   getTemplate() {

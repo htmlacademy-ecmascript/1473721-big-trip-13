@@ -18,7 +18,7 @@ import {toast} from "./utils/toast/toast.js";
 import Store from "./api/store.js";
 import Provider from "./api/provider.js";
 
-const AUTHORIZATION = `Basic VGVJGhwdgjwgd36gr`;
+const AUTHORIZATION = `Basic VGgJGhwdgjwgd34gr`;
 const END_POINT = `https://13.ecmascript.pages.academy/big-trip`;
 const STORE_PREFIX = `bigTrip-localstorage`;
 const STORE_VER = `v13`;
@@ -43,15 +43,15 @@ const tripEvents = siteMainElement.querySelector(`.trip-events`);
 let statisticsComponent = null;
 
 const tripEventList = new TripEventListView();
-tripEventList.init();
 const siteMenu = new SiteMenuView();
 const tripInfoView = new TripInfoView(pointsModel);
+tripInfoView.init();
 
 render(tripEvents, tripEventList);
 
 const siteListElement = tripEventList;
 
-const routePresenter = new RoutePresenter(siteListElement, pointsModel, offersModel, destinationsModel, filtersModel, tripInfoView, apiWithProvider);
+const routePresenter = new RoutePresenter(siteListElement, pointsModel, offersModel, destinationsModel, filtersModel, apiWithProvider);
 const filterPresenter = new FilterPresenter(tripControlsElement, filtersModel, pointsModel);
 
 // render(mainElement, new TripInfoView(points), RenderPosition.AFTERBEGIN);
@@ -62,6 +62,8 @@ render(tripControlsElement, new HeaderMenuView(), RenderPosition.AFTERBEGIN);
 const handlePointNewFormClose = () => {
   siteMenu.setAddNewButtonState(false);
   siteMenu.setActiveMenu(MenuItem.TABLE);
+  routePresenter.renderNoPoints(false);
+
 };
 
 const handleSiteMenuClick = (menuItem) => {
@@ -99,12 +101,10 @@ const handleSiteMenuClick = (menuItem) => {
 filterPresenter.init();
 routePresenter.init();
 
-Promise.all([api.getOffers(), api.getDestinations(), api.getPoints()]).then(([offers = [], destinations = [], points = []]) => {
-  debugger;
+Promise.all([api.getOffers(), api.getDestinations(), apiWithProvider.getPoints()]).then(([offers = [], destinations = [], points = []]) => {
   offersModel.setOffers(offers);
   destinationsModel.setDestinations(destinations);
   pointsModel.setPoints(UpdateType.INIT, points);
-  // render(mainElement, new TripInfoView(pointsModel.getPoints()), RenderPosition.AFTERBEGIN);
   render(mainElement, tripInfoView, RenderPosition.AFTERBEGIN);
   render(tripControlsElement, siteMenu, RenderPosition.AFTERBEGIN);
   siteMenu.setActiveMenu(MenuItem.TABLE);
@@ -118,17 +118,17 @@ Promise.all([api.getOffers(), api.getDestinations(), api.getPoints()]).then(([of
   siteMenu.setMenuClickHandler(handleSiteMenuClick);
 });
 
-window.addEventListener(`load`, () => {
-  navigator.serviceWorker.register(`/sw.js`);
-});
+// window.addEventListener(`load`, () => {
+//   navigator.serviceWorker.register(`/sw.js`);
+// });
 
-window.addEventListener(`online`, () => {
-  document.title = document.title.replace(` [offline]`, ``);
-  apiWithProvider.sync();
-});
+// window.addEventListener(`online`, () => {
+//   document.title = document.title.replace(` [offline]`, ``);
+//   apiWithProvider.sync();
+// });
 
-window.addEventListener(`offline`, () => {
-  document.title += ` [offline]`;
-});
+// window.addEventListener(`offline`, () => {
+//   document.title += ` [offline]`;
+// });
 
 // render(mainElement, new TripInfoView(pointsModel), RenderPosition.AFTERBEGIN);

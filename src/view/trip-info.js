@@ -44,7 +44,7 @@ const createTripInfoElement = (points) => {
   <div class="trip-info__main">
     <h1 class="trip-info__title">${getTripInfo()}</h1>
 
-    <p class="trip-info__dates">${points[ItemValue.FISRT] ? formDate(points[ItemValue.FISRT].dateFrom, `DD MMM`) : ``}&nbsp;&mdash;&nbsp;${points[ItemValue.LAST] ? formDate(points[ItemValue.LAST].dateFrom, `DD MMM`) : ``}</p>
+    <p class="trip-info__dates">${points[ItemValue.FISRT] ? formDate(points[ItemValue.FISRT].dateFrom, `DD MMM`) : ``}&nbsp;&mdash;&nbsp;${points[ItemValue.LAST] ? formDate(points[ItemValue.LAST].dateTo, `DD MMM`) : ``}</p>
   </div>
 
   <p class="trip-info__cost">
@@ -57,18 +57,24 @@ export default class TripInfoView extends Smart {
   constructor(pointsModel) {
     super();
     this._pointsModel = pointsModel;
-    this._element = null;
+    this._data = {points: pointsModel.getPoints()};
+
+    this._handleModelEvent = this._handleModelEvent.bind(this);
   }
 
-  updateView(price, dateFrom) {
-    this.updateData(price, dateFrom);
+  getTemplate() {
+    return createTripInfoElement(this._data.points);
   }
 
   restoreHandlers() {
     return;
   }
 
-  getTemplate() {
-    return createTripInfoElement(this._pointsModel.getPoints());
+  init() {
+    this._pointsModel.addObserver(this._handleModelEvent);
+  }
+
+  _handleModelEvent() {
+    this.updateData({points: this._pointsModel.getPoints()});
   }
 }

@@ -9,9 +9,9 @@ import PointNewPresenter from "./point-new.js";
 import LoadingView from "../view/loading.js";
 
 export default class Route {
-  constructor(container, pointsModel, offersModel, destinationsModel, filtersModel, tripInfoView, api) {
+  constructor(container, pointsModel, offersModel, destinationsModel, filtersModel, api) {
     this._siteListElement = container;
-    this._tripInfoView = tripInfoView;
+    // this._tripInfoView = tripInfoView;
     this._pointsModel = pointsModel;
     this._offersModel = offersModel;
     this._filtersModel = filtersModel;
@@ -77,14 +77,18 @@ export default class Route {
   }
 
   _renderPointsList() {
-    const points = this._getPoints();
+    this.renderNoPoints(true);
+    this._renderPoints(this._getPoints());
+  }
 
-    if (points.length === 0) {
+  renderNoPoints(state) {
+    const points = this._getPoints();
+    const condition = state ? points.length === 0 && !this._noPointView : points.length === 0;
+    if (condition) {
       this._noPointView = new NoPointView();
       render(this._siteListElement, this._noPointView);
       return;
     }
-    this._renderPoints(points);
   }
 
   _renderRoute() {
@@ -137,7 +141,7 @@ export default class Route {
         this._api.updatePoint(update)
         .then((response) => {
           this._pointsModel.updatePoint(updateType, response);
-          this._tripInfoView.updateView({price: update.price, dateFrom: update.dateFrom});
+          // this._tripInfoView.updateView({price: update.price, dateFrom: update.dateFrom});
         })
         .catch(() => {
           pointPresenter.setViewState(PointPresenterViewState.ABORTING);
@@ -148,7 +152,7 @@ export default class Route {
         this._api.addPoint(update)
         .then((response) => {
           this._pointsModel.addPoint(updateType, response);
-          this._tripInfoView.updateView({price: update.price, dateFrom: update.dateFrom});
+          // this._tripInfoView.updateView({price: update.price, dateFrom: update.dateFrom});
         })
         .catch(() => {
           this._pointNewPresenter.setAborting();
@@ -159,7 +163,7 @@ export default class Route {
         this._api.deletePoint(update)
         .then(() => {
           this._pointsModel.deletePoint(updateType, update);
-          this._tripInfoView.updateView({price: update.price, dateFrom: update.dateFrom});
+          // this._tripInfoView.updateView({price: update.price, dateFrom: update.dateFrom});
         })
         .catch(() => {
           pointPresenter.setViewState(PointPresenterViewState.ABORTING);

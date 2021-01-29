@@ -3,7 +3,8 @@ import Abstract from "../view/abstract.js";
 export const RenderPosition = {
   AFTERBEGIN: `afterbegin`,
   BEFOREEND: `beforeend`,
-  REFERENCE: `reference`
+  REFERENCE: `reference`,
+  INSERT_BEFORE: `insertBefore`
 };
 
 export const renderTemplate = (container, template, place = RenderPosition.BEFOREEND) => {
@@ -14,7 +15,7 @@ export const renderTemplate = (container, template, place = RenderPosition.BEFOR
   container.insertAdjacentHTML(place, template);
 };
 
-export const render = (container, template, place = RenderPosition.BEFOREEND) => {
+export const render = (container, template, place = RenderPosition.BEFOREEND, element) => {
   if (container instanceof Abstract) {
     container = container.getElement();
   }
@@ -30,21 +31,23 @@ export const render = (container, template, place = RenderPosition.BEFOREEND) =>
     case RenderPosition.AFTERBEGIN:
       container.prepend(template);
       break;
+    case RenderPosition.INSERT_BEFORE:
+      container.insertBefore(template, element);
   }
 };
 
-export const renderNewEditPoint = (container, template) => {
-  if (container instanceof Abstract) {
-    container = container.getElement();
-  }
+// export const renderNewEditPoint = (container, template) => {
+//   if (container instanceof Abstract) {
+//     container = container.getElement();
+//   }
 
-  if (template instanceof Abstract) {
-    template = template.getElement();
-  }
+//   if (template instanceof Abstract) {
+//     template = template.getElement();
+//   }
 
-  const element = container.querySelector(`.trip-events__item`);
-  container.insertBefore(template, element);
-};
+//   const element = container.querySelector(`.trip-events__item`);
+//   container.insertBefore(template, element);
+// };
 
 export const replace = (newChild, oldChild) => {
   if (oldChild instanceof Abstract) {
