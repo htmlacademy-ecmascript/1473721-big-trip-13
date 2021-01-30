@@ -36,19 +36,6 @@ export const render = (container, template, place = RenderPosition.BEFOREEND, el
   }
 };
 
-// export const renderNewEditPoint = (container, template) => {
-//   if (container instanceof Abstract) {
-//     container = container.getElement();
-//   }
-
-//   if (template instanceof Abstract) {
-//     template = template.getElement();
-//   }
-
-//   const element = container.querySelector(`.trip-events__item`);
-//   container.insertBefore(template, element);
-// };
-
 export const replace = (newChild, oldChild) => {
   if (oldChild instanceof Abstract) {
     oldChild = oldChild.getElement();

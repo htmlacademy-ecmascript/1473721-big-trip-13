@@ -13,5 +13,9 @@ export default class Destinations extends Observer {
   getDestinations() {
     return this._destinations;
   }
+
+  static getDestination(destination) {
+    return destination;
+  }
 }
 

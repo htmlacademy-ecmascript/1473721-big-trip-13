@@ -1,194 +1,81 @@
-import dayjs from "dayjs";
-import duration from "dayjs/plugin/duration.js";
 import Smart from "./smart.js";
-import Chart from "chart.js";
-import ChartDataLabels from 'chartjs-plugin-datalabels';
+import {sortByDay} from "../utils/task.js";
+import {formDate} from "../utils/task.js";
 
-dayjs.extend(duration);
+const COUNT_TRIP_CITY = 3;
 
-const TextChart = {
-  MONEY: `MONEY`,
-  TYPE: `TYPE`,
-  TIME_SPEND: `TIME-SPEND`
+const getCost = (points) => {
+  return points.reduce((acc, point) => {
+    acc += point.price;
+    return acc;
+  }, null);
 };
 
-const getDuration = (diff) => {
-  return `${ dayjs.duration(diff).days()}D`;
-};
+const createTripInfoElement = (points) => {
+  const first = 0;
+  const lengthZero = 0;
+  const last = points.length - 1;
 
-const renderChart = (text, type, labels, data) => {
-  const getSymbol = (typeText, val) => {
-    switch (typeText) {
-      case (TextChart.MONEY):
-        return `€ ${val}`;
-      case (TextChart.TYPE):
-        return `${val}x`;
-      case (TextChart.TIME_SPEND):
-        return getDuration(val);
-      default:
-        return `€ ${val}`;
-    }
-  };
+  points.sort(sortByDay);
 
-  return new Chart(type, {
-    plugins: [ChartDataLabels],
-    type: `horizontalBar`,
-    data: {
-      labels,
-      datasets: [{
-        data,
-        backgroundColor: `#ffffff`,
-        hoverBackgroundColor: `#ffffff`,
-        anchor: `start`
-      }]
-    },
-    options: {
-      plugins: {
-        datalabels: {
-          font: {
-            size: 13
-          },
-          color: `#000000`,
-          anchor: `end`,
-          align: `start`,
-          formatter: (val) => getSymbol(text, val)
-        }
-      },
-      title: {
-        display: true,
-        text,
-        fontColor: `#000000`,
-        fontSize: 23,
-        position: `left`
-      },
-      scales: {
-        yAxes: [{
-          ticks: {
-            fontColor: `#000000`,
-            padding: 5,
-            fontSize: 13,
-          },
-          gridLines: {
-            display: false,
-            drawBorder: false
-          },
-          barThickness: 44,
-        }],
-        xAxes: [{
-          ticks: {
-            display: false,
-            beginAtZero: true,
-          },
-          gridLines: {
-            display: false,
-            drawBorder: false
-          },
-          minBarLength: 50
-        }],
-      },
-      legend: {
-        display: false
-      },
-      tooltips: {
-        enabled: false,
+  const getTripInfo = () => {
+    let info = ``;
+
+    if (points.length !== lengthZero) {
+      if (points.length <= COUNT_TRIP_CITY) {
+        info = points.map((point) => point.destination.name).join(` &mdash; `);
+      } else {
+        info = `${points[first].destination.name} &mdash; ... &mdash; ${points[last].destination.name}`;
       }
     }
-  });
+
+    return info;
+  };
+
+  let sectionInformation = ``;
+
+  if (points.length !== lengthZero) {
+    sectionInformation = `<section class="trip-main__trip-info  trip-info">
+    <div class="trip-info__main">
+      <h1 class="trip-info__title">${getTripInfo()}</h1>
+
+      <p class="trip-info__dates">${points[first] ? formDate(points[first].dateFrom, `DD MMM`) : ``}&nbsp;&mdash;&nbsp;${points[last] ? formDate(points[last].dateTo, `DD MMM`) : ``}</p>
+    </div>
+
+    <p class="trip-info__cost">
+      Total: &euro;&nbsp;<span class="trip-info__cost-value">${getCost(points)}</span>
+    </p>
+  </section>`;
+  }
+
+  return sectionInformation;
 };
 
-const createTripInformationElement = () =>
-  `<section class="statistics">
-  <h2 class="visually-hidden">Trip statistics</h2>
-
-  <div class="statistics__item statistics__item--money">
-    <canvas class="statistics__chart  statistics__chart--money" width="900"></canvas>
-  </div>
-
-  <div class="statistics__item statistics__item--transport">
-    <canvas class="statistics__chart  statistics__chart--transport" width="900"></canvas>
-  </div>
-
-  <div class="statistics__item statistics__item--time-spend">
-    <canvas class="statistics__chart  statistics__chart--time" width="900"></canvas>
-  </div>
-</section>`;
-
-export default class TripInformationView extends Smart {
+export default class TripInformation extends Smart {
   constructor(pointsModel) {
     super();
     this._pointsModel = pointsModel;
-  }
+    this._data = {points: pointsModel.getPoints()};
 
-  init() {
-    this.getTemplate();
-    this._element = this.getElement();
-    this._labels = [...new Set(this._pointsModel.map((point) => point.type.toUpperCase()))];
-    this._setCharts();
+    this._onModelEvent = this._onModelEvent.bind(this);
   }
 
   getTemplate() {
-    return createTripInformationElement();
+    return createTripInfoElement(this._data.points);
   }
 
   restoreHandlers() {
-    this._setCharts();
-    this._setDatepicker();
+    return;
   }
 
-  _getMoneyData() {
-    const prices = [];
-    this._labels.forEach((label) => {
-      let sumPrice = 0;
-      this._pointsModel.map((point) => {
-        if (label === point.type.toUpperCase()) {
-          sumPrice += point.price;
-        }
-      });
-      prices.push(sumPrice);
-    });
-    return prices;
+  init() {
+    this._pointsModel.addObserver(this._onModelEvent);
   }
 
-  _getCountTypeData() {
-    const types = [];
-    this._labels.forEach((label) => {
-      let count = 0;
-      this._pointsModel.map((point) => {
-        if (label === point.type.toUpperCase()) {
-          count++;
-        }
-      });
-      types.push(count);
-    });
-    return types;
-  }
-
-  _getSpendTimeData() {
-    const times = [];
-    this._labels.forEach((label) => {
-      let timeSpend = 0;
-      this._pointsModel.map((point) => {
-        if (label === point.type.toUpperCase()) {
-          timeSpend += dayjs(point.dateTo).diff(dayjs(point.dateFrom));
-        }
-      });
-      times.push(timeSpend);
-    });
-    return times;
-  }
-
-  _setCharts() {
-    const moneyCtx = this._element.querySelector(`.statistics__chart--money`);
-    const typeCtx = this._element.querySelector(`.statistics__chart--transport`);
-    const timeCtx = this._element.querySelector(`.statistics__chart--time`);
-
-    const BAR_HEIGHT = 55;
-    moneyCtx.height = BAR_HEIGHT * 5;
-    typeCtx.height = BAR_HEIGHT * 5;
-    timeCtx.height = BAR_HEIGHT * 5;
-
-    renderChart(TextChart.MONEY, moneyCtx, this._labels, this._getMoneyData());
-    renderChart(TextChart.TYPE, typeCtx, this._labels, this._getCountTypeData());
-    renderChart(TextChart.TIME_SPEND, timeCtx, this._labels, this._getSpendTimeData());
+  _onModelEvent() {
+    console.log(this._pointsModel.getPoints());
+    if (this._pointsModel.getPoints().length !== 0) {
+      this.updateData({points: this._pointsModel.getPoints()});
+    }
   }
 }

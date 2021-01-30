@@ -1,5 +1,5 @@
 import {render, remove, replace} from "../utils/render.js";
-import EditPointView from "../view/editing-point.js";
+import EditingPoint from "../view/editing-point.js";
 import PointView from "../view/point.js";
 import {UserAction, UpdateType} from "../const.js";
 import {isOnline} from "../utils/common.js";
@@ -43,20 +43,19 @@ export default class Point {
     this._onFavoriteClick = this._onFavoriteClick.bind(this);
   }
 
-  // init(point, offersModel, allDestinations) {
   init(point) {
     const prevPointComponent = this._pointComponent;
     const prevPointEditComponent = this._editComponent;
 
     this._point = point;
     this._pointComponent = new PointView(point);
-    this._editComponent = new EditPointView(this._offersModel, this._destinationsModel, this._isEditViewMode, point);
+    this._editComponent = new EditingPoint(this._offersModel, this._destinationsModel, this._isEditViewMode, point);
 
-    this._pointComponent.setEditClickHandler(this._onEditClick);
-    this._pointComponent.setFavoritesClickHandler(this._onFavoriteClick);
-    this._editComponent.setDeleteClickHandler(this._onDeleteClick);
-    this._editComponent.setSubmitClickHandler(this._onSaveClick);
-    this._editComponent.setCancelClickHandler(this._onCancelClick);
+    this._pointComponent.onSetEditClick(this._onEditClick);
+    this._pointComponent.onSetFavoritesClick(this._onFavoriteClick);
+    this._editComponent.onSetDeleteClick(this._onDeleteClick);
+    this._editComponent.onSetSubmitClick(this._onSaveClick);
+    this._editComponent.onSetCancelClick(this._onCancelClick);
 
     if (prevPointComponent === null || prevPointEditComponent === null) {
       render(this._pointsContainer, this._pointComponent);
@@ -101,6 +100,21 @@ export default class Point {
     }
   }
 
+  resetView() {
+    if (this._mode !== Mode.DEFAULT) {
+      this._replaceFormToPoint();
+    }
+  }
+
+  getId() {
+    return this._point.id;
+  }
+
+  destroy() {
+    remove(this._pointComponent);
+    remove(this._editComponent);
+  }
+
   _onEscKeyDown(evt) {
     if (evt.key === KEY_VALUE.ESCAPE || evt.key === KEY_VALUE.ESC) {
       evt.preventDefault();
@@ -125,7 +139,6 @@ export default class Point {
         UpdateType.MAJOR,
         point
     );
-    // this._replaceFormToPoint();
   }
 
   _onSaveClick(point) {
@@ -140,7 +153,6 @@ export default class Point {
         isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
         point
     );
-    // this._replaceFormToPoint();
   }
 
   _onEditClick() {
@@ -174,20 +186,5 @@ export default class Point {
     replace(this._pointComponent.getElement(), this._editComponent.getElement());
     document.removeEventListener(`keydown`, this._onEscKeyDown);
     this._mode = Mode.DEFAULT;
-  }
-
-  resetView() {
-    if (this._mode !== Mode.DEFAULT) {
-      this._replaceFormToPoint();
-    }
-  }
-
-  getId() {
-    return this._point.id;
-  }
-
-  destroy() {
-    remove(this._pointComponent);
-    remove(this._editComponent);
   }
 }

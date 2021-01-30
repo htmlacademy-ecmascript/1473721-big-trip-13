@@ -3,7 +3,7 @@ import AbstractView from "./abstract.js";
 const createNoPointElement = () => `<p class="trip-events__msg">Click New Event to create your first point</p>`;
 
 
-export default class NoPointView extends AbstractView {
+export default class NoPoints extends AbstractView {
   getTemplate() {
     return createNoPointElement();
   }

@@ -2,11 +2,11 @@ import {UpdateType, MenuItem} from "./const.js";
 import RoutePresenter from "./presenter/route.js";
 import FilterPresenter from "./presenter/filter.js";
 import {remove, render, RenderPosition} from "./utils/render.js";
-import TripInfoView from "./view/trip-info.js";
+import TripInfoView from "./view/trip-information.js";
 import SiteMenuView from "./view/menu.js";
-import HeaderMenuView from "./view/create-header-for-menu.js";
+import HeaderMenuView from "./view/header-menu.js";
 import TripEventListView from "./view/trip-event-list.js";
-import TripInformationView from "./view/trip-information.js";
+import TripStatistics from "./view/trip-statistics.js";
 import PointsModel from "./model/points.js";
 import OffersModel from "./model/offers.js";
 import DestinationsModel from "./model/destinations.js";
@@ -51,22 +51,20 @@ render(tripEvents, tripEventList);
 
 const siteListElement = tripEventList;
 
-const routePresenter = new RoutePresenter(siteListElement, pointsModel, offersModel, destinationsModel, filtersModel, apiWithProvider);
+const routePresenter = new RoutePresenter(tripEvents, siteListElement, pointsModel, offersModel, destinationsModel, filtersModel, apiWithProvider);
 const filterPresenter = new FilterPresenter(tripControlsElement, filtersModel, pointsModel);
 
-// render(mainElement, new TripInfoView(points), RenderPosition.AFTERBEGIN);
-// render(mainElement, new TripInfoView(pointsModel.getPoints()), RenderPosition.AFTERBEGIN);
-// render(tripControlsElement, siteMenu, RenderPosition.AFTERBEGIN);
 render(tripControlsElement, new HeaderMenuView(), RenderPosition.AFTERBEGIN);
 
-const handlePointNewFormClose = () => {
+const onPointNewFormClose = () => {
   siteMenu.setAddNewButtonState(false);
   siteMenu.setActiveMenu(MenuItem.TABLE);
-  routePresenter.renderNoPoints(false);
+  // routePresenter.renderNoPoints(false);
+  // routePresenter.renderNoPoints();
 
 };
 
-const handleSiteMenuClick = (menuItem) => {
+const onSiteMenuClick = (menuItem) => {
   switch (menuItem) {
     case MenuItem.ADD_NEW_POINT:
       remove(statisticsComponent);
@@ -78,7 +76,7 @@ const handleSiteMenuClick = (menuItem) => {
         siteMenu.setActiveMenu(MenuItem.TASKS);
         break;
       }
-      routePresenter.createPoint(handlePointNewFormClose);
+      routePresenter.createPoint(onPointNewFormClose);
       siteMenu.setAddNewButtonState(true);
       break;
     case MenuItem.TABLE:
@@ -87,7 +85,7 @@ const handleSiteMenuClick = (menuItem) => {
       break;
     case MenuItem.STATISTICS:
       routePresenter.destroy();
-      statisticsComponent = new TripInformationView(pointsModel.getPoints());
+      statisticsComponent = new TripStatistics(pointsModel.getPoints());
       statisticsComponent.init();
       render(tripEvents, statisticsComponent);
       break;
@@ -101,21 +99,21 @@ const handleSiteMenuClick = (menuItem) => {
 filterPresenter.init();
 routePresenter.init();
 
-Promise.all([api.getOffers(), api.getDestinations(), apiWithProvider.getPoints()]).then(([offers = [], destinations = [], points = []]) => {
+Promise.all([apiWithProvider.getOffers(), apiWithProvider.getDestinations(), apiWithProvider.getPoints()]).then(([offers = [], destinations = [], points = []]) => {
   offersModel.setOffers(offers);
   destinationsModel.setDestinations(destinations);
   pointsModel.setPoints(UpdateType.INIT, points);
   render(mainElement, tripInfoView, RenderPosition.AFTERBEGIN);
   render(tripControlsElement, siteMenu, RenderPosition.AFTERBEGIN);
   siteMenu.setActiveMenu(MenuItem.TABLE);
-  siteMenu.setMenuClickHandler(handleSiteMenuClick);
+  siteMenu.onSetMenuClick(onSiteMenuClick);
 })
 .catch(() => {
   pointsModel.setPoints(UpdateType.INIT, []);
   render(mainElement, tripInfoView, RenderPosition.AFTERBEGIN);
   render(tripControlsElement, siteMenu, RenderPosition.AFTERBEGIN);
   siteMenu.setActiveMenu(MenuItem.TABLE);
-  siteMenu.setMenuClickHandler(handleSiteMenuClick);
+  siteMenu.onSetMenuClick(onSiteMenuClick);
 });
 
 // window.addEventListener(`load`, () => {
@@ -130,5 +128,3 @@ Promise.all([api.getOffers(), api.getDestinations(), apiWithProvider.getPoints()
 // window.addEventListener(`offline`, () => {
 //   document.title += ` [offline]`;
 // });
-
-// render(mainElement, new TripInfoView(pointsModel), RenderPosition.AFTERBEGIN);

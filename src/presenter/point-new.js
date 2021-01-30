@@ -1,5 +1,5 @@
 import {remove, render, RenderPosition} from "../utils/render.js";
-import EditPointView from "../view/editing-point.js";
+import EditingPoint from "../view/editing-point.js";
 import {KEY_VALUE} from "./point.js";
 import {UserAction, UpdateType} from "../const.js";
 
@@ -27,39 +27,14 @@ export default class PointNew {
     }
 
     this._isEditViewMode = false;
-    this._editComponent = new EditPointView(this._offersModel, this._destinations, this._isEditViewMode);
-    this._editComponent.setSubmitClickHandler(this._onSaveClick);
-    this._editComponent.setCancelClickHandler(this._onCancelClick);
-    this._editComponent.setDeleteClickHandler(this._onDeleteClick);
+    this._editComponent = new EditingPoint(this._offersModel, this._destinations, this._isEditViewMode);
+    this._editComponent.onSetSubmitClick(this._onSaveClick);
+    this._editComponent.onSetCancelClick(this._onCancelClick);
 
     const element = this._pointsContainer.getElement().querySelector(`.trip-events__item`);
     render(this._pointsContainer, this._editComponent, RenderPosition.INSERT_BEFORE, element);
 
     document.addEventListener(`keydown`, this._onEscKeyDown);
-  }
-
-  _onSaveClick(point) {
-    this._point = point;
-    this._changeData(
-        UserAction.ADD_POINT,
-        UpdateType.MAJOR,
-        // Object.assign({id: new Date().valueOf()}, point)
-        point
-    );
-  }
-
-  _onCancelClick() {
-    remove(this._editComponent);
-    this.destroy();
-  }
-
-  _onEscKeyDown(evt) {
-    if (evt.key === KEY_VALUE.ESCAPE || evt.key === KEY_VALUE.ESC) {
-      evt.preventDefault();
-      remove(this._editComponent);
-      this._editComponent.reset(this._point);
-      this.destroy();
-    }
   }
 
   setSaving() {
@@ -93,5 +68,28 @@ export default class PointNew {
     remove(this._editComponent);
     this._editComponent = null;
     document.removeEventListener(`keydown`, this._onEscKeyDown);
+  }
+
+  _onSaveClick(point) {
+    this._point = point;
+    this._changeData(
+        UserAction.ADD_POINT,
+        UpdateType.MAJOR,
+        point
+    );
+  }
+
+  _onCancelClick() {
+    remove(this._editComponent);
+    this.destroy();
+  }
+
+  _onEscKeyDown(evt) {
+    if (evt.key === KEY_VALUE.ESCAPE || evt.key === KEY_VALUE.ESC) {
+      evt.preventDefault();
+      remove(this._editComponent);
+      this._editComponent.reset(this._point);
+      this.destroy();
+    }
   }
 }

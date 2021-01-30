@@ -1,4 +1,6 @@
 import PointsModel from "../model/points.js";
+import OffersModel from "../model/offers.js";
+import DestinationsModel from "../model/destinations.js";
 import {isOnline} from "../utils/common.js";
 
 const getSyncedPoints = (items) => {
@@ -20,23 +22,31 @@ export default class Provider {
     this._store = store;
   }
 
-  // getOffers() {
-  //   if (isOnline()) {
-  //     return this._api.getOffers()
-  //     .then((elements) => {
-  //       const items = createStoreStructure(elements.map());
-  //       this._store.setItems(items);
-  //       return elements;
-  //     });
-  //   }
-  //   const storePoints = Object.values(this._store.getItems());
-  //   return Promise.resolve(storePoints.map(PointsModel.adaptToClient));
-  // }
+  getOffers() {
+    if (isOnline()) {
+      return this._api.getOffers()
+      .then((elements) => {
+        const items = createStoreStructure(elements.map(OffersModel.getOffer));
+        this._store.setItems(items);
+        return elements;
+      });
+    }
+    const storeOffers = Object.values(this._store.getItems());
+    return Promise.resolve(storeOffers.map(OffersModel.getOffer));
+  }
 
-  // getDestinations() {
-  //   return this._load({url: `destinations`})
-  //   .then(Api.toJSON);
-  // }
+  getDestinations() {
+    if (isOnline()) {
+      return this._api.getDestinations()
+      .then((elements) => {
+        const items = createStoreStructure(elements.map(DestinationsModel.getDestination));
+        this._store.setItems(items);
+        return elements;
+      });
+    }
+    const storeDestinations = Object.values(this._store.getItems());
+    return Promise.resolve(storeDestinations.map(DestinationsModel.getDestination));
+  }
 
   getPoints() {
     if (isOnline()) {
@@ -94,12 +104,8 @@ export default class Provider {
 
       return this._api.sync(storePoints)
         .then((response) => {
-          // Забираем из ответа синхронизированные задачи
           const createdPoints = getSyncedPoints(response.created);
           const updatedPoints = getSyncedPoints(response.updated);
-
-          // Добавляем синхронизированные задачи в хранилище.
-          // Хранилище должно быть актуальным в любой момент.
           const items = createStoreStructure([...createdPoints, ...updatedPoints]);
 
           this._store.setItems(items);

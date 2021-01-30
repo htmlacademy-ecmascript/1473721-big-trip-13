@@ -29,18 +29,23 @@ const createTripSortElement = () =>
   </div>
 </form>`;
 
-export default class TripSortView extends AbstractView {
+export default class TripSort extends AbstractView {
   constructor() {
     super();
 
-    this._sortTypeChangeHandler = this._sortTypeChangeHandler.bind(this);
+    this._onSortTypeChange = this._onSortTypeChange.bind(this);
   }
 
   getTemplate() {
     return createTripSortElement();
   }
 
-  _sortTypeChangeHandler(evt) {
+  onSetSortTypeChange(callback) {
+    this._callback.sortTypeChange = callback;
+    this.getElement().addEventListener(`click`, this._onSortTypeChange);
+  }
+
+  _onSortTypeChange(evt) {
     if (evt.target.dataset.sortType) {
       if (evt.target.tagName !== `LABEL`) {
         return;
@@ -51,10 +56,5 @@ export default class TripSortView extends AbstractView {
       document.querySelectorAll(`input[name="trip-sort"]`).forEach((element) => element.removeAttribute(`checked`));
       document.querySelector(`input[value="${evt.target.dataset.sortType}"]`).toggleAttribute(`checked`);
     }
-  }
-
-  setSortTypeChangeHandler(callback) {
-    this._callback.sortTypeChange = callback;
-    this.getElement().addEventListener(`click`, this._sortTypeChangeHandler);
   }
 }

@@ -20,26 +20,26 @@ const createTripFilterElement = (filters, currentFilter) =>
   <button class="visually-hidden" type="submit">Accept filter</button>
 </form>`;
 
-export default class TripFilterView extends Smart {
+export default class TripFilter extends Smart {
   constructor(filters, currentFilterType) {
     super();
     this._filters = filters;
     this._currentFilter = currentFilterType;
 
-    this._filterTypeChangeHandler = this._filterTypeChangeHandler.bind(this);
+    this._onFilterTypeChange = this._onFilterTypeChange.bind(this);
   }
 
   getTemplate() {
     return createTripFilterElement(this._filters, this._currentFilter);
   }
 
-  _filterTypeChangeHandler(evt) {
-    evt.preventDefault();
-    this._callback.filterTypeChange(evt.target.value);
+  onSetFilterTypeChange(callback) {
+    this._callback.filterTypeChange = callback;
+    this.getElement().addEventListener(`change`, this._onFilterTypeChange);
   }
 
-  setFilterTypeChangeHandler(callback) {
-    this._callback.filterTypeChange = callback;
-    this.getElement().addEventListener(`change`, this._filterTypeChangeHandler);
+  _onFilterTypeChange(evt) {
+    evt.preventDefault();
+    this._callback.filterTypeChange(evt.target.value);
   }
 }

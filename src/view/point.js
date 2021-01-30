@@ -68,13 +68,13 @@ const createPoint = ({
 </li>`;
 };
 
-export default class PointView extends Smart {
+export default class Point extends Smart {
   constructor(point) {
     super();
     this._data = point;
     this._element = null;
-    this._editClickHandler = this._editClickHandler.bind(this);
-    this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
+    this._onEditClick = this._onEditClick.bind(this);
+    this._onFavoriteClick = this._onFavoriteClick.bind(this);
     this.toggleFavorite = this.toggleFavorite.bind(this);
   }
 
@@ -83,36 +83,35 @@ export default class PointView extends Smart {
   }
 
   toggleFavorite() {
-    let state = this._data.favorite;
-    // eslint-disable-next-line no-unused-expressions
-    state === true ? this._data.favorite = false : this._data.favorite = true;
+    this._data.favorite = !this._data.favorite;
   }
 
-  _editClickHandler(evt) {
+  onSetEditClick(callback) {
+    this._callback.editClick = callback;
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._onEditClick);
+  }
+
+  onSetFavoritesClick(callback) {
+    this._callback.favoriteClick = callback;
+    this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, this._onFavoriteClick);
+  }
+
+  restoreHandlers() {
+    this.onSetEditClick(this._callback.editClick);
+    this.onSetFavoritesClick(this._callback.favoriteClick);
+  }
+
+  _onEditClick(evt) {
     evt.preventDefault();
     this._callback.editClick();
   }
 
-  _favoriteClickHandler(evt) {
+  _onFavoriteClick(evt) {
     evt.preventDefault();
+    this._data.favorite = !this._data.favorite;
     this.updateData({
-      favorite: this._data.favorite ? false : true
+      favorite: this._data.favorite
     });
     this._callback.favoriteClick(this._data);
-  }
-
-  setEditClickHandler(callback) {
-    this._callback.editClick = callback;
-    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._editClickHandler);
-  }
-
-  setFavoritesClickHandler(callback) {
-    this._callback.favoriteClick = callback;
-    this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, this._favoriteClickHandler);
-  }
-
-  restoreHandlers() {
-    this.setEditClickHandler(this._callback.editClick);
-    this.setFavoritesClickHandler(this._callback.favoriteClick);
   }
 }
