@@ -343,7 +343,7 @@ export default class EditingPoint extends Smart {
           onChange: this._onDateFromChange
         }
     );
-    this._datepickerFrom = flatpickr(
+    this._datepickerTo = flatpickr(
         this.getElement().querySelector(`input[name="event-end-time"]`),
         {
           enableTime: true,
