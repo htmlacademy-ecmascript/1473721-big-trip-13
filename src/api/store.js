@@ -52,7 +52,7 @@ export default class Store {
   }
 
   setPointItem(key, value) {
-    const store = this.getItems();
+    const store = this.getPointsItems();
 
     this._storage.setItem(
         this._storePointsKey,
@@ -65,7 +65,7 @@ export default class Store {
   }
 
   removePointItem(key) {
-    const store = this.getItems();
+    const store = this.getPointsItems();
 
     delete store[key];
 
