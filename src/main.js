@@ -20,7 +20,7 @@ import Provider from "./api/provider.js";
 const TYPE_STORE = {
   POINTS: `POINTS`,
   OFFERS: `OFFERS`,
-  DESTINATIONS: `DESTONATIONS`
+  DESTINATIONS: `DESTINATIONS`
 };
 
 const AUTHORIZATION = `Basic VGgJGhwdgjwgd24gr`;
@@ -28,8 +28,8 @@ const END_POINT = `https://13.ecmascript.pages.academy/big-trip`;
 const STORE_PREFIX = `bigTrip-localstorage`;
 const STORE_VER = `v13`;
 const STORE_NAME_POINTS = `${STORE_PREFIX}-${STORE_VER}-${TYPE_STORE.POINTS}`;
-const STORE_NAME_OFFERS = `${STORE_PREFIX}-${STORE_VER}-${TYPE_STORE.POINTS}`;
-const STORE_NAME_DESTINATIONS = `${STORE_PREFIX}-${STORE_VER}-${TYPE_STORE.POINTS}`;
+const STORE_NAME_OFFERS = `${STORE_PREFIX}-${STORE_VER}-${TYPE_STORE.OFFERS}`;
+const STORE_NAME_DESTINATIONS = `${STORE_PREFIX}-${STORE_VER}-${TYPE_STORE.DESTINATIONS}`;
 
 const api = new Api(END_POINT, AUTHORIZATION);
 
