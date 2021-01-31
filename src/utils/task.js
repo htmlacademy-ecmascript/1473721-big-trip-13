@@ -1,8 +1,9 @@
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration.js";
-import {getRandomInteger} from "./common.js";
 
 dayjs.extend(duration);
+
+const DEFAULT_DATES_RANGE = 2;
 
 export const ValueForRandom = {
   ZERO: 0,
@@ -27,22 +28,6 @@ export const getPhoto = (photos) => {
   let imgElement = ``;
 
   return photos.reduce(reducer, imgElement);
-};
-
-export const getOffers = (options) => {
-  const reducer = (element, option) => element + `<div class="event__offer-selector">
-         <input class="event__offer-checkbox  visually-hidden" id="event-offer-${option}-1" type="checkbox"
-           name="event-offer-${option}" checked>
-         <label class="event__offer-label" for="event-offer-${option}-1">
-           <span class="event__offer-title">${option}</span>
-           &plus;&euro;&nbsp;
-           <span class="event__offer-price">${getRandomInteger(ValueForRandom.ZERO, ValueForRandom.HUNDRED)}</span>
-         </label>
-       </div>`;
-
-  let offersElement = ``;
-
-  return options.reduce(reducer, offersElement);
 };
 
 export const formDate = (value, format) => dayjs(value).format(format);
@@ -79,4 +64,11 @@ export const getDuration = (dateFrom, dateTo) => {
   }
 
   return durationToRender;
+};
+
+export const getDefaultPointDates = (range = DEFAULT_DATES_RANGE) => {
+  const start = dayjs();
+  const end = start.add(range, `hours`);
+
+  return {start: start.toISOString(), end: end.toISOString()};
 };

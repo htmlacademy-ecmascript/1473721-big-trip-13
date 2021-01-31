@@ -1,9 +1,8 @@
 import FilterView from "../view/trip-filter.js";
 import {render, replace, remove} from "../utils/render.js";
-// import {filter} from "../utils/filter.js";
 
 import {FilterType} from "../utils/task.js";
-import {UpdateType} from "../mock/task.js";
+import {UpdateType} from "../const.js";
 
 export default class Filter {
   constructor(filterContainer, filterModel, pointsModel) {
@@ -14,11 +13,11 @@ export default class Filter {
 
     this._filterComponent = null;
 
-    this._handleModelEvent = this._handleModelEvent.bind(this);
-    this._handleFilterTypeChange = this._handleFilterTypeChange.bind(this);
+    this._onModelEvent = this._onModelEvent.bind(this);
+    this._onFilterTypeChange = this._onFilterTypeChange.bind(this);
 
-    this._pointsModel.addObserver(this._handleModelEvent);
-    this._filterModel.addObserver(this._handleModelEvent);
+    this._pointsModel.addObserver(this._onModelEvent);
+    this._filterModel.addObserver(this._onModelEvent);
   }
 
   init() {
@@ -27,7 +26,7 @@ export default class Filter {
     const filters = this._getFilters();
     const prevFilterComponent = this._filterComponent;
     this._filterComponent = new FilterView(filters, this._currentFilter);
-    this._filterComponent.setFilterTypeChangeHandler(this._handleFilterTypeChange);
+    this._filterComponent.onSetFilterTypeChange(this._onFilterTypeChange);
 
     if (prevFilterComponent === null) {
       render(this._filterContainer, this._filterComponent);
@@ -38,11 +37,11 @@ export default class Filter {
     remove(prevFilterComponent);
   }
 
-  _handleModelEvent() {
+  _onModelEvent() {
     this.init();
   }
 
-  _handleFilterTypeChange(filterType) {
+  _onFilterTypeChange(filterType) {
     if (this._currentFilter === filterType) {
       return;
     }
@@ -51,8 +50,6 @@ export default class Filter {
   }
 
   _getFilters() {
-    // const tasks = this._tasksModel.getTasks();
-
     return [
       {
         type: FilterType.EVERYTHING,

@@ -1,14 +1,13 @@
-import {remove, renderNewEditPoint} from "../utils/render.js";
-import EditPointView from "../view/editing-point.js";
+import {remove, render} from "../utils/render.js";
+import EditingPoint from "../view/editing-point.js";
 import {KEY_VALUE} from "./point.js";
-import {UserAction, UpdateType} from "../mock/task.js";
+import {UserAction, UpdateType} from "../const.js";
 
 export default class PointNew {
-  constructor(pointsContainer, changeData, offersModel, destinations) {
-    this._pointsContainer = pointsContainer;
+  constructor(changeData, offersModel, destinationsModel) {
     this._changeData = changeData;
     this._offersModel = offersModel;
-    this._destinations = destinations;
+    this._destinationsModel = destinationsModel;
 
     this._editComponent = null;
     this._point = null;
@@ -19,22 +18,53 @@ export default class PointNew {
     this._onSaveClick = this._onSaveClick.bind(this);
   }
 
-  init(callback) {
+  init(callback, container, position) {
     this._destroyCallback = callback;
+    this._container = container;
 
     if (this._editComponent !== null) {
       return;
     }
 
-    this._isEditViewMode = false;
-    this._editComponent = new EditPointView(this._offersModel, this._destinations, this._isEditViewMode);
-    this._editComponent.setSubmitClickHandler(this._onSaveClick);
-    this._editComponent.setCancelClickHandler(this._onCancelClick);
-    this._editComponent.setDeleteClickHandler(this._onDeleteClick);
+    this._editComponent = new EditingPoint(this._offersModel, this._destinationsModel, this._isEditViewMode);
+    this._editComponent.onSetSubmitClick(this._onSaveClick);
+    this._editComponent.onSetCancelClick(this._onCancelClick);
 
-    renderNewEditPoint(this._pointsContainer, this._editComponent);
-
+    render(this._container, this._editComponent, position);
     document.addEventListener(`keydown`, this._onEscKeyDown);
+  }
+
+  setSaving() {
+    this._editComponent.updateData({
+      isDisabled: true,
+      isSaving: true
+    });
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this._editComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false
+      });
+    };
+
+    this._editComponent.shake(resetFormState);
+  }
+
+  destroy() {
+    if (this._editComponent === null) {
+      return;
+    }
+
+    if (this._destroyCallback !== null) {
+      this._destroyCallback();
+    }
+
+    remove(this._editComponent);
+    this._editComponent = null;
+    document.removeEventListener(`keydown`, this._onEscKeyDown);
   }
 
   _onSaveClick(point) {
@@ -42,7 +72,7 @@ export default class PointNew {
     this._changeData(
         UserAction.ADD_POINT,
         UpdateType.MAJOR,
-        Object.assign({id: new Date().valueOf()}, point)
+        point
     );
   }
 
@@ -58,19 +88,5 @@ export default class PointNew {
       this._editComponent.reset(this._point);
       this.destroy();
     }
-  }
-
-  destroy() {
-    if (this._editComponent === null) {
-      return;
-    }
-
-    if (this._destroyCallback !== null) {
-      this._destroyCallback();
-    }
-
-    remove(this._editComponent);
-    this._editComponent = null;
-    document.removeEventListener(`keydown`, this._onEscKeyDown);
   }
 }

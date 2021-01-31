@@ -1,27 +1,25 @@
-import {PointType} from "../mock/task.js";
-// import AbstractView from "./abstract.js";
+import {PointType} from "../const.js";
 import {formDate, getDuration} from "../utils/task.js";
 import Smart from "./smart.js";
 
+const NO_NAME = `no name`;
+
 const createOffersList = (offers) => {
-  return offers.reduce((acc, offer) => {
+  if (offers) {
+    return offers.reduce((acc, offer) => {
 
-    acc += `<li class="event__offer">
-    <span class="event__offer-title">${offer.title}</span>
-    &plus;&euro;&nbsp;
-    <span class="event__offer-price">${offer.price}</span>
-  </li>`;
+      acc += `<li class="event__offer">
+      <span class="event__offer-title">${offer.title}</span>
+      &plus;&euro;&nbsp;
+      <span class="event__offer-price">${offer.price}</span>
+    </li>`;
 
-    return acc;
-  }, ``);
+      return acc;
+    }, ``);
+  } else {
+    return ``;
+  }
 };
-
-// const getFavorite = (state) => {
-//   let result = ``;
-//   // eslint-disable-next-line no-unused-expressions
-//   state ? result = `event__favorite-btn--active` : result = ``;
-//   return result;
-// };
 
 const isFavorite = (favorite) => {
   return favorite ? `event__favorite-btn--active` : ``;
@@ -29,21 +27,22 @@ const isFavorite = (favorite) => {
 
 const createPoint = ({
   type = PointType.TAXI,
-  city = ` `,
   price = `0`,
   options,
+  destination,
   favorite,
   dateFrom,
   dateTo
 }) => {
 
-  return `<li class="trip-events__item">
-  <div class="event">
+  const destinationName = destination ? destination.name : NO_NAME;
+
+  return `<div class="event">
     <time class="event__date" datetime="${formDate(dateFrom, `YYYY-MM-DD`)}">${formDate(dateFrom, `MMM DD`)}</time>
     <div class="event__type">
       <img class="event__type-icon" width="42" height="42" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
     </div>
-    <h3 class="event__title">${type} ${city}</h3>
+    <h3 class="event__title">${type} ${destinationName}</h3>
     <div class="event__schedule">
       <p class="event__time">
         <time class="event__start-time" datetime="${formDate(dateFrom, `YYYY-MM-DDTHH:mm`)}">${formDate(dateFrom, `HH:mm`)}</time>
@@ -68,55 +67,53 @@ const createPoint = ({
     <button class="event__rollup-btn" type="button">
       <span class="visually-hidden">Open event</span>
     </button>
-  </div>
-</li>`;
+  </div>`;
 };
 
-export default class PointView extends Smart {
+export default class Point extends Smart {
   constructor(point) {
     super();
-    this._point = point;
+    this._data = point;
     this._element = null;
-    this._editClickHandler = this._editClickHandler.bind(this);
-    this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
+    this._onEditClick = this._onEditClick.bind(this);
+    this._onFavoriteClick = this._onFavoriteClick.bind(this);
     this.toggleFavorite = this.toggleFavorite.bind(this);
   }
 
   getTemplate() {
-    return createPoint(this._point);
+    return createPoint(this._data);
   }
 
   toggleFavorite() {
-    let state = this._point.favorite;
-    // eslint-disable-next-line no-unused-expressions
-    state === true ? this._point.favorite = false : this._point.favorite = true;
+    this._data.favorite = !this._data.favorite;
   }
 
-  _editClickHandler(evt) {
+  onSetEditClick(callback) {
+    this._callback.editClick = callback;
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._onEditClick);
+  }
+
+  onSetFavoritesClick(callback) {
+    this._callback.favoriteClick = callback;
+    this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, this._onFavoriteClick);
+  }
+
+  restoreHandlers() {
+    this.onSetEditClick(this._callback.editClick);
+    this.onSetFavoritesClick(this._callback.favoriteClick);
+  }
+
+  _onEditClick(evt) {
     evt.preventDefault();
     this._callback.editClick();
   }
 
-  _favoriteClickHandler(evt) {
+  _onFavoriteClick(evt) {
     evt.preventDefault();
+    this._data.favorite = !this._data.favorite;
     this.updateData({
-      favorite: this._point.favorite ? false : true
+      favorite: this._data.favorite
     });
-    this._callback.favoriteClick(this._point);
-  }
-
-  setEditClickHandler(callback) {
-    this._callback.editClick = callback;
-    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._editClickHandler);
-  }
-
-  setFavoritesClickHandler(callback) {
-    this._callback.favoriteClick = callback;
-    this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, this._favoriteClickHandler);
-  }
-
-  restoreHandlers() {
-    this.setEditClickHandler(this._callback.editClick);
-    this.setFavoritesClickHandler(this._callback.favoriteClick);
+    this._callback.favoriteClick(this._data);
   }
 }

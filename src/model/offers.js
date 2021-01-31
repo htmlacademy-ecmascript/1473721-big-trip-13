@@ -13,4 +13,8 @@ export default class Offers extends Observer {
   getOffers() {
     return this._offers;
   }
+
+  static getOffer(offer) {
+    return offer;
+  }
 }

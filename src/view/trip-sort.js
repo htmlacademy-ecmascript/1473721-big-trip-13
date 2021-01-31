@@ -1,5 +1,5 @@
 import AbstractView from "./abstract.js";
-import {SortType} from "../mock/task.js";
+import {SortType} from "../const.js";
 
 const createTripSortElement = () =>
   `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
@@ -29,30 +29,32 @@ const createTripSortElement = () =>
   </div>
 </form>`;
 
-export default class TripSortView extends AbstractView {
+export default class TripSort extends AbstractView {
   constructor() {
     super();
 
-    this._sortTypeChangeHandler = this._sortTypeChangeHandler.bind(this);
+    this._onSortTypeChange = this._onSortTypeChange.bind(this);
   }
 
   getTemplate() {
     return createTripSortElement();
   }
 
-  _sortTypeChangeHandler(evt) {
-    if (evt.target.tagName !== `LABEL`) {
-      return;
-    }
-
-    evt.preventDefault();
-    this._callback.sortTypeChange(evt.target.dataset.sortType);
-    document.querySelectorAll(`input[name="trip-sort"]`).forEach((element) => element.removeAttribute(`checked`));
-    document.querySelector(`input[value="${evt.target.dataset.sortType}"]`).toggleAttribute(`checked`);
+  onSetSortTypeChange(callback) {
+    this._callback.sortTypeChange = callback;
+    this.getElement().addEventListener(`click`, this._onSortTypeChange);
   }
 
-  setSortTypeChangeHandler(callback) {
-    this._callback.sortTypeChange = callback;
-    this.getElement().addEventListener(`click`, this._sortTypeChangeHandler);
+  _onSortTypeChange(evt) {
+    if (evt.target.dataset.sortType) {
+      if (evt.target.tagName !== `LABEL`) {
+        return;
+      }
+
+      evt.preventDefault();
+      this._callback.sortTypeChange(evt.target.dataset.sortType);
+      document.querySelectorAll(`input[name="trip-sort"]`).forEach((element) => element.removeAttribute(`checked`));
+      document.querySelector(`input[value="${evt.target.dataset.sortType}"]`).toggleAttribute(`checked`);
+    }
   }
 }
