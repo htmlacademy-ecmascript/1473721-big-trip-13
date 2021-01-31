@@ -4,6 +4,8 @@ import {getRandomInteger} from "./common.js";
 
 dayjs.extend(duration);
 
+const DEFAULT_DATES_RANGE = 2;
+
 export const ValueForRandom = {
   ZERO: 0,
   HUNDRED: 100
@@ -79,4 +81,11 @@ export const getDuration = (dateFrom, dateTo) => {
   }
 
   return durationToRender;
+};
+
+export const getDefaultPointDates = (range = DEFAULT_DATES_RANGE) => {
+  const start = dayjs();
+  const end = start.add(range, `hours`);
+
+  return {start: start.toISOString(), end: end.toISOString()};
 };

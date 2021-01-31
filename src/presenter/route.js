@@ -57,7 +57,7 @@ export default class Route {
     if (this._siteListElement) {
       this._pointNewPresenter.init(callback, this._siteListElement, RenderPosition.INSERT_BEFORE);
     } else {
-      this._pointNewPresenter.init(callback, this._tripEvents, RenderPosition.BEFOREEND);
+      this._pointNewPresenter.init(callback, this._tripEvents, RenderPosition.AFTERBEGIN);
     }
   }
 

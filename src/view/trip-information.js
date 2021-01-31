@@ -6,6 +6,9 @@ const COUNT_TRIP_CITY = 3;
 
 const getCost = (points) => {
   return points.reduce((acc, point) => {
+    point.options.forEach((offers) => {
+      acc += offers.price;
+    });
     acc += point.price;
     return acc;
   }, null);
@@ -13,7 +16,6 @@ const getCost = (points) => {
 
 const createTripInfoElement = (points) => {
   const first = 0;
-  const lengthZero = 0;
   const last = points.length - 1;
 
   points.sort(sortByDay);
@@ -21,21 +23,17 @@ const createTripInfoElement = (points) => {
   const getTripInfo = () => {
     let info = ``;
 
-    if (points.length !== lengthZero) {
-      if (points.length <= COUNT_TRIP_CITY) {
-        info = points.map((point) => point.destination.name).join(` &mdash; `);
-      } else {
-        info = `${points[first].destination.name} &mdash; ... &mdash; ${points[last].destination.name}`;
-      }
+    if (points.length <= COUNT_TRIP_CITY) {
+      info = points.map((point) => point.destination.name).join(` &mdash; `);
+    } else {
+      info = `${points[first].destination.name} &mdash; ... &mdash; ${points[last].destination.name}`;
     }
-
     return info;
   };
 
   let sectionInformation = ``;
 
-  if (points.length !== lengthZero) {
-    sectionInformation = `<section class="trip-main__trip-info  trip-info">
+  sectionInformation = `<section class="trip-main__trip-info  trip-info">
     <div class="trip-info__main">
       <h1 class="trip-info__title">${getTripInfo()}</h1>
 
@@ -46,7 +44,6 @@ const createTripInfoElement = (points) => {
       Total: &euro;&nbsp;<span class="trip-info__cost-value">${getCost(points)}</span>
     </p>
   </section>`;
-  }
 
   return sectionInformation;
 };
@@ -61,7 +58,11 @@ export default class TripInformation extends Smart {
   }
 
   getTemplate() {
-    return createTripInfoElement(this._data.points);
+    if (this._data.points.length !== 0) {
+      return createTripInfoElement(this._data.points);
+    } else {
+      return ` `;
+    }
   }
 
   restoreHandlers() {
@@ -73,8 +74,6 @@ export default class TripInformation extends Smart {
   }
 
   _onModelEvent() {
-    if (this._pointsModel.getPoints().length !== 0) {
-      this.updateData({points: this._pointsModel.getPoints()});
-    }
+    this.updateData({points: this._pointsModel.getPoints()});
   }
 }

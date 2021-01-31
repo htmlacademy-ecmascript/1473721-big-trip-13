@@ -1,36 +1,20 @@
 import {PointType, pointTypeResource} from "../const.js";
 import Smart from "./smart.js";
 import {getOfferId} from "../utils/render.js";
-import {formDate} from "../utils/task.js";
+import {formDate, getDefaultPointDates} from "../utils/task.js";
 import flatpickr from "flatpickr";
 import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 
+const {start: START_DATE, end: END_DATE} = getDefaultPointDates();
+
 const DEFAULT_POINT = {
-  dateFrom: `2021-01-24T23:19:00.000Z`,
-  dateTo: `2021-01-27T15:49:06.212Z`,
-  destination: {
-    description: `Amsterdam, is a beautiful city, in a middle of Eur…th a beautiful old town, middle-eastern paradise.`,
-    name: `Amsterdam`,
-    pictures: [
-      {
-        src: `http://picsum.photos/300/200?r=0.694135021107301`,
-        description: `Amsterdam central station`
-      }
-    ]
-  },
+  id: `-1`,
+  dateFrom: START_DATE,
+  dateTo: END_DATE,
   favorite: false,
-  options: [
-    {
-      title: `Choose comfort class`,
-      price: 110
-    },
-    {
-      title: `Choose business class`,
-      price: 180
-    }
-  ],
-  price: 80,
-  type: `drive`,
+  options: [],
+  price: 0,
+  type: PointType.TAXI,
 };
 
 const createOffersList = (selectedOffers, offers, id, isDisabled) => {
@@ -92,8 +76,8 @@ const getViewEditing = (flag, isDisabled, isSaving, isDeleting) => {
   }
 };
 
-const getPhotosList = (destination) => {
-  return destination.pictures.reduce((acc, picture) => {
+const getPhotosList = (pictures) => {
+  return pictures.reduce((acc, picture) => {
 
     acc += ` <img class="event__photo" src="${picture.src}" alt="${picture.description}">`;
 
@@ -101,11 +85,11 @@ const getPhotosList = (destination) => {
   }, ``);
 };
 
-const getViewPhotos = (flag, destination) => {
+const getViewPhotos = (flag, pictures) => {
   if (!flag) {
     return `<div class="event__photos-container">
     <div class="event__photos-tape">
-    ${getPhotosList(destination)}
+    ${getPhotosList(pictures)}
     </div>
   </div>`;
   } else {
@@ -117,8 +101,8 @@ const createEditingPointElement = ({type = PointType.TAXI,
   id = `1`,
   dateFrom,
   dateTo,
-  price = `0`,
-  destination,
+  price,
+  destination: {name: destinationName = ``, pictures = [], description = ``} = {},
   options: selectedOffers}, offers, destinations, isEditViewMode, {isDisabled, isSaving, isDeleting}) => {
 
   const createOffersSection = () => {
@@ -136,15 +120,15 @@ const createEditingPointElement = ({type = PointType.TAXI,
   };
 
   const createDestinationsSection = () => {
-    if (destination.length === 0) {
+    if (destinations.length === 0) {
       return ``;
-    } else {
-      return `<section class="event__section  event__section--destination">
-      <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-      <p class="event__destination-description">${destination.description}</p>
-      ${getViewPhotos(isEditViewMode, destination)}
-    </section>`;
     }
+
+    return `<section class="event__section  event__section--destination">
+      <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+      <p class="event__destination-description">${description}</p>
+      ${getViewPhotos(isEditViewMode, pictures)}
+    </section>`;
   };
 
   return `<form class="event event--edit" action="#" method="post">
@@ -170,7 +154,7 @@ const createEditingPointElement = ({type = PointType.TAXI,
        ${type}
       </label>
       <input class="event__input  event__input--destination" id="event-destination-${id}" type="text"
-        name="event-destination" value="${destination.name}" list="destination-list-${id}" ${isDisabled ? `disabled` : ``}>
+        name="event-destination" value="${destinationName}" required list="destination-list-${id}" ${isDisabled ? `disabled` : ``}>
       <datalist id="destination-list-${id}">
         ${createDestinitionList(destinations, isDisabled)}
       </datalist>
@@ -204,12 +188,11 @@ const createEditingPointElement = ({type = PointType.TAXI,
 };
 
 export default class EditingPoint extends Smart {
-  constructor(offersModel, destinationsModel, isEditViewMode, point = DEFAULT_POINT) {
+  constructor(offersModel, destinationsModel, isEditViewMode = false, point = DEFAULT_POINT) {
     super();
-    this._data = point;
     this._datepickerFrom = null;
     this._datepickerTo = null;
-    this._data = EditingPoint.parsePointToData(this._data);
+    this._data = EditingPoint.parsePointToData(point);
 
     this._offersModel = offersModel;
     this._destinationsModel = destinationsModel;
