@@ -21,17 +21,7 @@ export const FilterType = {
   PAST: `past`
 };
 
-
-export const getPhoto = (photos) => {
-  const reducer = (element, photo) => element + `<img class="event__photo" src="${photo}" alt="Event photo">`;
-
-  let imgElement = ``;
-
-  return photos.reduce(reducer, imgElement);
-};
-
 export const formDate = (value, format) => dayjs(value).format(format);
-
 export const sortByDay = (pointA, pointB) => dayjs(pointA.dateFrom).diff(dayjs(pointB.dateFrom));
 export const sortByTime = (pointA, pointB) => dayjs(pointA.dateTo).diff(dayjs(pointA.dateFrom)) - dayjs(pointB.dateTo).diff(dayjs(pointB.dateFrom));
 export const sortByPrice = (pointA, pointB) => pointA.price - pointB.price;
