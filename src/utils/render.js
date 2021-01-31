@@ -2,7 +2,7 @@ import Abstract from "../view/abstract.js";
 
 export const RenderPosition = {
   AFTERBEGIN: `afterbegin`,
-  BEFOREEND: `beforeend`,
+  AFTEREND: `afterend`,
   REFERENCE: `reference`,
   INSERT_BEFORE: `insertBefore`
 };
@@ -15,7 +15,7 @@ export const renderTemplate = (container, template, place = RenderPosition.BEFOR
   container.insertAdjacentHTML(place, template);
 };
 
-export const render = (container, template, place = RenderPosition.BEFOREEND, element) => {
+export const render = (container, template, place = RenderPosition.BEFOREEND) => {
   if (container instanceof Abstract) {
     container = container.getElement();
   }
@@ -32,7 +32,7 @@ export const render = (container, template, place = RenderPosition.BEFOREEND, el
       container.prepend(template);
       break;
     case RenderPosition.INSERT_BEFORE:
-      container.insertBefore(template, element);
+      container.parentNode.insertBefore(template, container);
   }
 };
 

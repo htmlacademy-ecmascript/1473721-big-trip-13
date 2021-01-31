@@ -1,6 +1,8 @@
 import {SortType, UpdateType, UserAction} from "../const.js";
 import {sortByDay, sortByPrice, sortByTime} from "../utils/task.js";
 import {remove, render, RenderPosition} from "../utils/render.js";
+import TripEventListView from "../view/trip-event-list.js";
+import TripEventListViewItem from "../view/trip-event-list-item.js";
 import TripSortView from "../view/trip-sort.js";
 import NoPointView from "../view/no-points.js";
 import PointPresenter, {State as PointPresenterViewState} from "./point.js";
@@ -9,9 +11,11 @@ import PointNewPresenter from "./point-new.js";
 import LoadingView from "../view/loading.js";
 
 export default class Route {
-  constructor(tripEvents, container, pointsModel, offersModel, destinationsModel, filtersModel, api) {
+  constructor(tripEvents, pointsModel, offersModel, destinationsModel, filtersModel, api) {
     this._tripEvents = tripEvents;
-    this._siteListElement = container;
+    this._siteListElement = null;
+    this._tripEventListElement = null;
+
     this._pointsModel = pointsModel;
     this._offersModel = offersModel;
     this._filtersModel = filtersModel;
@@ -33,14 +37,11 @@ export default class Route {
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
     this._onModeChange = this._onModeChange.bind(this);
 
-    this._pointNewPresenter = new PointNewPresenter(this._siteListElement, this._onViewAction, this._offersModel, this._destinationsModel);
+    this._pointNewPresenter = new PointNewPresenter(this._onViewAction, this._offersModel, this._destinationsModel);
   }
 
   init() {
-    this._sortComponent = new TripSortView();
-    this.renderNoPoints();
     this._renderRoute();
-
 
     this._pointsModel.addObserver(this._onModelEvent);
     this._filtersModel.addObserver(this._onModelEvent);
@@ -48,20 +49,21 @@ export default class Route {
 
   destroy() {
     this._clearPointsList();
-    remove(this._sortComponent);
+
     this._pointNewPresenter.destroy();
   }
 
   createPoint(callback) {
-    this._pointNewPresenter.init(callback);
+    if (this._siteListElement) {
+      this._pointNewPresenter.init(callback, this._siteListElement, RenderPosition.INSERT_BEFORE);
+    } else {
+      this._pointNewPresenter.init(callback, this._tripEvents, RenderPosition.BEFOREEND);
+    }
   }
 
-  // renderNoPoints(state) {
-    renderNoPoints() {
+  renderNoPoints() {
     const points = this._getPoints();
-    // const condition = state ? points.length === 0 && !this._noPointView : points.length === 0;
-    // if (condition) {
-      debugger;
+
     if (points.length === 0) {
       this._noPointView = new NoPointView();
       render(this._tripEvents, this._noPointView);
@@ -87,14 +89,26 @@ export default class Route {
   }
 
   _renderSort() {
-    render(this._siteListElement, this._sortComponent, RenderPosition.AFTERBEGIN);
+    this._sortComponent = new TripSortView();
+    render(this._tripEvents, this._sortComponent, RenderPosition.BEFOREEND);
     this._sortComponent.onSetSortTypeChange(this._onSortTypeChange);
   }
 
   _renderPointsList() {
-    // this.renderNoPoints(true);
-    // this.renderNoPoints();
-    this._renderPoints(this._getPoints());
+    const points = this._getPoints();
+
+    if (points.length === 0) {
+      this._noPointView = new NoPointView();
+      render(this._tripEvents, this._noPointView);
+      return;
+    }
+
+    this._renderSort();
+
+    this._siteListElement = new TripEventListView();
+    render(this._tripEvents, this._siteListElement);
+
+    this._renderPoints(this._siteListElement, this._getPoints());
   }
 
 
@@ -105,13 +119,15 @@ export default class Route {
     }
 
     this._renderPointsList();
-    this._renderSort();
   }
 
-  _renderPoints(points) {
+  _renderPoints(container, points) {
     if (this._pointsPresenter.length === 0) {
       points.forEach((point) => {
-        const pointPresenter = new PointPresenter(this._siteListElement, this._onModeChange, this._onViewAction, this._offersModel, this._destinationsModel);
+        const itemContainer = new TripEventListViewItem(container);
+        render(container, itemContainer);
+
+        const pointPresenter = new PointPresenter(itemContainer, this._onModeChange, this._onViewAction, this._offersModel, this._destinationsModel);
         pointPresenter.init(point);
         this._pointsPresenter.push(pointPresenter);
       });
@@ -119,7 +135,7 @@ export default class Route {
   }
 
   _renderLoading() {
-    render(this._siteListElement, this._loadingComponent);
+    render(this._tripEvents, this._loadingComponent);
   }
 
   _onSortTypeChange(sortType) {
@@ -134,6 +150,7 @@ export default class Route {
 
   _onModeChange() {
     Object.values(this._pointsPresenter).forEach((presenter) => presenter.resetView());
+    this._destroyPointNewPresenter();
   }
 
   _onPointChange(point) {
@@ -146,32 +163,32 @@ export default class Route {
       case UserAction.UPDATE_POINT:
         pointPresenter.setViewState(PointPresenterViewState.SAVING);
         this._api.updatePoint(update)
-        .then((response) => {
-          this._pointsModel.updatePoint(updateType, response);
-        })
-        .catch(() => {
-          pointPresenter.setViewState(PointPresenterViewState.ABORTING);
-        });
+          .then((response) => {
+            this._pointsModel.updatePoint(updateType, response);
+          })
+          .catch(() => {
+            pointPresenter.setViewState(PointPresenterViewState.ABORTING);
+          });
         break;
       case UserAction.ADD_POINT:
         this._pointNewPresenter.setSaving();
         this._api.addPoint(update)
-        .then((response) => {
-          this._pointsModel.addPoint(updateType, response);
-        })
-        .catch(() => {
-          this._pointNewPresenter.setAborting();
-        });
+          .then((response) => {
+            this._pointsModel.addPoint(updateType, response);
+          })
+          .catch(() => {
+            this._pointNewPresenter.setAborting();
+          });
         break;
       case UserAction.DELETE_POINT:
         pointPresenter.setViewState(PointPresenterViewState.DELETING);
         this._api.deletePoint(update)
-        .then(() => {
-          this._pointsModel.deletePoint(updateType, update);
-        })
-        .catch(() => {
-          pointPresenter.setViewState(PointPresenterViewState.ABORTING);
-        });
+          .then(() => {
+            this._pointsModel.deletePoint(updateType, update);
+          })
+          .catch(() => {
+            pointPresenter.setViewState(PointPresenterViewState.ABORTING);
+          });
         break;
     }
   }
@@ -192,23 +209,44 @@ export default class Route {
         this._renderPointsList();
         break;
       case UpdateType.INIT:
-        this._isLoading = false;
-        remove(this._loadingComponent);
+        this._clearPointsList();
         this._renderRoute();
         break;
     }
   }
 
-  _clearPointsList() {
-    if (this._noPointView) {
-      remove(this._noPointView);
+  _destroyPointNewPresenter() {
+    if (this._pointNewPresenter) {
+      this._pointNewPresenter.destroy();
     }
+  }
 
-    this._pointNewPresenter.destroy();
+  _clearPointsList() {
+    this._destroyPointNewPresenter();
+
     Object.values(this._pointsPresenter).forEach((presenter) => presenter.destroy());
     this._pointsPresenter = [];
 
-    remove(this._loadingComponent);
-    remove(this._noPointView);
+    if (this._siteListElement) {
+      remove(this._siteListElement);
+      this._siteListElement = null;
+    }
+
+    if (this._noPointView) {
+      remove(this._noPointView);
+      this._noPointView = null;
+    }
+
+    if (this._sortComponent) {
+      remove(this._sortComponent);
+      this._sortComponent = null;
+    }
+
+    if (this._loadingComponent) {
+      remove(this._loadingComponent);
+      this._loadingComponent = null;
+
+      this._isLoading = false;
+    }
   }
 }

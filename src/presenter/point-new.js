@@ -1,11 +1,10 @@
-import {remove, render, RenderPosition} from "../utils/render.js";
+import {remove, render} from "../utils/render.js";
 import EditingPoint from "../view/editing-point.js";
 import {KEY_VALUE} from "./point.js";
 import {UserAction, UpdateType} from "../const.js";
 
 export default class PointNew {
-  constructor(pointsContainer, changeData, offersModel, destinations) {
-    this._pointsContainer = pointsContainer;
+  constructor(changeData, offersModel, destinations) {
     this._changeData = changeData;
     this._offersModel = offersModel;
     this._destinations = destinations;
@@ -19,8 +18,9 @@ export default class PointNew {
     this._onSaveClick = this._onSaveClick.bind(this);
   }
 
-  init(callback) {
+  init(callback, container, position) {
     this._destroyCallback = callback;
+    this._container = container;
 
     if (this._editComponent !== null) {
       return;
@@ -31,9 +31,7 @@ export default class PointNew {
     this._editComponent.onSetSubmitClick(this._onSaveClick);
     this._editComponent.onSetCancelClick(this._onCancelClick);
 
-    const element = this._pointsContainer.getElement().querySelector(`.trip-events__item`);
-    render(this._pointsContainer, this._editComponent, RenderPosition.INSERT_BEFORE, element);
-
+    render(this._container, this._editComponent, position);
     document.addEventListener(`keydown`, this._onEscKeyDown);
   }
 

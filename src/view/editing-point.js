@@ -23,6 +23,10 @@ const DEFAULT_POINT = {
     {
       title: `Choose comfort class`,
       price: 110
+    },
+    {
+      title: `Choose business class`,
+      price: 180
     }
   ],
   price: 80,
@@ -143,8 +147,7 @@ const createEditingPointElement = ({type = PointType.TAXI,
     }
   };
 
-  return `<li class="trip-events__item">
-  <form class="event event--edit" action="#" method="post">
+  return `<form class="event event--edit" action="#" method="post">
   <header class="event__header">
     <div class="event__type-wrapper">
       <label class="event__type  event__type-btn" for="event-type-toggle-${id}">
@@ -197,8 +200,7 @@ const createEditingPointElement = ({type = PointType.TAXI,
   ${createOffersSection()}
   ${createDestinationsSection()}
   </section>
-</form>
-</li>`;
+</form>`;
 };
 
 export default class EditingPoint extends Smart {
@@ -277,20 +279,20 @@ export default class EditingPoint extends Smart {
 
   onSetSubmitClick(callback) {
     this._callback.submitClick = callback;
-    this.getElement().querySelector(`form`).addEventListener(`submit`, this._onFormSubmitClick);
+    this.getElement().addEventListener(`submit`, this._onFormSubmitClick);
   }
 
   onSetDeleteClick(callback) {
     this._callback.deleteClick = callback;
-    this.getElement().querySelector(`form`).addEventListener(`reset`, this._onFormDeleteClick);
+    this.getElement().addEventListener(`reset`, this._onFormDeleteClick);
   }
 
   onSetCancelClick(callback) {
     this._callback.cancelClick = callback;
     if (this._isEditViewMode) {
-      this.getElement().querySelector(`form`).querySelector(`.event__rollup-btn`).addEventListener(`click`, this._onFormCancelClick);
+      this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._onFormCancelClick);
     } else {
-      this.getElement().querySelector(`form`).addEventListener(`reset`, this._onFormDeleteClick);
+      this.getElement().addEventListener(`reset`, this._onFormDeleteClick);
     }
   }
 
@@ -362,8 +364,6 @@ export default class EditingPoint extends Smart {
     const options = offersByType.filter(({title}) => {
       return checkedOffersIds.some((checkedOffersId) => checkedOffersId === getOfferId(title, this._data.id));
     });
-
-    debugger;
 
     this.updateData({
       options

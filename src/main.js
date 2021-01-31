@@ -5,7 +5,6 @@ import {remove, render, RenderPosition} from "./utils/render.js";
 import TripInfoView from "./view/trip-information.js";
 import SiteMenuView from "./view/menu.js";
 import HeaderMenuView from "./view/header-menu.js";
-import TripEventListView from "./view/trip-event-list.js";
 import TripStatistics from "./view/trip-statistics.js";
 import PointsModel from "./model/points.js";
 import OffersModel from "./model/offers.js";
@@ -42,16 +41,11 @@ const siteMainElement = document.querySelector(`.page-body__page-main`);
 const tripEvents = siteMainElement.querySelector(`.trip-events`);
 let statisticsComponent = null;
 
-const tripEventList = new TripEventListView();
 const siteMenu = new SiteMenuView();
 const tripInfoView = new TripInfoView(pointsModel);
 tripInfoView.init();
 
-render(tripEvents, tripEventList);
-
-const siteListElement = tripEventList;
-
-const routePresenter = new RoutePresenter(tripEvents, siteListElement, pointsModel, offersModel, destinationsModel, filtersModel, apiWithProvider);
+const routePresenter = new RoutePresenter(tripEvents, pointsModel, offersModel, destinationsModel, filtersModel, apiWithProvider);
 const filterPresenter = new FilterPresenter(tripControlsElement, filtersModel, pointsModel);
 
 render(tripControlsElement, new HeaderMenuView(), RenderPosition.AFTERBEGIN);
@@ -59,9 +53,6 @@ render(tripControlsElement, new HeaderMenuView(), RenderPosition.AFTERBEGIN);
 const onPointNewFormClose = () => {
   siteMenu.setAddNewButtonState(false);
   siteMenu.setActiveMenu(MenuItem.TABLE);
-  // routePresenter.renderNoPoints(false);
-  // routePresenter.renderNoPoints();
-
 };
 
 const onSiteMenuClick = (menuItem) => {
@@ -70,7 +61,6 @@ const onSiteMenuClick = (menuItem) => {
       remove(statisticsComponent);
       routePresenter.destroy();
       filtersModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-      routePresenter.init();
       if (!isOnline()) {
         toast(`You can't create new point offline`);
         siteMenu.setActiveMenu(MenuItem.TASKS);

@@ -33,8 +33,7 @@ const createPoint = ({
   dateTo
 }) => {
 
-  return `<li class="trip-events__item">
-  <div class="event">
+  return `<div class="event">
     <time class="event__date" datetime="${formDate(dateFrom, `YYYY-MM-DD`)}">${formDate(dateFrom, `MMM DD`)}</time>
     <div class="event__type">
       <img class="event__type-icon" width="42" height="42" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
@@ -64,8 +63,7 @@ const createPoint = ({
     <button class="event__rollup-btn" type="button">
       <span class="visually-hidden">Open event</span>
     </button>
-  </div>
-</li>`;
+  </div>`;
 };
 
 export default class Point extends Smart {

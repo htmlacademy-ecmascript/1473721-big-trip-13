@@ -73,7 +73,6 @@ export default class TripInformation extends Smart {
   }
 
   _onModelEvent() {
-    console.log(this._pointsModel.getPoints());
     if (this._pointsModel.getPoints().length !== 0) {
       this.updateData({points: this._pointsModel.getPoints()});
     }
