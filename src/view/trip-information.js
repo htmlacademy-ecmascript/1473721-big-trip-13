@@ -3,12 +3,17 @@ import {sortByDay} from "../utils/task.js";
 import {formDate} from "../utils/task.js";
 
 const COUNT_TRIP_CITY = 3;
+const NUMBER_FOR_ARRAY = 1;
+const ZERO = 0;
+const NO_NAME = `no name`;
 
 const getCost = (points) => {
   return points.reduce((acc, point) => {
-    point.options.forEach((offers) => {
-      acc += offers.price;
-    });
+    if (point.options) {
+      point.options.forEach((offers) => {
+        acc += (offers.price || ZERO);
+      });
+    }
     acc += point.price;
     return acc;
   }, null);
@@ -16,7 +21,7 @@ const getCost = (points) => {
 
 const createTripInfoElement = (points) => {
   const first = 0;
-  const last = points.length - 1;
+  const last = points.length - NUMBER_FOR_ARRAY;
 
   points.sort(sortByDay);
 
@@ -24,7 +29,7 @@ const createTripInfoElement = (points) => {
     let info = ``;
 
     if (points.length <= COUNT_TRIP_CITY) {
-      info = points.map((point) => point.destination.name).join(` &mdash; `);
+      info = points.map((point) => point.destination ? point.destination.name : NO_NAME).join(` &mdash; `);
     } else {
       info = `${points[first].destination.name} &mdash; ... &mdash; ${points[last].destination.name}`;
     }

@@ -17,15 +17,23 @@ import {toast} from "./utils/toast/toast.js";
 import Store from "./api/store.js";
 import Provider from "./api/provider.js";
 
+const TYPE_STORE = {
+  POINTS: `POINTS`,
+  OFFERS: `OFFERS`,
+  DESTINATIONS: `DESTONATIONS`
+};
+
 const AUTHORIZATION = `Basic VGgJGhwdgjwgd24gr`;
 const END_POINT = `https://13.ecmascript.pages.academy/big-trip`;
 const STORE_PREFIX = `bigTrip-localstorage`;
 const STORE_VER = `v13`;
-const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
+const STORE_NAME_POINTS = `${STORE_PREFIX}-${STORE_VER}-${TYPE_STORE.POINTS}`;
+const STORE_NAME_OFFERS = `${STORE_PREFIX}-${STORE_VER}-${TYPE_STORE.POINTS}`;
+const STORE_NAME_DESTINATIONS = `${STORE_PREFIX}-${STORE_VER}-${TYPE_STORE.POINTS}`;
 
 const api = new Api(END_POINT, AUTHORIZATION);
 
-const store = new Store(STORE_NAME, window.localStorage);
+const store = new Store(STORE_NAME_POINTS, STORE_NAME_OFFERS, STORE_NAME_DESTINATIONS, window.localStorage);
 const apiWithProvider = new Provider(api, store);
 
 const pointsModel = new PointsModel();

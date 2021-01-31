@@ -4,10 +4,10 @@ import {KEY_VALUE} from "./point.js";
 import {UserAction, UpdateType} from "../const.js";
 
 export default class PointNew {
-  constructor(changeData, offersModel, destinationsModal) {
+  constructor(changeData, offersModel, destinationsModel) {
     this._changeData = changeData;
     this._offersModel = offersModel;
-    this._destinationsModal = destinationsModal;
+    this._destinationsModel = destinationsModel;
 
     this._editComponent = null;
     this._point = null;
@@ -26,7 +26,7 @@ export default class PointNew {
       return;
     }
 
-    this._editComponent = new EditingPoint(this._offersModel, this._destinationsModal, this._isEditViewMode);
+    this._editComponent = new EditingPoint(this._offersModel, this._destinationsModel, this._isEditViewMode);
     this._editComponent.onSetSubmitClick(this._onSaveClick);
     this._editComponent.onSetCancelClick(this._onCancelClick);
 
