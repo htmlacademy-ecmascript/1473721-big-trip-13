@@ -65,6 +65,8 @@ const renderChart = (text, type, labels, data) => {
           color: BasicValue.BLACK_COLOR,
           anchor: BasicValue.END,
           align: BasicValue.START,
+          barThickness: BasicValue.SIZE_44,
+          minBarLength: BasicValue.SIZE_50,
           formatter: (val) => getSymbol(text, val)
         }
       },
@@ -85,8 +87,7 @@ const renderChart = (text, type, labels, data) => {
           gridLines: {
             display: false,
             drawBorder: false
-          },
-          barThickness: BasicValue.SIZE_44,
+          }
         }],
         xAxes: [{
           ticks: {
@@ -96,8 +97,7 @@ const renderChart = (text, type, labels, data) => {
           gridLines: {
             display: false,
             drawBorder: false
-          },
-          minBarLength: BasicValue.SIZE_50
+          }
         }],
       },
       legend: {
