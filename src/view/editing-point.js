@@ -85,16 +85,12 @@ const getPhotosList = (pictures) => {
   }, ``);
 };
 
-const getViewPhotos = (flag, pictures) => {
-  if (!flag) {
-    return `<div class="event__photos-container">
+const getViewPhotos = (pictures) => {
+  return `<div class="event__photos-container">
     <div class="event__photos-tape">
     ${getPhotosList(pictures)}
     </div>
   </div>`;
-  } else {
-    return ``;
-  }
 };
 
 const createEditingPointElement = ({type = PointType.TAXI,
@@ -127,7 +123,7 @@ const createEditingPointElement = ({type = PointType.TAXI,
     return `<section class="event__section  event__section--destination">
       <h3 class="event__section-title  event__section-title--destination">Destination</h3>
       <p class="event__destination-description">${description}</p>
-      ${getViewPhotos(isEditViewMode, pictures)}
+      ${getViewPhotos(pictures)}
     </section>`;
   };
 
